@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "Eric"
+version = "0.1.0"
+description = ""
+authors = ["nullqwertyuiop <nullqwertyuio@outlook.com>"]
+license = "AGPL-3.0 license"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+graia-ariadne = "^0.9.6"
+graia-saya = "^0.0.16"
+graia-scheduler = "^0.0.8"
+graiax-playwright = "^0.2.0"
+typing-extensions = "^4.4.0"
+SQLAlchemy = "^1.4.41"
+aiomysql = "^0.1.1"
+aiosqlite = "^0.17.0"
+aiohttp = "^3.8.3"
+kayaku = "0.5.0rc1"
+
+[tool.poetry.dev-dependencies]
+black = "^22.10.0"
+pre-commit = "^2.20.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
