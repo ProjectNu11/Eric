@@ -4,7 +4,7 @@ from json import JSONDecodeError
 from pathlib import Path
 from typing import Type
 
-from creart import AbstractCreator, CreateTargetInfo, add_creator, exists_module
+from creart import AbstractCreator, CreateTargetInfo, add_creator, exists_module, create
 from loguru import logger
 from pydantic import AnyHttpUrl, BaseModel, validator
 from typing_extensions import Self
@@ -31,13 +31,14 @@ def update_config_file_path(path: Path):
 class EricConfig(BaseModel):
     """Eric 配置"""
 
-    __instance: Self = None
-
     name: str = "Eric"
     """ 机器人名称 """
 
     accounts: set[int] = []
     """ 机器人账号 """
+
+    default_account: int = 0
+    """ 默认账号 """
 
     description: str = ""
     """ 机器人描述 """
@@ -78,24 +79,34 @@ class EricConfig(BaseModel):
     service: ServiceConfig = ServiceConfig()
     """ 服务配置 """
 
-    def __new__(cls, *args, **kwargs):
-        if cls.__instance is None:
-            cls.__instance = super().__new__(cls)
-        return cls.__instance
+    def from_file(self, path: str | Path = CONFIG_FILE_PATH) -> Self:
+        """
+        从文件加载配置
 
-    @staticmethod
-    def from_file(path: str | Path = CONFIG_FILE_PATH) -> Self:
-        """从文件加载配置"""
+        Args:
+            path (str | Path): 配置文件路径
+
+        Returns:
+            Self: 配置对象
+        """
         if isinstance(path, str):
             path = Path(path)
         if not path.exists():
             raise FileNotFoundError(f"配置文件不存在: {path}")
-        return EricConfig.parse_file(path, allow_pickle=True)
+        eric = EricConfig.parse_file(path, encoding="utf-8")
+        for k in eric.dict().keys():
+            setattr(self, k, getattr(eric, k))
+        return self
 
     def to_file(self, path: str | Path = CONFIG_FILE_PATH) -> None:
-        """保存配置到文件"""
+        """
+        保存配置到文件
+
+        Args:
+            path (str | Path): 配置文件路径
+        """
         with open(path, "w", encoding="utf-8") as f:
-            f.write(self.json(indent=4, ensure_ascii=False, exclude={"__instance"}))
+            f.write(self.json(indent=4, ensure_ascii=False))
 
     @validator("environment")
     def _validate_environment(cls, value: str) -> str:
@@ -138,3 +149,4 @@ class EricConfigClassCreator(AbstractCreator, ABC):
 
 
 add_creator(EricConfigClassCreator)
+create(EricConfig).to_file()

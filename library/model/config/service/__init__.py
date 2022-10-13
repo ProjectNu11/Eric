@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 
 from library.model.config.service.fastapi import FastAPIConfig
+from library.model.config.service.manager import ManagerConfig
 
 
 class ServiceConfig(BaseModel):
@@ -8,3 +9,6 @@ class ServiceConfig(BaseModel):
 
     fastapi: FastAPIConfig = FastAPIConfig()
     """ FastAPI 配置 """
+
+    manager: ManagerConfig = ManagerConfig()
+    """ 管理器配置 """
