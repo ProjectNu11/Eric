@@ -152,8 +152,7 @@ cython_debug/
 .idea/
 
 # Generated files
-config.json
-config.json.bak
-data/
-log/
-module/
+/config.*
+/data/
+/log/
+/module/
