@@ -17,6 +17,17 @@ from library.model.config.service import ServiceConfig
 CONFIG_FILE_PATH: Path = Path("config.json")
 
 
+def update_config_file_path(path: Path):
+    """
+    更新配置文件路径，用于测试
+
+    Args:
+        path (Path): 配置文件路径
+    """
+    global CONFIG_FILE_PATH
+    CONFIG_FILE_PATH = path
+
+
 class EricConfig(BaseModel):
     """Eric 配置"""
 
@@ -25,7 +36,7 @@ class EricConfig(BaseModel):
     name: str = "Eric"
     """ 机器人名称 """
 
-    accounts: list[int] = []
+    accounts: set[int] = []
     """ 机器人账号 """
 
     description: str = ""
