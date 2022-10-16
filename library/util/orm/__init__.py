@@ -1,6 +1,7 @@
 from asyncio import Lock
 from typing import NoReturn
 
+from creart import create
 from sqlalchemy import delete, insert, inspect, select, update
 from sqlalchemy.engine import Result
 from sqlalchemy.exc import InternalError, ProgrammingError
@@ -9,15 +10,17 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import NullPool
 
-from library.config import config
 from library.model.config.database import MySQLConfig
+from library.model.config.eric import EricConfig
 
-if isinstance(config.db.config, MySQLConfig):
+config = create(EricConfig)
+
+if isinstance(config.database.config, MySQLConfig):
     db_mutex = None
-    if config.db.config.disable_pooling:
+    if config.database.config.disable_pooling:
         adapter = {"poolclass": NullPool}
     else:
-        adapter = config.db.config.dict(exclude={"disable_pooling"})
+        adapter = config.database.config.dict(exclude={"disable_pooling"})
 else:
     db_mutex = Lock()
     adapter = {}
@@ -103,6 +106,7 @@ class AsyncEngine:
 
         Args:
             sql (str): SQL 语句
+            n (int, optional): 最大取得结果数，默认为 999999
 
         Returns:
             Any: 生成器
@@ -255,7 +259,7 @@ class AsyncORM(AsyncEngine):
         return table_name in tables
 
 
-orm = AsyncORM(config.db.link)
+orm = AsyncORM(config.database.link)
 Base = orm.Base
 
 
