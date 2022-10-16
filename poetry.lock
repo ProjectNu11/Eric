@@ -207,7 +207,7 @@ python-versions = "*"
 
 [[package]]
 name = "fastapi"
-version = "0.85.0"
+version = "0.85.1"
 description = "FastAPI framework, high performance, easy to learn, fast to code, ready for production"
 category = "main"
 optional = false
@@ -268,7 +268,7 @@ aiohttp = ["aiohttp (>=3.8.1,<4.0.0)"]
 
 [[package]]
 name = "graia-ariadne"
-version = "0.9.6"
+version = "0.9.7"
 description = "Another elegant Python QQ Bot framework for mirai and mirai-api-http v2."
 category = "main"
 optional = false
@@ -278,7 +278,7 @@ python-versions = ">=3.8,<4.0"
 aiohttp = ">=3.8,<4.0"
 creart-graia = ">=0.1.5,<1.0.0"
 graia-amnesia = ">=0.6.0,<0.7.0"
-graia-broadcast = ">=0.18,<1.0"
+graia-broadcast = ">=0.19,<1.0"
 launart = ">=0.6,<1.0"
 pydantic = ">=1.9,<2.0"
 typing-extensions = ">=4.3,<5.0"
@@ -291,7 +291,7 @@ standard = ["richuru (>=0.1,<1.0)", "graia-scheduler (>=0.0,<1.0)", "graia-saya 
 
 [[package]]
 name = "graia-broadcast"
-version = "0.18.2"
+version = "0.19.0"
 description = "a highly customizable, elegantly designed event system based on asyncio"
 category = "main"
 optional = false
@@ -407,17 +407,18 @@ format-nongpl = ["fqdn", "idna", "isoduration", "jsonpointer (>1.13)", "rfc3339-
 
 [[package]]
 name = "kayaku"
-version = "0.5.0rc1"
+version = "0.5.0rc2"
 description = "An powerful and flexible configuration solution."
 category = "main"
 optional = false
-python-versions = ">=3.9,<4.0"
+python-versions = ">=3.8,<4.0"
 
 [package.dependencies]
 dacite = ">=1.6.0,<2.0"
 jsonschema = ">=4.16.0,<5.0.0"
 lark = {version = ">=1.1,<2.0", extras = ["regex"]}
 loguru = ">=0.6.0,<0.7.0"
+typing-extensions = ">=4.0.0,<5.0.0"
 
 [[package]]
 name = "lark"
@@ -490,12 +491,32 @@ optional = false
 python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,!=3.6.*"
 
 [[package]]
+name = "numpy"
+version = "1.23.4"
+description = "NumPy is the fundamental package for array computing with Python."
+category = "main"
+optional = false
+python-versions = ">=3.8"
+
+[[package]]
 name = "pathspec"
 version = "0.10.1"
 description = "Utility library for gitignore style pattern matching of file paths."
 category = "dev"
 optional = false
 python-versions = ">=3.7"
+
+[[package]]
+name = "pillow"
+version = "9.2.0"
+description = "Python Imaging Library (Fork)"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.extras]
+docs = ["furo", "olefile", "sphinx (>=2.4)", "sphinx-copybutton", "sphinx-issues (>=3.0.1)", "sphinx-removed-in", "sphinxext-opengraph"]
+tests = ["check-manifest", "coverage", "defusedxml", "markdown2", "olefile", "packaging", "pyroma", "pytest", "pytest-cov", "pytest-timeout"]
 
 [[package]]
 name = "platformdirs"
@@ -771,7 +792,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "flake8 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "15daf55a37882878f3e2456138d6a0101a83a19ef95eac9b7d8f602a0cd0c1cc"
+content-hash = "0d5fc03123a668e0d6c00387f21268188d5b326ef24b0ba0b249d50bb911daf8"
 
 [metadata.files]
 aiohttp = []
@@ -813,7 +834,9 @@ loguru = []
 multidict = []
 mypy-extensions = []
 nodeenv = []
+numpy = []
 pathspec = []
+pillow = []
 platformdirs = []
 playwright = []
 pre-commit = []
