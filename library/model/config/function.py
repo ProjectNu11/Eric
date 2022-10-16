@@ -10,7 +10,7 @@ class FrequencyLimitConfig(BaseModel):
     user_max: int = 10
     """ 单用户最大请求权重，为 0 时不限制 """
 
-    field_max: int = 50
+    field_max: int = 0
     """ 单区域最大请求权重，为 0 时不限制 """
 
     global_max: int = 0

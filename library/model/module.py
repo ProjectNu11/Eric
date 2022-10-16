@@ -1,9 +1,12 @@
 import re
 from pathlib import Path
 
+from creart import create
 from pydantic import BaseModel, validator
 
-from library.config import config
+from library.model.config.eric import EricConfig
+
+config = create(EricConfig)
 
 
 class ModuleMetadata(BaseModel):
