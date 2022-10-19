@@ -153,6 +153,7 @@ cython_debug/
 
 # Generated files
 /config.*
+/config/
 /data/
 /log/
 /module/

@@ -1,4 +1,6 @@
 from creart import create
+from kayaku import create as kayaku_create
+from fastapi import FastAPI
 from graia.amnesia.builtins.uvicorn import UvicornService
 from graia.ariadne import Ariadne
 from graia.ariadne.connection.config import (
@@ -10,16 +12,19 @@ from graia.saya import Saya
 from graia.saya.builtins.broadcast import BroadcastBehaviour
 from graia.scheduler import GraiaScheduler
 from graia.scheduler.saya import GraiaSchedulerBehaviour
+from graiax.fastapi import FastAPIService
 from graiax.playwright import PlaywrightService
 from loguru import logger
+from playwright.async_api import ProxySettings
 
+from library.config.initialize import initialize_config
 from library.model.config.eric import EricConfig
-from library.service.fastapi import FastAPIService
 from library.util.log import setup_logger
 
 
 def initialize():
-    cfg = create(EricConfig)
+    initialize_config()
+    cfg = kayaku_create(EricConfig, flush=True)
     ariadne: list[Ariadne] = [
         Ariadne(
             config(
@@ -41,10 +46,13 @@ def initialize():
 
     ariadne[-1].launch_manager.add_service(
         PlaywrightService(
-            "chromium", proxy={"server": cfg.proxy if cfg.proxy != "proxy" else None}
+            "chromium",
+            proxy=ProxySettings(
+                {"server": cfg.proxy if cfg.proxy != "proxy" else None}
+            ),
         )
     )
-    ariadne[-1].launch_manager.add_service(FastAPIService())
+    ariadne[-1].launch_manager.add_service(FastAPIService(create(FastAPI)))
     ariadne[-1].launch_manager.add_service(
         UvicornService(host=cfg.service.fastapi.host, port=cfg.service.fastapi.port)
     )
@@ -56,5 +64,3 @@ def initialize():
     )
 
     setup_logger()
-
-    ariadne[-1].launch_blocking()

@@ -5,17 +5,7 @@ from typing_extensions import Self
 
 
 class UserPerm(Enum):
-    """
-    用户权限
-
-    UserPerm.BLOCKED: 被封禁
-    UserPerm.BOT: 机器人
-    UserPerm.MEMBER: 普通成员
-    UserPerm.ADMINISTRATOR: 管理员
-    UserPerm.OWNER: 群主
-    UserPerm.BOT_ADMIN: 机器人管理员
-    UserPerm.BOT_OWNER: 机器人所有者
-    """
+    """用户权限"""
 
     BLOCKED = ("BLOCKED", -1)
     """ 被封禁 """

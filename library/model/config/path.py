@@ -1,47 +1,32 @@
 from pathlib import Path
 
-from pydantic import BaseModel, validator
+from kayaku import config
 
 
-class DataPathConfig(BaseModel):
-    """数据路径配置"""
-
-    data: Path = Path("data")
-    """ 数据文件目录 """
-
-    library: Path = data / "library"
+@config("library.data_path")
+class DataPathConfig:
+    library: str = str(Path("data") / "library")
     """ 库数据目录 """
 
-    module: Path = data / "module"
+    module: str = str(Path("data") / "module")
     """ 模块数据目录 """
 
-    shared: Path = data / "shared"
+    shared: str = str(Path("data") / "shared")
     """ 共享数据目录 """
 
-    temp: Path = data / "temp"
+    temp: str = str(Path("data") / "temp")
     """ 临时文件目录 """
 
-    @validator("data", "library", "module", "shared", "temp")
-    def _data_path_config_mkdir(cls, path: Path) -> Path:
-        if not path.exists():
-            path.mkdir(parents=True)
-        return path
 
-
-class PathConfig(BaseModel):
+@config("library.path")
+class PathConfig:
     """路径配置"""
 
-    data: DataPathConfig = DataPathConfig()
-    """ 数据目录 """
-
-    log: Path = Path("log")
+    log: str = str(Path("log"))
     """ 日志文件目录 """
 
-    module: Path = Path("module")
+    module: str = str(Path("module"))
     """ 模块文件目录 """
 
-    @validator("log", "module")
-    def _path_config_mkdir(cls, path: Path) -> Path:
-        if not path.exists():
-            path.mkdir(parents=True)
-        return path
+    data: str = str(Path("data"))
+    """ 数据文件目录 """

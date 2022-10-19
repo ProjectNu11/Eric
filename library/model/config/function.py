@@ -1,7 +1,8 @@
-from pydantic import BaseModel
+from kayaku import config
 
 
-class FrequencyLimitConfig(BaseModel):
+@config("library.frequency_limit")
+class FrequencyLimitConfig:
     """频率限制配置"""
 
     flush: int = 10
@@ -17,7 +18,8 @@ class FrequencyLimitConfig(BaseModel):
     """ 全局最大请求权重，为 0 时不限制 """
 
 
-class FunctionConfig(BaseModel):
+@config("library.function")
+class FunctionConfig:
     """功能配置"""
 
     default: bool = False
@@ -28,6 +30,3 @@ class FunctionConfig(BaseModel):
 
     allow_anonymous: bool = False
     """ 是否允许匿名使用 """
-
-    frequency_limit: FrequencyLimitConfig = FrequencyLimitConfig()
-    """ 频率限制配置 """
