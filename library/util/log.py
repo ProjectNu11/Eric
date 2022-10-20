@@ -1,7 +1,7 @@
 from datetime import time
 from pathlib import Path
 
-from creart import create
+from kayaku import create
 from loguru import logger
 
 from library.model.config.eric import EricConfig

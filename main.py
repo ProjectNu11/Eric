@@ -4,7 +4,7 @@ if __name__ == "__main__":
     kayaku.initialize({"{**}": "./config/{**}"})
 
     from graia.ariadne import Ariadne
-    from library.service.stage import initialize as initialize
+    from library.service.stage import initialize
 
     initialize()
     kayaku.bootstrap()

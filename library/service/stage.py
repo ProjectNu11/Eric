@@ -1,3 +1,5 @@
+import sys
+
 from creart import create
 from kayaku import create as kayaku_create
 from fastapi import FastAPI
@@ -19,11 +21,14 @@ from playwright.async_api import ProxySettings
 
 from library.config.initialize import initialize_config
 from library.model.config.eric import EricConfig
+from library.service.kayaku_launart import EricConfigService
 from library.util.log import setup_logger
 
 
 def initialize():
+    setup_logger()
     initialize_config()
+
     cfg = kayaku_create(EricConfig, flush=True)
     ariadne: list[Ariadne] = [
         Ariadne(
@@ -38,13 +43,14 @@ def initialize():
     ]
     if not ariadne:
         logger.error("无可用账号，请检查配置文件")
-        exit(1)
+        sys.exit(1)
+
     if cfg.default_account:
         Ariadne.config(default_account=cfg.default_account)
     else:
         Ariadne.config(default_account=cfg.accounts.copy().pop())
 
-    ariadne[-1].launch_manager.add_service(
+    Ariadne.launch_manager.add_service(
         PlaywrightService(
             "chromium",
             proxy=ProxySettings(
@@ -52,15 +58,15 @@ def initialize():
             ),
         )
     )
-    ariadne[-1].launch_manager.add_service(FastAPIService(create(FastAPI)))
+    Ariadne.launch_manager.add_service(FastAPIService(create(FastAPI)))
     ariadne[-1].launch_manager.add_service(
         UvicornService(host=cfg.service.fastapi.host, port=cfg.service.fastapi.port)
     )
+    Ariadne.launch_manager.add_service(EricConfigService())
+
     create(GraiaScheduler)
     saya = create(Saya)
     saya.install_behaviours(
         create(BroadcastBehaviour),
         create(GraiaSchedulerBehaviour),
     )
-
-    setup_logger()

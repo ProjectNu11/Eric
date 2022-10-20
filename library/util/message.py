@@ -73,10 +73,7 @@ async def send_message(
             return await _send_group_message(
                 target, message_chain, account, quote=quote
             )
-        else:
-            return await _send_friend_message(
-                target, message_chain, account, quote=quote
-            )
+        return await _send_friend_message(target, message_chain, account, quote=quote)
     except Exception as e:
         if isinstance(e, AccountMuted):
             logger.error(f"账号 {account} 在聊天区域 {target} 被禁言")

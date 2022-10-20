@@ -49,6 +49,9 @@ class UserPerm(Enum):
     def __str__(self):
         return self.value[0]
 
+    def __hash__(self):
+        return hash(f"_UserPerm:{self.value[0]}")
+
     @classmethod
     def from_member_perm(cls, perm: MemberPerm) -> Self:
         """

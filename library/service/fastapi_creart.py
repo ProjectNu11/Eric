@@ -16,6 +16,6 @@ class FastAPICreator(AbstractCreator, ABC):
         return exists_module("fastapi.applications")
 
     @staticmethod
-    def create(create_type: Type[FastAPI]) -> FastAPI:
+    def create(_create_type: Type[FastAPI]) -> FastAPI:
         config = create(EricConfig)
         return FastAPI(**config.service.fastapi.params)

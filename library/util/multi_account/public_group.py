@@ -150,7 +150,7 @@ class PublicGroupClassCreator(AbstractCreator, ABC):
         return exists_module("library.util.multi_account.public_group")
 
     @staticmethod
-    def create(create_type: Type[PublicGroup]) -> PublicGroup:
+    def create(_create_type: Type[PublicGroup]) -> PublicGroup:
         return PublicGroup()
 
 

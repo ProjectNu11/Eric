@@ -187,8 +187,7 @@ class AsyncORM(AsyncEngine):
 
         if (await self.execute(select(table).where(*condition))).all():
             return await self.execute(update(table).where(*condition).values(**dt))
-        else:
-            return await self.execute(insert(table).values(**dt))
+        return await self.execute(insert(table).values(**dt))
 
     async def insert_or_ignore(self, table, condition, dt):
         """
