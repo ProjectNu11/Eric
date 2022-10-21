@@ -5,11 +5,13 @@ from kayaku import create
 from loguru import logger
 
 from library.model.config.eric import EricConfig
+from library.model.config.path import PathConfig
 
 
 def setup_logger():
-    config = create(EricConfig)
-    log_dir = config.path.log
+    config: EricConfig = create(EricConfig)
+    path_config: PathConfig = create(PathConfig)
+    log_dir = path_config.log
     logger.add(
         Path(log_dir, "{time:YYYY-MM-DD}", "common.log"),
         level="INFO",

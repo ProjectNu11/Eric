@@ -64,6 +64,8 @@ def _validate_eric_config():
         raise ValueError("mirai-api-http 验证密钥不能为空")
     cfg.owners = sorted(list(set(cfg.owners)))
     cfg.dev_groups = sorted(list(set(cfg.dev_groups)))
+    if cfg.log_rotate < 0:
+        raise ValueError("日志保留天数不能小于 0")
 
 
 def validate_config():

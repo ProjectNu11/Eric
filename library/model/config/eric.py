@@ -37,8 +37,8 @@ class EricConfig:
     debug: bool = False
     """ 是否开启调试模式 """
 
-    proxy: str = None
-    """ 代理 """
+    proxy: str = ""
+    """ 代理地址 """
 
     log_rotate: int = 7
     """ 日志文件保留天数 """

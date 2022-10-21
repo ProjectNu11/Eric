@@ -1,7 +1,7 @@
 from asyncio import Lock
 from typing import NoReturn
 
-from creart import create
+from kayaku import create
 from sqlalchemy import delete, insert, inspect, select, update
 from sqlalchemy.engine import Result
 from sqlalchemy.exc import InternalError, ProgrammingError

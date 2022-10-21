@@ -2,10 +2,11 @@ import time
 from abc import ABC
 from typing import Type
 
-from creart import create, AbstractCreator, CreateTargetInfo, exists_module, add_creator
+from creart import AbstractCreator, CreateTargetInfo, exists_module, add_creator
 from graia.ariadne import Ariadne
 from graia.ariadne.message.element import Source
 from graia.ariadne.model import Group
+from kayaku import create
 
 from library.model.config.eric import EricConfig
 
