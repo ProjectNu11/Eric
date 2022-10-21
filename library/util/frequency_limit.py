@@ -112,17 +112,6 @@ class FrequencyLimit:
             sum(weight for weight, _ in self.field[field]) for field in self.field
         )
 
-    def set_flag(self, target: int | Member | Friend, flag: bool):
-        """
-        标记用户
-
-        Args:
-            target: 用户
-            flag: 标记，False 时为未通知，True 时为已通知
-        """
-
-        self.flagged[int(target)] = (flag, datetime.now())
-
     def check_field(self, target: int | Group) -> bool:
         """
         检查区域权重是否未超出限制

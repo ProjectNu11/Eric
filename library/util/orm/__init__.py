@@ -10,17 +10,20 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import NullPool
 
-from library.model.config.database import MySQLConfig
-from library.model.config.eric import EricConfig
+from library.model.config.database import MySQLConfig, DatabaseConfig
 
-config = create(EricConfig)
+config: DatabaseConfig = create(DatabaseConfig)
+mysql_config: MySQLConfig = create(MySQLConfig)
 
-if isinstance(config.database.config, MySQLConfig):
+if config.is_mysql:
     db_mutex = None
-    if config.database.config.disable_pooling:
+    if mysql_config.disable_pooling:
         adapter = {"poolclass": NullPool}
     else:
-        adapter = config.database.config.dict(exclude={"disable_pooling"})
+        adapter = {
+            "pool_size": mysql_config.pool_size,
+            "max_overflow": mysql_config.max_overflow,
+        }
 else:
     db_mutex = Lock()
     adapter = {}
@@ -258,7 +261,7 @@ class AsyncORM(AsyncEngine):
         return table_name in tables
 
 
-orm = AsyncORM(config.database.link)
+orm = AsyncORM(config.link)
 Base = orm.Base
 
 

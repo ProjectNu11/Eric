@@ -7,11 +7,11 @@ from library.model.core import EricCore
 
 
 class EricCoreCreator(AbstractCreator, ABC):
-    targets = (CreateTargetInfo("fastapi.applications", "EricCore"),)
+    targets = (CreateTargetInfo("library.model.core", "EricCore"),)
 
     @staticmethod
     def available() -> bool:
-        return exists_module("fastapi.applications")
+        return exists_module("library.model.core")
 
     @staticmethod
     def create(_create_type: Type[EricCore]) -> EricCore:
