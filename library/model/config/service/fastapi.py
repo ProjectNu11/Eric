@@ -17,4 +17,4 @@ class FastAPIConfig:
     """ FastAPI 服务器域名，仅在发送消息时使用 """
 
     params: dict = field(default_factory=dict)
-    """ FastAPI 服务器参数 """
+    """ FastAPI 服务器参数，将在启动时传入 """

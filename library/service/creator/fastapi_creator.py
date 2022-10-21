@@ -5,7 +5,7 @@ from creart import AbstractCreator, CreateTargetInfo, exists_module
 from fastapi import FastAPI
 from kayaku import create
 
-from library.model.config.eric import EricConfig
+from library.model.config.service.fastapi import FastAPIConfig
 
 
 class FastAPICreator(AbstractCreator, ABC):
@@ -17,5 +17,5 @@ class FastAPICreator(AbstractCreator, ABC):
 
     @staticmethod
     def create(_create_type: Type[FastAPI]) -> FastAPI:
-        config = create(EricConfig)
-        return FastAPI(**config.service.fastapi.params)
+        config: FastAPIConfig = create(FastAPIConfig)
+        return FastAPI(**config.params)

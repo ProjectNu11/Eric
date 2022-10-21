@@ -1,12 +1,10 @@
 import re
 from pathlib import Path
 
-from creart import create
+from kayaku import create
 from pydantic import BaseModel, validator
 
 from library.model.config.eric import EricConfig
-
-config = create(EricConfig)
 
 
 class ModuleMetadata(BaseModel):
@@ -43,11 +41,12 @@ class ModuleMetadata(BaseModel):
     @property
     def clean_name(self) -> str:
         """模块名称（去除前缀）"""
-        return self.name.split(".", maxsplit=1)[-1]
+        return self.name.split(".")[-1]
 
     @property
     def data_path(self) -> Path:
         """模块数据目录"""
+        config: EricConfig = create(EricConfig)
         _data_path = config.path.data.module / self.pack
         if not _data_path.exists():
             _data_path.mkdir(parents=True)
@@ -56,4 +55,5 @@ class ModuleMetadata(BaseModel):
     @property
     def config_path(self) -> Path:
         """模块配置文件目录"""
+        config: EricConfig = create(EricConfig)
         return config.path.data.module / self.pack
