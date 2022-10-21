@@ -443,7 +443,7 @@ format-nongpl = ["fqdn", "idna", "isoduration", "jsonpointer (>1.13)", "rfc3339-
 
 [[package]]
 name = "kayaku"
-version = "0.5.0rc3"
+version = "0.5.0rc4"
 description = "An powerful and flexible configuration solution."
 category = "main"
 optional = false
@@ -836,7 +836,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "flake8 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "7af4b0aa9471c70e885754c275e4d738c474ac62d4e60c3b598093599fcc73d1"
+content-hash = "cc5093ac3cf72baa2ad990aee51b07f82499b03a2d7be885cccee7ae63de9b07"
 
 [metadata.files]
 aiohttp = []
