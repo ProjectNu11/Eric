@@ -10,7 +10,10 @@ def get_current_repo() -> Repo | None:
 
 
 def get_current_commit(repo: Repo) -> Commit:
-    return next(repo.iter_commits())
+    try:
+        return next(repo.iter_commits())
+    except StopIteration as e:
+        raise RuntimeError("无法获取当前提交，请检查当前目录是否为 Git 仓库") from e
 
 
 def get_current_branch(repo: Repo) -> Head:
