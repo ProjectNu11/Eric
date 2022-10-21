@@ -1,3 +1,5 @@
+from dataclasses import field
+
 from kayaku import config
 
 
@@ -30,3 +32,6 @@ class FunctionConfig:
 
     allow_anonymous: bool = False
     """ 是否允许匿名使用 """
+
+    prefix: list[str] = field(default_factory=lambda: [".", "。"])
+    """ 命令前缀 """

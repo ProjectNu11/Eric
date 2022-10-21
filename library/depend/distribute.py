@@ -6,6 +6,7 @@ from graia.ariadne.message.element import Source
 from graia.ariadne.model import Group, Member
 from graia.broadcast import ExecutionStop
 from graia.broadcast.builtin.decorators import Depend
+from kayaku import create as kayaku_create
 from loguru import logger
 
 from library.model.config.eric import EricConfig
@@ -13,12 +14,12 @@ from library.util.multi_account.public_group import PublicGroup
 
 
 class Distribution:
-    @staticmethod
-    def distribute(show_log: bool = False) -> Depend:
+    @classmethod
+    def distribute(cls, show_log: bool = False) -> Depend:
         async def judge(
             app: Ariadne, group: Group, member: Member, source: Source
         ) -> NoReturn:
-            if member.id in create(EricConfig).accounts:
+            if cls.self_trigger(member):
                 if show_log:
                     logger.warning(f"[Distribution] 由已登录账号 {member.id} 触发，停止分发")
                 raise ExecutionStop()
@@ -33,3 +34,7 @@ class Distribution:
                 logger.success(f"[Distribution] {app.account} 执行分发")
 
         return Depend(judge)
+
+    @staticmethod
+    def self_trigger(member: Member | int) -> bool:
+        return int(member) in kayaku_create(EricConfig).accounts
