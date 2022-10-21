@@ -22,5 +22,6 @@ if __name__ == "__main__":
     saya: Saya = create(Saya)
     with saya.module_context():
         saya.require("library.module.ping")
+        saya.require("library.module.system_status")
 
     Ariadne.launch_blocking()

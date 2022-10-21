@@ -23,6 +23,7 @@ Pillow = "^9.2.0"
 numpy = "^1.23.4"
 graiax-fastapi = "^0.2.0"
 GitPython = "^3.1.29"
+psutil = "^5.9.3"
 
 [tool.poetry.dev-dependencies]
 black = "^22.10.0"
