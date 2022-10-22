@@ -10,7 +10,7 @@ from graia.ariadne.message.parser.twilight import Twilight, FullMatch
 from graia.saya import Channel
 from graia.saya.builtins.broadcast import ListenerSchema
 
-from library.depend.distribute import Distribution
+from library.decorator.distribute import Distribution
 from library.model.config.eric import EricConfig
 from library.model.core import EricCore
 from library.util.dispatcher import PrefixMatch

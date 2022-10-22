@@ -7,10 +7,12 @@ from kayaku import create
 from launart import Launart, Launchable
 from loguru import logger
 
+from library.decorator.core import CoreInitCheck
 from library.model.config.path import PathConfig
 from library.model.config.service.manager import ManagerConfig
 from library.model.core import EricCore
 from library.service.updater import check_update, perform_update
+from library.util.inject import inject, uninject
 from library.util.module.get_all import list_all
 from library.util.module.require import require_by_metadata
 from library.util.multi_account.public_group import PublicGroup
@@ -39,6 +41,9 @@ class EricService(Launchable):
         require_by_metadata(_lib_modules)
         require_by_metadata(_user_modules)
 
+        # Inject CoreInitCheck to all modules, ensure that the core is initialized
+        inject(CoreInitCheck())
+
         async with self.stage("preparing"):
             await db_init()
             logger.success("[EricService] 数据库初始化完成")
@@ -48,6 +53,10 @@ class EricService(Launchable):
             logger.success("[EricService] 公共群数据初始化完成")
             it(EricCore).finish_init()
             logger.success("[EricService] Eric 核心初始化完成")
+
+            # Uninject CoreInitCheck, for better performance
+            uninject(CoreInitCheck())
+
             await self.check_update()
 
         async with self.stage("cleanup"):

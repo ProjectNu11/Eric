@@ -13,7 +13,7 @@ from graia.saya import Channel
 from graiax.fastapi.saya import route
 from loguru import logger
 
-from library.depend.distribute import Distribution
+from library.decorator.distribute import Distribution
 from library.model.response import GeneralResponse
 from library.util.decorator import timer
 from library.util.dispatcher import PrefixMatch
