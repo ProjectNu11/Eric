@@ -1,4 +1,3 @@
-# TODO Placeholder for actual module requiring
 from pathlib import Path
 from typing import Iterable
 
