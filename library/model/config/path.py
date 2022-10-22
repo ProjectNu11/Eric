@@ -22,14 +22,14 @@ class DataPathConfig:
 class PathConfig:
     """路径配置"""
 
-    log: str = str(Path("log"))
+    log: str = "log"
     """ 日志文件目录 """
 
-    module: str = str(Path("module"))
+    module: str = "module"
     """ 模块文件目录 """
 
-    data: str = str(Path("data"))
+    data: str = "data"
     """ 数据文件目录 """
 
-    config: str = str(Path("config"))
+    config: str = "config"
     """ 模块配置文件目录 """
