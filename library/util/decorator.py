@@ -4,6 +4,7 @@ import time
 from datetime import datetime
 
 from loguru import logger
+from sqlalchemy.exc import SQLAlchemyError
 
 from library.util.orm import orm
 from library.util.orm.table import ProcessTimeStat
@@ -31,7 +32,7 @@ def timer(module_name: str):
 
                 loop = asyncio.get_event_loop()
                 loop.create_task(_insert())
-            except Exception as e:
+            except SQLAlchemyError as e:
                 logger.error(f"插入 {module_name}:{func.__name__} 计时数据时出错: {e}")
             return value
 
