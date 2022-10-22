@@ -7,7 +7,7 @@ from graia.saya import Saya
 from graia.saya.builtins.broadcast import ListenerSchema
 
 
-def inject(decorator: Decorator):
+def _process(_decorator: Decorator, _inject: bool):
     saya: Saya = it(Saya)
     for _, channel in saya.channels.items():
         for cube in channel.content:
@@ -22,37 +22,25 @@ def inject(decorator: Decorator):
                     (
                         _deco
                         for _deco in decorators
-                        if isinstance(_deco, type(decorator))
+                        if isinstance(_deco, type(_decorator))
                     ),
                     None,
                 )
                 if deco is None:
-                    decorators.append(decorator)
-                    saya.broadcast.getListener(cube.content).decorators.append(
-                        decorator
-                    )
-
-
-def uninject(decorator: Decorator):
-    saya: Saya = it(Saya)
-    for _, channel in saya.channels.items():
-        for cube in channel.content:
-            if isinstance(cube.metaclass, ListenerSchema):
-                if any(
-                    not issubclass(event, MessageEvent)
-                    for event in cube.metaclass.listening_events
-                ):
-                    continue
-                decorators = cube.metaclass.decorators
-                deco = next(
-                    (
-                        _deco
-                        for _deco in decorators
-                        if isinstance(_deco, type(decorator))
-                    ),
-                    None,
-                )
-                if deco is not None:
+                    if _inject:
+                        decorators.append(_decorator)
+                        saya.broadcast.getListener(cube.content).decorators.append(
+                            _decorator
+                        )
+                elif not _inject:
                     with contextlib.suppress(ValueError):
                         decorators.remove(deco)
                         saya.broadcast.getListener(cube.content).decorators.remove(deco)
+
+
+def inject(decorator: Decorator):
+    _process(decorator, True)
+
+
+def uninject(decorator: Decorator):
+    _process(decorator, False)
