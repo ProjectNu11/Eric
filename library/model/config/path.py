@@ -30,3 +30,6 @@ class PathConfig:
 
     data: str = str(Path("data"))
     """ 数据文件目录 """
+
+    config: str = str(Path("config"))
+    """ 模块配置文件目录 """

@@ -4,7 +4,24 @@ from pathlib import Path
 from kayaku import create
 from pydantic import BaseModel, validator
 
-from library.model.config.eric import EricConfig
+from library.model.config.function import FunctionConfig
+from library.model.config.path import PathConfig, DataPathConfig
+
+
+class ModuleAdvancedSetting(BaseModel):
+    """模块高级设置"""
+
+    enable_by_default: bool = create(FunctionConfig).default
+    """默认启用"""
+
+    allow_disable: bool = True
+    """允许禁用"""
+
+    allow_unload: bool = True
+    """允许卸载"""
+
+    hidden: bool = False
+    """隐藏模块"""
 
 
 class ModuleMetadata(BaseModel):
@@ -13,41 +30,41 @@ class ModuleMetadata(BaseModel):
     name: str
     """ 模块名称 """
 
-    version: str
+    version: str = "0.1.0"
     """ 模块版本 """
 
     pack: str
     """ 模块包名 """
 
-    authors: list[str]
+    authors: list[str] = []
     """ 模块作者 """
 
-    description: str
+    description: str = ""
     """ 模块描述 """
-
-    icon: None | str = None
-    """ 模块图标 """
 
     category: list[str] = []
     """ 模块分类 """
 
+    advanced: ModuleAdvancedSetting = ModuleAdvancedSetting()
+    """ 模块高级设置 """
+
     @validator("version")
     def _module_version_validator(cls, version: str):
         """模块版本验证器"""
-        if not re.match(r"^\d+\.\d+\.\d+$", version):
+        if not re.match(r"^\d+\.\d+\.[\da-zA-Z]+$", version):
             raise ValueError("版本号不符合规范")
         return version
 
     @property
     def clean_name(self) -> str:
         """模块名称（去除前缀）"""
-        return self.name.split(".")[-1]
+        return self.pack.split(".")[-1]
 
     @property
     def data_path(self) -> Path:
         """模块数据目录"""
-        config: EricConfig = create(EricConfig)
-        _data_path = config.path.data.module / self.pack
+        config: DataPathConfig = create(DataPathConfig)
+        _data_path = Path(config.module) / self.pack
         if not _data_path.exists():
             _data_path.mkdir(parents=True)
         return _data_path
@@ -55,5 +72,8 @@ class ModuleMetadata(BaseModel):
     @property
     def config_path(self) -> Path:
         """模块配置文件目录"""
-        config: EricConfig = create(EricConfig)
-        return config.path.data.module / self.pack
+        config: PathConfig = create(PathConfig)
+        _config_path = Path(config.config) / "module" / self.pack
+        if not _config_path.exists():
+            _config_path.mkdir(parents=True)
+        return _config_path
