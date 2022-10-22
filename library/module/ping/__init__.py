@@ -8,9 +8,9 @@ from graia.ariadne.message.parser.twilight import (
     ElementMatch,
     ElementResult,
 )
+from graia.ariadne.util.saya import listen, dispatch
 from graia.saya import Channel
-from graia.saya.builtins.broadcast import ListenerSchema
-from graiax.fastapi import RouteSchema
+from graiax.fastapi.saya import route
 from loguru import logger
 
 from library.depend.distribute import Distribution
@@ -21,21 +21,15 @@ from library.util.dispatcher import PrefixMatch
 channel = Channel.current()
 
 
-@channel.use(RouteSchema("/ping", methods=["GET"], response_model=GeneralResponse))
+@route.get("/ping", response_model=GeneralResponse)
 async def ping_web():
     logger.success("[Ping] 收到来自 Web 的 Ping 请求")
     return {"code": 200, "message": "pong"}
 
 
-@channel.use(
-    ListenerSchema(
-        listening_events=[GroupMessage, FriendMessage],
-        inline_dispatchers=[
-            Twilight(
-                ElementMatch(At, optional=True) @ "at", PrefixMatch(), FullMatch("ping")
-            )
-        ],
-    )
+@listen(GroupMessage, FriendMessage)
+@dispatch(
+    Twilight(ElementMatch(At, optional=True) @ "at", PrefixMatch(), FullMatch("ping"))
 )
 @timer(channel.module)
 async def ping_message(app: Ariadne, event: MessageEvent, at: ElementResult):
