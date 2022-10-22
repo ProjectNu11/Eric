@@ -15,6 +15,7 @@ from loguru import logger
 
 from library.depend.distribute import Distribution
 from library.model.response import GeneralResponse
+from library.util.decorator import timer
 from library.util.dispatcher import PrefixMatch
 
 channel = Channel.current()
@@ -36,6 +37,7 @@ async def ping_web():
         ],
     )
 )
+@timer(channel.module)
 async def ping_message(app: Ariadne, event: MessageEvent, at: ElementResult):
     if at.matched and at.result.target != app.account:
         return
