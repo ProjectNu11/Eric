@@ -9,3 +9,6 @@ class ManagerConfig:
 
     plugin_repo: list[str] = field(default_factory=list)
     """ 插件仓库 """
+
+    auto_update: bool = True
+    """ 自动更新 """

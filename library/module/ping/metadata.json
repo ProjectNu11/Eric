@@ -1,6 +1,6 @@
 {
     "name": "Ping",
-    "version": "0.0.1b",
+    "version": "0.0.1",
     "pack": "library.module.ping",
     "authors": [
         "nullqwertyuiop"

@@ -6,6 +6,7 @@ from loguru import logger
 from library.model.config.database import MySQLConfig, DatabaseConfig
 from library.model.config.eric import EricConfig
 from library.model.config.path import DataPathConfig, PathConfig
+from library.model.config.service.manager import ManagerConfig
 
 
 def _validate_mysql_config():
@@ -68,9 +69,17 @@ def _validate_eric_config():
         raise ValueError("日志保留天数不能小于 0")
 
 
+def _validate_plugin_repo():
+    cfg: ManagerConfig = create(ManagerConfig)
+    for repo in cfg.plugin_repo:
+        if not repo.startswith("github") or not repo.startswith("http"):
+            raise ValueError(f"仅支持 GitHub 和 HTTP 协议的插件仓库，不支持 {repo}")
+
+
 def validate_config():
     _validate_mysql_config()
     _validate_database_link()
     _validate_path()
     _validate_eric_config()
+    _validate_plugin_repo()
     logger.success("配置验证通过")

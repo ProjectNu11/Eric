@@ -51,7 +51,7 @@ class ModuleMetadata(BaseModel):
     @validator("version")
     def _module_version_validator(cls, version: str):
         """模块版本验证器"""
-        if not re.match(r"^\d+\.\d+\.[\da-zA-Z]+$", version):
+        if not re.match(r"^\d+\.\d+\.\d+$", version):
             raise ValueError("版本号不符合规范")
         return version
 
