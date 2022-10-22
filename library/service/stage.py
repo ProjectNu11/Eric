@@ -1,7 +1,7 @@
 import sys
 
-from creart import create
-from kayaku import create as kayaku_create
+from creart import it
+from kayaku import create
 from fastapi import FastAPI
 from graia.amnesia.builtins.uvicorn import UvicornService
 from graia.ariadne import Ariadne
@@ -30,7 +30,7 @@ def initialize():
     setup_logger()
     initialize_config()
 
-    eric_config: EricConfig = kayaku_create(EricConfig)
+    eric_config: EricConfig = create(EricConfig)
     ariadne: list[Ariadne] = [
         Ariadne(
             config(
@@ -59,18 +59,18 @@ def initialize():
             else None,
         )
     )
-    Ariadne.launch_manager.add_service(FastAPIService(create(FastAPI)))
+    Ariadne.launch_manager.add_service(FastAPIService(it(FastAPI)))
 
-    fastapi_config: FastAPIConfig = kayaku_create(FastAPIConfig)
+    fastapi_config: FastAPIConfig = create(FastAPIConfig)
     Ariadne.launch_manager.add_service(
         UvicornService(host=fastapi_config.host, port=fastapi_config.port)
     )
     Ariadne.launch_manager.add_service(EricService())
 
-    create(GraiaScheduler)
-    saya = create(Saya)
+    it(GraiaScheduler)
+    saya = it(Saya)
     saya.install_behaviours(
-        create(BroadcastBehaviour),
-        create(GraiaSchedulerBehaviour),
-        FastAPIBehaviour(create(FastAPI)),
+        it(BroadcastBehaviour),
+        it(GraiaSchedulerBehaviour),
+        FastAPIBehaviour(it(FastAPI)),
     )

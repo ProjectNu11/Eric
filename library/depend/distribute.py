@@ -1,6 +1,6 @@
 from typing import NoReturn
 
-from creart import create
+from creart import it
 from graia.ariadne import Ariadne
 from graia.ariadne.message.element import Source
 from graia.ariadne.model import Group, Member
@@ -23,7 +23,7 @@ class Distribution:
                 if show_log:
                     logger.warning(f"[Distribution] 由已登录账号 {member.id} 触发，停止分发")
                 raise ExecutionStop()
-            p_group = create(PublicGroup)
+            p_group = it(PublicGroup)
             if p_group.need_distribute(group, app.account) and p_group.execution_stop(
                 group, app.account, source
             ):

@@ -77,17 +77,11 @@ class ProcessTimeStat(Base):
     time = Column(DateTime, nullable=False)
     """ 调用时间 """
 
-    field = Column(BIGINT, nullable=False)
-    """ 聊天区域"""
-
-    supplicant = Column(BIGINT, nullable=False)
-    """ 调用者 """
+    module = Column(String(length=4000), nullable=False)
+    """ 模块名 """
 
     function = Column(String(length=4000), nullable=False)
     """ 调用功能 """
 
     time_used = Column(Float, nullable=False)
     """ 耗时 """
-
-    result = Column(String(length=4000), nullable=False)
-    """ 结果 """

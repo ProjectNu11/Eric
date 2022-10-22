@@ -1,4 +1,4 @@
-from creart import create
+from creart import it
 from graia.ariadne import Ariadne
 from graia.ariadne.event.message import ActiveGroupMessage, ActiveFriendMessage
 from graia.ariadne.exception import AccountMuted, UnknownTarget, RemoteException
@@ -91,7 +91,7 @@ async def send_message(
                 logger.error(f"账号 {account} 发送消息时出现异常: {e}")
         if resend and is_group:
             if (
-                available_account := create(PublicGroup).get_accounts(group=target)
+                available_account := it(PublicGroup).get_accounts(group=target)
                 - excluded_account
             ):
                 return await send_message(

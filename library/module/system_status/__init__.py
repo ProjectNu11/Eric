@@ -11,6 +11,7 @@ from graia.saya import Channel
 from graia.saya.builtins.broadcast import ListenerSchema
 
 from library.depend.distribute import Distribution
+from library.model.config.eric import EricConfig
 from library.model.core import EricCore
 from library.util.dispatcher import PrefixMatch
 from library.util.message import send_message
@@ -28,6 +29,7 @@ channel = Channel.current()
 )
 async def system_status(app: Ariadne, event: MessageEvent):
     core: EricCore = it(EricCore)
+    config: EricConfig = it(EricConfig)
 
     mem = psutil.virtual_memory()
     total_memery = round(mem.total / 1024**3, 2)
@@ -35,6 +37,7 @@ async def system_status(app: Ariadne, event: MessageEvent):
         event.sender.group if isinstance(event, GroupMessage) else event.sender,
         MessageChain(
             Plain(
+                f"登录账号：{len(config.accounts)} 个\n"
                 f"启动时间：{core.launch_time.strftime('%Y-%m-%d, %H:%M:%S')}\n"
                 f"已运行时间：{seconds_to_string((datetime.now() - core.launch_time).seconds)}\n"
                 "内存相关：\n    "

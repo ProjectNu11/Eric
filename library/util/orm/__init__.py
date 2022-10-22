@@ -146,13 +146,13 @@ class AsyncORM(AsyncEngine):
         async with self.engine.begin() as conn:
             await conn.run_sync(self.Base.metadata.drop_all)
 
-    async def add(self, table, dt):
+    async def add(self, table, **dt):
         """
         向表添加数据。
 
         Args:
             table: 要添加到的表。
-            dt: 数据。
+            **dt: 数据。
         """
 
         async with self.async_session() as session:

@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 
 import kayaku
-from creart import create
+from creart import it
 from graia.ariadne import Ariadne
 from graia.saya import Saya
 
@@ -19,7 +19,7 @@ if __name__ == "__main__":
     kayaku.save_all()
 
     # TODO Placeholder for actual module requiring
-    saya: Saya = create(Saya)
+    saya: Saya = it(Saya)
     with saya.module_context():
         saya.require("library.module.ping")
         saya.require("library.module.system_status")

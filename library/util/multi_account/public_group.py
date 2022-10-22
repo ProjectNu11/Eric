@@ -1,3 +1,4 @@
+import contextlib
 import time
 from abc import ABC
 from typing import Type
@@ -23,15 +24,14 @@ class PublicGroup:
     async def data_init(self):
         """初始化数据"""
         config = create(EricConfig)
-        for account in config.accounts:
-            app = Ariadne.current(account)
-            for group in await app.get_group_list():
-                if group.id in self.data:
-                    self.data[group.id].add(app.account)
-                else:
-                    self.data[group.id] = {
-                        app.account,
-                    }
+        with contextlib.suppress(Exception):
+            for account in config.accounts:
+                app = Ariadne.current(account)
+                for group in await app.get_group_list():
+                    if group.id in self.data:
+                        self.data[group.id].add(app.account)
+                    else:
+                        self.data[group.id] = {app.account}
 
     def add_group(self, group: Group | int, account: int):
         """
@@ -45,9 +45,7 @@ class PublicGroup:
         if group in self.data:
             self.data[group].add(account)
         else:
-            self.data[group] = {
-                account,
-            }
+            self.data[group] = {account}
 
     def remove_group(self, group: Group | int, account: int):
         """
