@@ -15,11 +15,17 @@ from library.model.config.service.manager import ManagerConfig
 from library.model.config.state import ModuleState
 
 
-def is_first_run():
-    return not (Path("config") / "config.jsonc").is_file()
+FIRST_RUN: bool = False
+
+
+def first_run_check():
+    global FIRST_RUN
+    with (Path("config") / "config.jsonc").open("r", encoding="utf-8") as f:
+        FIRST_RUN = f.read() == ""
 
 
 def initialize_config():
+    first_run_check()
     create(MySQLConfig)
     create(DatabaseConfig)
     create(FrequencyLimitConfig)
@@ -30,7 +36,7 @@ def initialize_config():
     create(FastAPIConfig)
     create(ManagerConfig)
     create(EricConfig)
-    if is_first_run():
+    if FIRST_RUN:
         kayaku.bootstrap()
         kayaku.save_all()
         logger.success("已写入默认配置文件，请修改后重启")
