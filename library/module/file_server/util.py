@@ -1,0 +1,219 @@
+import uuid
+from datetime import datetime, timedelta
+from hashlib import md5
+from pathlib import Path
+from typing import Generator, AsyncGenerator, Any
+
+import aiofiles
+from creart import it
+from graia.saya import Channel
+from kayaku import create
+from loguru import logger
+from sqlalchemy import select
+
+from library.model.config.service.fastapi import FastAPIConfig
+from library.module.file_server.vars import ENTRYPOINT
+from library.module.file_server.table import FileServer
+from library.util.module import Modules
+from library.util.orm import orm
+
+channel = Channel.current()
+
+DATA_PATH = it(Modules).get(channel.module).data_path
+DEFAULT_LIFESPAN = 60 * 60 * 24 * 7
+
+
+async def _serve_file_keep_original(file: Path, file_id: str) -> str:
+    logger.debug(f"[FileServer] 正在复制文件 -> {file_id}")
+    async with aiofiles.open(file, "rb") as f:
+        async with aiofiles.open(Path(DATA_PATH, file_id), "ab") as out:
+            while chunk := await f.read(10 * 1024 * 1024):
+
+                await out.write(chunk)
+    return file_id
+
+
+async def _get_hash_by_path(file: Path) -> str:
+    async with aiofiles.open(file, "rb") as f:
+        return md5(await f.read(10 * 1024 * 1024)).hexdigest()
+
+
+async def _serve_file_by_path(
+    file: Path, file_id: str, keep_original: bool
+) -> tuple[str, str]:
+    hashed = await _get_hash_by_path(file)
+    if f := await compare_hash(hashed):
+        raise FileExistsError(f)
+    if keep_original:
+        return await _serve_file_keep_original(file, file_id), hashed
+    logger.debug(f"[FileServer] 正在移动文件 -> {file_id}")
+    file.rename(Path(DATA_PATH, file_id))
+    return file_id, hashed
+
+
+async def compare_hash(hashed: str) -> str | None:
+    return (
+        result[0]
+        if (
+            result := await orm.fetchone(
+                select(FileServer.uuid).where(FileServer.hash == hashed)
+            )
+        )
+        else None
+    )
+
+
+async def _write_and_compare(file_io, hash_obj: Any, chunk) -> str:
+    size = 10 * 1024 * 1024 - len(hash_obj.to_hash)
+    if size > 0:
+        hash_obj.to_hash += chunk[:size]
+    if f := await compare_hash(md5(hash_obj.to_hash).hexdigest()):
+        raise FileExistsError(f)
+    await file_io.write(chunk)
+    return md5(hash_obj.to_hash).hexdigest()
+
+
+async def _serve_file_by_bytes(
+    file: bytes | Generator[bytes, None, None] | AsyncGenerator[bytes, None],
+    file_id: str,
+) -> tuple[str, str]:
+    logger.debug(f"[FileServer] 正在写入文件 -> {file_id}")
+    async with aiofiles.open(Path(DATA_PATH, file_id), "ab") as out:
+        obj = object()
+        obj.to_hash = b""
+        if isinstance(file, bytes):
+            hashed = await _write_and_compare(out, obj, file)
+        elif isinstance(file, Generator):
+            for chunk in file:
+                hashed = await _write_and_compare(out, obj, chunk)
+        else:
+            async for chunk in file:
+                hashed = await _write_and_compare(out, obj, chunk)
+    return file_id, hashed
+
+
+async def insert(
+    file_id: str, file_name: str, serve_time: datetime, lifespan: int, hash_value: str
+):
+    await orm.add(
+        FileServer,
+        time=serve_time,
+        uuid=file_id,
+        filename=file_name,
+        lifespan=lifespan,
+        hash=hash_value,
+    )
+
+
+async def delete_file(file_id: str):
+    file = Path(DATA_PATH, file_id)
+    while file.is_file():
+        file.unlink()
+    await deactivate_file(file_id)
+
+
+async def deactivate_file(file_id: str):
+    if await file_registered(file_id):
+        await orm.insert_or_update(
+            FileServer, [FileServer.uuid == file_id], available=False
+        )
+
+
+async def renew_file_lifespan(file_id: str, lifespan: int):
+    if await file_registered(file_id):
+        await orm.insert_or_update(
+            FileServer,
+            [FileServer.uuid == file_id],
+            time=datetime.now(),
+            lifespan=lifespan,
+        )
+
+
+async def _write(
+    file: bytes | Generator[bytes, None, None] | AsyncGenerator[bytes, None] | Path,
+    file_id: str,
+    keep_original: bool,
+) -> tuple[str, str]:
+    if isinstance(file, Path) and file.is_file():
+        return await _serve_file_by_path(file, file_id, keep_original)
+    return await _serve_file_by_bytes(file, file_id)
+
+
+async def get_uuid() -> str:
+    file_id = str(uuid.uuid4())
+    while file_exist(file_id) or await file_registered(file_id):
+        file_id = str(uuid.uuid4())
+    return file_id
+
+
+async def serve_file(
+    file: bytes | Generator[bytes, None, None] | AsyncGenerator[bytes, None] | Path,
+    file_name: str,
+    lifespan: int = DEFAULT_LIFESPAN,
+    *,
+    keep_original: bool = True,
+) -> str | None:
+    file_id = await get_uuid()
+    try:
+        _, hashed = await _write(file, file_id, keep_original)
+        await insert(file_id, file_name, datetime.now(), lifespan, hashed)
+        return file_id
+    except FileExistsError as err:
+        logger.warning(f"[FileServer] 文件已存在 -> {err.args[0]}")
+        await delete_file(file_id)
+        await renew_file_lifespan(err.args[0], lifespan)
+        return err.args[0]
+    except Exception as err:
+        logger.error(f"[FileServer] 保存文件时发生错误 -> {err}")
+        await delete_file(file_id)
+        logger.debug(f"[FileServer] 已回滚文件 -> {file_id}")
+        return
+
+
+def file_exist(file_id: str) -> bool:
+    return Path(DATA_PATH, file_id).is_file()
+
+
+async def file_registered(file_id: str) -> bool:
+    return bool(
+        await orm.fetchone(select(FileServer).where(FileServer.uuid == file_id))
+    )
+
+
+async def get_filename(file_id: str) -> str:
+    return (
+        await orm.fetchone(
+            select(FileServer.filename).where(FileServer.uuid == file_id)
+        )
+    )[0]
+
+
+async def cleanup():
+    if files := await orm.all(
+        select(FileServer.uuid, FileServer.time, FileServer.lifespan).where(
+            FileServer.available
+        )
+    ):
+        files = [
+            file_id
+            for file_id, serve_time, lifespan in files
+            if datetime.now() - serve_time > timedelta(seconds=lifespan)
+        ]
+        logger.debug("[FileServer] 正在清理过期文件")
+        for file in files:
+            await delete_file(file)
+        logger.debug(f"[FileServer] 已清理过期文件 {len(files)} 个")
+    if files := await orm.all(select(FileServer.uuid).where(not FileServer.available)):
+        files = [
+            file for file_id in files if (file := Path(DATA_PATH, file_id)).is_file()
+        ]
+        logger.debug("[FileServer] 正在清理无效文件")
+        for file in files:
+            while file.is_file():
+                file.unlink()
+        logger.debug(f"[FileServer] 已清理无效文件 {len(files)} 个")
+
+
+def get_link(file_id: str) -> str:
+    fastapi_cfg: FastAPIConfig = create(FastAPIConfig)
+    return f"{fastapi_cfg.link}{ENTRYPOINT.format(file_id=file_id)}"
