@@ -26,7 +26,7 @@ def iter_metadata(
         except ValueError as e:
             logger.error(e)
             continue
-        yield update_metadata(file) if no_update else parse_metadata(file)
+        yield parse_metadata(file) if no_update else update_metadata(file)
 
 
 def list_metadata(path: Path, *, no_update: bool = False) -> list[ModuleMetadata]:

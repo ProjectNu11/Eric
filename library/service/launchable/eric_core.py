@@ -16,7 +16,7 @@ from library.model.core import EricCore
 from library.service.updater import check_update, perform_update
 from library.util.inject import inject, uninject
 from library.util.module import Modules
-from library.util.module.get_all import list_module
+from library.util.module.get import list_module
 from library.util.module.require import require
 from library.util.multi_account.public_group import PublicGroup
 from library.util.orm import db_init

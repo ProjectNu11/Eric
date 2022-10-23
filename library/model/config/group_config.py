@@ -3,7 +3,7 @@ from json import JSONDecodeError
 from pathlib import Path
 from typing import Type
 
-from creart import AbstractCreator, CreateTargetInfo, exists_module
+from creart import AbstractCreator, CreateTargetInfo, exists_module, it
 from kayaku import create
 from pydantic import BaseModel, ValidationError
 from typing_extensions import Self
@@ -11,6 +11,7 @@ from typing_extensions import Self
 from library.model.config.function import FunctionConfig
 from library.model.config.path import PathConfig
 from library.model.module import ModuleMetadata
+from library.util.module import Modules
 
 func_cfg: FunctionConfig = create(FunctionConfig)
 path_cfg: PathConfig = create(PathConfig)
@@ -27,15 +28,20 @@ class GroupSwitch(BaseModel):
 
     def get(self, module: str | ModuleMetadata) -> bool:
         """获取开关值"""
-        if isinstance(module, ModuleMetadata):
-            module = module.pack
-        return self.value.get(module, self.default)
+        if isinstance(module, str):
+            module = it(Modules).get(module)
+        if module.advanced.enable_by_default:
+            return True
+        return self.value.get(module.pack, self.default)
 
     def update(self, module: str | ModuleMetadata, value: bool):
         """更新开关值"""
-        if isinstance(module, ModuleMetadata):
-            module = module.pack
-        self.value[module] = value
+        if isinstance(module, str):
+            module = it(Modules).get(module)
+        if module.advanced.allow_disable or value:
+            self.value[module.pack] = value
+        else:
+            raise NotImplementedError(f"模块 {module.pack} 不允许被禁用")
 
     def set_default(self, value: bool):
         """设置默认开关值"""

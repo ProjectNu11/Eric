@@ -17,7 +17,7 @@ class ModuleState:
 
     def initialize(self):
         from library.model.config.path import PathConfig
-        from library.util.module.get_all import iter_metadata
+        from library.util.module.get import iter_metadata
 
         _path_config: PathConfig = create(PathConfig)
         for path in [Path("library/module"), Path(_path_config.module)]:

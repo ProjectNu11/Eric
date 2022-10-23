@@ -1,0 +1,41 @@
+import subprocess
+from pathlib import Path
+from typing import NoReturn
+
+from kayaku import create
+from loguru import logger
+
+from library.model.config.eric import EricConfig
+from library.model.module import ModuleMetadata
+
+
+def _get_requirements_by_module(module: ModuleMetadata) -> list[str]:
+    requirements_path = Path(
+        Path().resolve(), *module.pack.split("."), "requirements.txt"
+    )
+    return (
+        requirements_path.read_text().splitlines()
+        if requirements_path.is_file()
+        else []
+    )
+
+
+def install_dependency(
+    module: ModuleMetadata = None, requirements: list[str] = None
+) -> NoReturn:
+    if not module and not requirements:
+        raise ValueError("模块或依赖列表必须填写")
+    if module:
+        requirements = _get_requirements_by_module(module)
+    config: EricConfig = create(EricConfig)
+    command = ["pip", "install"] if config.environment == "pip" else ["poetry", "add"]
+    process = subprocess.Popen(
+        [*command, *requirements],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    stdout, stderr = process.communicate()
+    if info := stdout.decode("utf-8"):
+        logger.info(info)
+    if err := stderr.decode("utf-8"):
+        logger.error(err)
