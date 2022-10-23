@@ -35,7 +35,7 @@ async def ping_web():
 async def ping_message(app: Ariadne, event: MessageEvent, at: ElementResult):
     if at.matched and at.result.target != app.account:
         return
-    if Distribution.self_trigger(event.sender.id):
+    if Distribution.is_self(event.sender.id):
         logger.warning(f"[Ping] 由已登录账号 {event.sender.id} 触发，停止执行")
         return
     await app.send_message(

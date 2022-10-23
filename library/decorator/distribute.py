@@ -19,7 +19,7 @@ class Distribution:
         async def judge(
             app: Ariadne, group: Group, member: Member, source: Source
         ) -> NoReturn:
-            if cls.self_trigger(member):
+            if cls.is_self(member):
                 if show_log:
                     logger.warning(f"[Distribution] 由已登录账号 {member.id} 触发，停止分发")
                 raise ExecutionStop()
@@ -36,5 +36,5 @@ class Distribution:
         return Depend(judge)
 
     @staticmethod
-    def self_trigger(member: Member | int) -> bool:
+    def is_self(member: Member | int) -> bool:
         return int(member) in kayaku_create(EricConfig).accounts
