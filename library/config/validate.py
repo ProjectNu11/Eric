@@ -1,3 +1,4 @@
+import re
 from pathlib import Path
 
 from kayaku import create
@@ -6,6 +7,7 @@ from loguru import logger
 from library.model.config.database import MySQLConfig, DatabaseConfig
 from library.model.config.eric import EricConfig
 from library.model.config.path import DataPathConfig, PathConfig
+from library.model.config.service.fastapi import FastAPIConfig
 from library.model.config.service.manager import ManagerConfig
 
 
@@ -76,10 +78,21 @@ def _validate_plugin_repo():
             raise ValueError(f"仅支持 GitHub 和 HTTP 协议的插件仓库，不支持 {repo}")
 
 
+def _validate_fastapi_config():
+    cfg: FastAPIConfig = create(FastAPIConfig)
+    if not re.match(
+        r"^((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)$",
+        cfg.host,
+    ):
+        raise ValueError("FastAPI 服务器地址不合法")
+    cfg.domain = cfg.domain.rstrip("/")
+
+
 def validate_config():
     _validate_mysql_config()
     _validate_database_link()
     _validate_path()
     _validate_eric_config()
     _validate_plugin_repo()
+    _validate_fastapi_config()
     logger.success("配置验证通过")

@@ -4,6 +4,7 @@ from typing import Type
 from creart import AbstractCreator, CreateTargetInfo, exists_module
 from fastapi import FastAPI
 from kayaku import create
+from kayaku.backend.types import JWrapper
 
 from library.model.config.service.fastapi import FastAPIConfig
 
@@ -18,4 +19,9 @@ class FastAPICreator(AbstractCreator, ABC):
     @staticmethod
     def create(_create_type: Type[FastAPI]) -> FastAPI:
         config: FastAPIConfig = create(FastAPIConfig)
-        return FastAPI(**config.params)
+        return FastAPI(
+            **{
+                k: v.value if isinstance(v, JWrapper) else v
+                for k, v in config.__dict__.get("params", {}).items()
+            }
+        )
