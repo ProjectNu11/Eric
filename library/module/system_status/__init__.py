@@ -9,10 +9,13 @@ from graia.ariadne.message.element import Plain
 from graia.ariadne.message.parser.twilight import Twilight, FullMatch
 from graia.saya import Channel
 from graia.saya.builtins.broadcast import ListenerSchema
+from kayaku import create
 
 from library.decorator.distribute import Distribution
+from library.decorator.permission import Permission
 from library.model.config.eric import EricConfig
 from library.model.core import EricCore
+from library.model.permission import UserPerm
 from library.util.dispatcher import PrefixMatch
 from library.util.message import send_message
 from library.util.misc import seconds_to_string
@@ -24,12 +27,12 @@ channel = Channel.current()
     ListenerSchema(
         listening_events=[GroupMessage, FriendMessage],
         inline_dispatchers=[Twilight(PrefixMatch(), FullMatch("sys"))],
-        decorators=[Distribution.distribute()],
+        decorators=[Distribution.distribute(), Permission.require(UserPerm.BOT_ADMIN)],
     )
 )
 async def system_status(app: Ariadne, event: MessageEvent):
     core: EricCore = it(EricCore)
-    config: EricConfig = it(EricConfig)
+    config: EricConfig = create(EricConfig)
 
     mem = psutil.virtual_memory()
     total_memery = round(mem.total / 1024**3, 2)
