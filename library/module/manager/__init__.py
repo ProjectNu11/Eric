@@ -18,8 +18,10 @@ from graia.saya import Channel
 
 from library.decorator.distribute import Distribution
 from library.decorator.mention import MentionMeOptional
+from library.decorator.permission import Permission
 from library.model.config.group_config import GroupConfig
 from library.model.module import Module
+from library.model.permission import UserPerm
 from library.module.manager.util import search_module
 from library.util.dispatcher import PrefixMatch
 from library.util.message import send_message
@@ -39,7 +41,11 @@ STATE_PATTERN = re.compile(r"""(".+?"|'.+?'|[^ "']+)""")
         WildcardMatch() @ "content",
     )
 )
-@decorate(MentionMeOptional.check(), Distribution.distribute())
+@decorate(
+    MentionMeOptional.check(),
+    Distribution.distribute(),
+    Permission.require(UserPerm.ADMINISTRATOR),
+)
 async def manager_change_group_module_state(
     app: Ariadne, event: MessageEvent, action: RegexResult, content: RegexResult
 ):

@@ -31,6 +31,9 @@ class UserPerm(Enum):
     BOT_OWNER = ("BOT_OWNER", 5)
     """ 机器人所有者 """
 
+    INFINITE = ("INFINITE", 999)
+    """ 无限权限，仅用于测试 """
+
     def __lt__(self, other: "UserPerm"):
         return self.value[1] < other.value[1]
 
