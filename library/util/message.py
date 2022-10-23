@@ -104,6 +104,7 @@ async def send_message(
                     quote=quote,
                     excluded_account=excluded_account | {account},
                 )
+            logger.error("无可用账号发送消息")
         if suppress:
             return None
         raise e

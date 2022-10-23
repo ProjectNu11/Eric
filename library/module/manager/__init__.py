@@ -58,10 +58,12 @@ async def manager_change_group_module_state(
         modules: list[Module] = [
             mod for module in modules if (mod := search_module(module))
         ]
-        switch = it(GroupConfig).get_switch(int(event.sender.group))
+        group_cfg: GroupConfig = it(GroupConfig)
+        switch = group_cfg.get_switch(int(event.sender.group))
         for module in modules:
             try:
                 switch.update(module, action == "打开")
+                group_cfg.save()
                 success += 1
             except NotImplementedError:
                 failed.append(module.name)
