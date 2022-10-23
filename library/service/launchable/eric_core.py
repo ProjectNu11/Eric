@@ -8,6 +8,7 @@ from launart import Launart, Launchable
 from loguru import logger
 
 from library.decorator.core import CoreInitCheck
+from library.model.config.group_config import GroupConfig
 from library.model.config.path import PathConfig
 from library.model.config.service.manager import ManagerConfig
 from library.model.config.state import ModuleState
@@ -54,6 +55,7 @@ class EricService(Launchable):
 
             kayaku.bootstrap()
             kayaku.save_all()
+            it(GroupConfig).save()
             logger.success("[EricService] 已保存配置文件")
 
         async with self.stage("blocking"):
@@ -69,6 +71,7 @@ class EricService(Launchable):
 
         async with self.stage("cleanup"):
             kayaku.save_all()
+            it(GroupConfig).save()
             logger.success("[EricService] 已保存配置文件")
 
     @staticmethod
