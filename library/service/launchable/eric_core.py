@@ -10,11 +10,12 @@ from loguru import logger
 from library.decorator.core import CoreInitCheck
 from library.model.config.path import PathConfig
 from library.model.config.service.manager import ManagerConfig
+from library.model.config.state import ModuleState
 from library.model.core import EricCore
 from library.service.updater import check_update, perform_update
 from library.util.inject import inject, uninject
-from library.util.module.get_all import list_all
-from library.util.module.require import require_by_metadata
+from library.util.module.get_all import list_module
+from library.util.module.require import require
 from library.util.multi_account.public_group import PublicGroup
 from library.util.orm import db_init
 
@@ -33,13 +34,14 @@ class EricService(Launchable):
     async def launch(self, _mgr: Launart):
         _path_config: PathConfig = create(PathConfig)
         _lib_module_path = Path("library/module")
-        _lib_modules = list_all(_lib_module_path)
-        _user_modules = list_all(Path(_path_config.module))
+        _lib_modules = list_module(_lib_module_path)
+        _user_modules = list_module(Path(_path_config.module))
         logger.success(
             f"[EricService] 已校验 {len(_lib_modules) + len(_user_modules)} 个模块"
         )
-        require_by_metadata(_lib_modules)
-        require_by_metadata(_user_modules)
+        create(ModuleState).initialize()
+        require(_lib_modules)
+        require(_user_modules)
 
         # Inject CoreInitCheck to all modules, ensure that the core is initialized
         inject(CoreInitCheck())
@@ -47,6 +49,10 @@ class EricService(Launchable):
         async with self.stage("preparing"):
             await db_init()
             logger.success("[EricService] 数据库初始化完成")
+
+            kayaku.bootstrap()
+            kayaku.save_all()
+            logger.success("[EricService] 已保存配置文件")
 
         async with self.stage("blocking"):
             await it(PublicGroup).data_init()
@@ -61,7 +67,7 @@ class EricService(Launchable):
 
         async with self.stage("cleanup"):
             kayaku.save_all()
-            logger.info("[EricService] 已保存配置文件")
+            logger.success("[EricService] 已保存配置文件")
 
     @staticmethod
     async def check_update():

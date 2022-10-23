@@ -48,6 +48,9 @@ class ModuleMetadata(BaseModel):
     advanced: ModuleAdvancedSetting = ModuleAdvancedSetting()
     """ 模块高级设置 """
 
+    def __hash__(self):
+        return hash(f"_ModuleMetadata:{self.pack}")
+
     @validator("version")
     def _module_version_validator(cls, version: str):
         """模块版本验证器"""
@@ -77,3 +80,13 @@ class ModuleMetadata(BaseModel):
         if not _config_path.exists():
             _config_path.mkdir(parents=True)
         return _config_path
+
+
+class Module(ModuleMetadata):
+    """模块"""
+
+    loaded: bool
+    """是否已加载"""
+
+    def __hash__(self):
+        return hash(f"_Module:{self.pack}")

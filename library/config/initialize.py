@@ -9,6 +9,7 @@ from library.model.config.function import FunctionConfig, FrequencyLimitConfig
 from library.model.config.path import PathConfig, DataPathConfig
 from library.model.config.service.fastapi import FastAPIConfig
 from library.model.config.service.manager import ManagerConfig
+from library.model.config.state import ModuleState
 
 
 def initialize_config():
@@ -18,6 +19,7 @@ def initialize_config():
     create(FunctionConfig)
     create(DataPathConfig)
     create(PathConfig)
+    create(ModuleState)
     create(FastAPIConfig)
     create(ManagerConfig)
     create(EricConfig)
