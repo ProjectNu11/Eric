@@ -28,7 +28,6 @@ async def _serve_file_keep_original(file: Path, file_id: str) -> str:
     async with aiofiles.open(file, "rb") as f:
         async with aiofiles.open(Path(DATA_PATH, file_id), "ab") as out:
             while chunk := await f.read(10 * 1024 * 1024):
-
                 await out.write(chunk)
     return file_id
 
@@ -105,10 +104,14 @@ async def insert(
     )
 
 
-async def delete_file(file_id: str):
-    file = Path(DATA_PATH, file_id)
+def ensure_unlink(file: Path):
     while file.is_file():
         file.unlink()
+
+
+async def delete_file(file_id: str):
+    file = Path(DATA_PATH, file_id)
+    ensure_unlink(file)
     await deactivate_file(file_id)
 
 
@@ -188,30 +191,49 @@ async def get_filename(file_id: str) -> str:
     )[0]
 
 
-async def cleanup():
+async def _cleanup_outdated_files():
+    logger.debug("[FileServer] 正在清理过期文件")
     if files := await orm.all(
         select(FileServer.uuid, FileServer.time, FileServer.lifespan).where(
             FileServer.available
         )
     ):
-        files = [
+        for file in [
             file_id
             for file_id, serve_time, lifespan in files
             if datetime.now() - serve_time > timedelta(seconds=lifespan)
-        ]
-        logger.debug("[FileServer] 正在清理过期文件")
-        for file in files:
+        ]:
             await delete_file(file)
-        logger.debug(f"[FileServer] 已清理过期文件 {len(files)} 个")
-    if files := await orm.all(select(FileServer.uuid).where(not FileServer.available)):
-        files = [
-            file for file_id in files if (file := Path(DATA_PATH, file_id)).is_file()
-        ]
-        logger.debug("[FileServer] 正在清理无效文件")
-        for file in files:
-            while file.is_file():
-                file.unlink()
-        logger.debug(f"[FileServer] 已清理无效文件 {len(files)} 个")
+    else:
+        files = []
+    logger.debug(f"[FileServer] 已清理过期文件 {len(files)} 个")
+
+
+async def _cleanup_invalid_files():
+    logger.debug("[FileServer] 正在清理无效文件")
+    invalid = 0
+    for file in Path(DATA_PATH).iterdir():
+        if not file.is_file():
+            continue
+        if not await orm.fetchone(
+            select(FileServer.uuid).where(FileServer.uuid == file.name)
+        ):
+            ensure_unlink(file)
+            invalid += 1
+        elif await orm.fetchone(
+            select(FileServer.uuid).where(
+                not FileServer.available, FileServer.uuid == file.name
+            )
+        ):
+            ensure_unlink(file)
+            invalid += 1
+    if invalid:
+        logger.debug(f"[FileServer] 已清理无效文件 {invalid} 个")
+
+
+async def cleanup():
+    await _cleanup_outdated_files()
+    await _cleanup_invalid_files()
 
 
 def get_link(file_id: str) -> str:
