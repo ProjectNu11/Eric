@@ -26,7 +26,9 @@ def get_current_branch(repo: Repo) -> Head:
 
 
 def get_github_repo(repo: Repo) -> str:
-    return re.search(r"(?<=github.com/).+?(?=\.git)", repo.remote().url).group()
+    remote_url = repo.remote().url
+    remote_url += "" if remote_url.endswith(".git") else ".git"
+    return re.search(r"(?<=github.com/).+?(?=\.git)", remote_url).group()
 
 
 async def get_remote_commit_sha(repo: str, branch: str) -> str:
