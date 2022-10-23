@@ -14,6 +14,7 @@ from library.model.config.state import ModuleState
 from library.model.core import EricCore
 from library.service.updater import check_update, perform_update
 from library.util.inject import inject, uninject
+from library.util.module import Modules
 from library.util.module.get_all import list_module
 from library.util.module.require import require
 from library.util.multi_account.public_group import PublicGroup
@@ -36,6 +37,7 @@ class EricService(Launchable):
         _lib_module_path = Path("library/module")
         _lib_modules = list_module(_lib_module_path)
         _user_modules = list_module(Path(_path_config.module))
+        it(Modules).add(*_lib_modules, *_user_modules)
         logger.success(
             f"[EricService] 已校验 {len(_lib_modules) + len(_user_modules)} 个模块"
         )

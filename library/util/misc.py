@@ -7,3 +7,13 @@ def seconds_to_string(seconds: int) -> str:
     if hours:
         interval_repr = f"{hours:02d} 时 {interval_repr}"
     return interval_repr
+
+
+def inflate(*obj) -> list:
+    result = []
+    for o in obj:
+        if isinstance(o, (tuple, list)):
+            result.extend(inflate(*o))
+        else:
+            result.append(o)
+    return result

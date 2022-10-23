@@ -1,6 +1,11 @@
-from typing import Callable
+import contextlib
+from abc import ABC
+from typing import Callable, Type
+
+from creart import AbstractCreator, CreateTargetInfo, exists_module
 
 from library.model.module import Module
+from library.util.module.get_all import list_module, iter_module
 
 
 class Modules:
@@ -9,11 +14,14 @@ class Modules:
     def __init__(self):
         self.__all__ = {}
 
-    def add(self, module: Module):
-        self.__all__[module.pack] = module
+    def add(self, *modules: Module):
+        for module in modules:
+            self.__all__[module.pack] = module
 
-    def remove(self, module: Module):
-        del self.__all__[module.pack]
+    def remove(self, *modules: Module):
+        with contextlib.suppress(KeyError):
+            for module in modules:
+                del self.__all__[module.pack]
 
     def get(self, pack: str) -> Module:
         return self.__all__[pack]
@@ -29,3 +37,15 @@ class Modules:
                 ]
             )
         return result
+
+
+class ModulesCreator(AbstractCreator, ABC):
+    targets = (CreateTargetInfo("library.util.module", "Modules"),)
+
+    @staticmethod
+    def available() -> bool:
+        return exists_module("library.util.module")
+
+    @staticmethod
+    def create(_create_type: Type[Modules]) -> Modules:
+        return Modules()

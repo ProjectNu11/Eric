@@ -5,17 +5,8 @@ from creart import it
 from graia.saya import Saya
 
 from library.model.module import ModuleMetadata, Module
+from library.util.misc import inflate
 from library.util.module.get_all import list_module
-
-
-def _inflate(*obj) -> list:
-    result = []
-    for o in obj:
-        if isinstance(o, (tuple, list)):
-            result.extend(_inflate(*o))
-        else:
-            result.append(o)
-    return result
 
 
 def require_by_dir(base_dir: Path):
@@ -26,7 +17,7 @@ def require_by_dir(base_dir: Path):
 
 
 def require_by_metadata(*metadata: ModuleMetadata | Iterable[ModuleMetadata]):
-    modules: list[ModuleMetadata] = _inflate(metadata)
+    modules: list[ModuleMetadata] = inflate(metadata)
     saya: Saya = it(Saya)
     with saya.module_context():
         for module in modules:
@@ -34,4 +25,4 @@ def require_by_metadata(*metadata: ModuleMetadata | Iterable[ModuleMetadata]):
 
 
 def require(*modules: Module | Iterable[Module]):
-    require_by_metadata([module for module in _inflate(modules) if module.loaded])
+    require_by_metadata([module for module in inflate(modules) if module.loaded])

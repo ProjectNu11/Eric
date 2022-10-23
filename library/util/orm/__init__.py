@@ -175,14 +175,14 @@ class AsyncORM(AsyncEngine):
 
         await self.execute(update(table).where(*condition).values(**dt))
 
-    async def insert_or_update(self, table, condition, dt):
+    async def insert_or_update(self, table, condition, **dt):
         """
         数据不存在的情况下，插入数据，否则更新数据。
 
         Args:
             table: 表名。
             condition: 条件。
-            dt: 数据。
+            **dt: 数据。
 
         Returns:
             Result: SQL 结果
