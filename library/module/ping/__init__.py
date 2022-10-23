@@ -8,12 +8,13 @@ from graia.ariadne.message.parser.twilight import (
     ElementMatch,
     ElementResult,
 )
-from graia.ariadne.util.saya import listen, dispatch
+from graia.ariadne.util.saya import listen, dispatch, decorate
 from graia.saya import Channel
 from graiax.fastapi.saya import route
 from loguru import logger
 
 from library.decorator.distribute import Distribution
+from library.decorator.switch import Switch
 from library.model.response import GeneralResponse
 from library.util.decorator import timer
 from library.util.dispatcher import PrefixMatch
@@ -31,6 +32,7 @@ async def ping_web():
 @dispatch(
     Twilight(ElementMatch(At, optional=True) @ "at", PrefixMatch(), FullMatch("ping"))
 )
+@decorate(Switch.check(channel.module))
 @timer(channel.module)
 async def ping_message(app: Ariadne, event: MessageEvent, at: ElementResult):
     if at.matched and at.result.target != app.account:

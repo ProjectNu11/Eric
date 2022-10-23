@@ -11,7 +11,7 @@ from library.model.config.group_config import GroupConfig
 
 class Switch:
     @classmethod
-    def check(cls, module: str, show_log: bool = False) -> Depend:
+    def check(cls, module: str, show_log: bool = True) -> Depend:
         async def judge(event: MessageEvent) -> NoReturn:
             field = int(event.sender.group) if isinstance(event, GroupMessage) else 0
             if not cls.get(module, field):

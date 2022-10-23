@@ -65,6 +65,9 @@ class TempBlacklistTable(Base):
     supplicant = Column(BIGINT, nullable=False)
     """ 操作者 """
 
+    duration = Column(Integer, nullable=False)
+    """ 持续时间（秒） """
+
 
 class ProcessTimeStat(Base):
     """处理时间统计"""

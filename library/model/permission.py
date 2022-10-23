@@ -1,7 +1,10 @@
 from enum import Enum
 
-from graia.ariadne.model import MemberPerm
+from graia.ariadne.model import MemberPerm, Member, Friend
+from kayaku import create
 from typing_extensions import Self
+
+from library.model.config.eric import EricConfig
 
 
 class UserPerm(Enum):
@@ -64,3 +67,18 @@ class UserPerm(Enum):
             UserPerm: UserPerm 枚举，如果无法转换则返回 MEMBER
         """
         return getattr(cls, str(perm), cls.MEMBER)
+
+    @classmethod
+    async def get(cls, supplicant: int | Member | Friend) -> Self:
+        config: EricConfig = create(EricConfig)
+        if int(supplicant) in config.owners:
+            return cls.BOT_OWNER
+
+        if isinstance(supplicant, Member):
+            return cls.from_member_perm(supplicant.permission)
+
+        # TODO Implement UserPerm.BLOCKED
+        # TODO Implement UserPerm.BOT
+        # TODO Implement UserPerm.BOT_ADMIN
+
+        return cls.MEMBER

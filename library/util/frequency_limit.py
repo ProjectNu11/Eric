@@ -1,9 +1,14 @@
+from abc import ABC
 from datetime import datetime, timedelta
+from typing import Type
 
+from creart import AbstractCreator, CreateTargetInfo, exists_module
 from graia.ariadne.model import Member, Friend, Group
 from kayaku import create
 
-from library.model.config.eric import EricConfig
+from library.model.config.function import FrequencyLimitConfig
+from library.util.orm import orm
+from library.util.orm.table import TempBlacklistTable
 
 
 class FrequencyLimit:
@@ -12,21 +17,21 @@ class FrequencyLimit:
     @property
     def flush_time(self) -> int:
         """刷新间隔（秒）"""
-        return create(EricConfig).function.frequency_limit.flush
+        return create(FrequencyLimitConfig).flush
 
     @property
     def user_max(self) -> int:
         """单用户最大请求权重，为 0 时不限制"""
-        return create(EricConfig).function.frequency_limit.user_max
+        return create(FrequencyLimitConfig).user_max
 
     @property
     def field_max(self) -> int:
         """单区域最大请求权重，为 0 时不限制"""
-        return create(EricConfig).function.frequency_limit.field_max
+        return create(FrequencyLimitConfig).field_max
 
     @property
     def global_max(self) -> int:
-        return create(EricConfig).function.frequency_limit.global_max
+        return create(FrequencyLimitConfig).global_max
 
     field: dict[int, list[tuple[int, datetime]]] = {}
     """ 聊天区域请求权重 """
@@ -34,7 +39,7 @@ class FrequencyLimit:
     supplicant: dict[int, list[tuple[int, datetime]]] = {}
     """ 用户请求权重 """
 
-    flagged: dict[int, tuple[bool, datetime]] = {}
+    flagged: dict[int, bool] = {}
     """ 被标记的用户 """
 
     def add_weight(
@@ -54,16 +59,17 @@ class FrequencyLimit:
 
         field = 0 if isinstance(field, Friend) else int(field)
         supplicant = int(supplicant)
+        log = weight, datetime.now()
 
         if field not in self.field:
-            self.field[field] = [(weight, datetime.now())]
+            self.field[field] = [log]
         else:
-            self.field[field].append((weight, datetime.now()))
+            self.field[field].append(log)
 
         if supplicant not in self.supplicant:
-            self.supplicant[supplicant] = [(weight, datetime.now())]
+            self.supplicant[supplicant] = [log]
         else:
-            self.supplicant[supplicant].append((weight, datetime.now()))
+            self.supplicant[supplicant].append(log)
 
     def cleanup(self):
         """清理过期权重"""
@@ -141,3 +147,78 @@ class FrequencyLimit:
     def check_global(self) -> bool:
         """检查全局权重是否未超出限制"""
         return self.global_max == 0 or self.get_global_weight() <= self.global_max
+
+    def notified(self, target: int | Member | Friend):
+        """
+        通知用户
+
+        Args:
+            target: 用户
+        """
+
+        self.flagged[int(target)] = True
+
+    def is_notified(self, target: int | Member | Friend) -> bool:
+        """
+        检查用户是否已被通知
+
+        Args:
+            target: 用户
+
+        Returns:
+            是否已被通知
+        """
+
+        return self.flagged[int(target)] if int(target) in self.flagged else False
+
+    async def blacklist_user(self, target: int | Member | Friend):
+        """
+        将用户加入黑名单
+
+        Args:
+            target: 用户
+        """
+
+        self.flagged[int(target)] = False
+        await orm.insert_or_update(
+            TempBlacklistTable,
+            [TempBlacklistTable.target == int(target)],
+            field=-1,
+            target=int(target),
+            time=datetime.now(),
+            reason="频率限制",
+            supplicant=0,
+            duration=60 * 60,
+        )
+
+    async def blacklist_field(self, target: int | Group):
+        """
+        将聊天区域加入黑名单
+
+        Args:
+            target: 聊天区域
+        """
+
+        self.flagged[int(target)] = False
+        await orm.insert_or_update(
+            TempBlacklistTable,
+            [TempBlacklistTable.field == int(target)],
+            field=int(target),
+            target=-1,
+            time=datetime.now(),
+            reason="频率限制",
+            supplicant=0,
+            duration=60 * 60,
+        )
+
+
+class FrequencyLimitCreator(AbstractCreator, ABC):
+    targets = (CreateTargetInfo("library.util.frequency_limit", "FrequencyLimit"),)
+
+    @staticmethod
+    def available() -> bool:
+        return exists_module("library.util.frequency_limit")
+
+    @staticmethod
+    def create(_create_type: Type[FrequencyLimit]) -> FrequencyLimit:
+        return FrequencyLimit()
