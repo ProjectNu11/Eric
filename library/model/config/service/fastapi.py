@@ -1,4 +1,5 @@
 from dataclasses import field
+from typing import Union, Any
 
 from kayaku import config
 
@@ -19,7 +20,7 @@ class FastAPIConfig:
     show_port: bool = True
     """ 是否在发送消息时显示端口 """
 
-    params: dict = field(default_factory=dict)
+    params: dict[str, Union[None, Any]] = field(default_factory=dict)
     """ FastAPI 服务器参数，将在启动时传入 """
 
     @property

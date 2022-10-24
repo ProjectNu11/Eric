@@ -19,9 +19,4 @@ class FastAPICreator(AbstractCreator, ABC):
     @staticmethod
     def create(_create_type: Type[FastAPI]) -> FastAPI:
         config: FastAPIConfig = create(FastAPIConfig)
-        return FastAPI(
-            **{
-                k: v.value if isinstance(v, JWrapper) else v
-                for k, v in config.__dict__.get("params", {}).items()
-            }
-        )
+        return FastAPI(**config.params)
