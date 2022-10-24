@@ -73,9 +73,14 @@ def _validate_eric_config():
 
 def _validate_plugin_repo():
     cfg: ManagerConfig = create(ManagerConfig)
+    processed = []
     for repo in cfg.plugin_repo:
         if not repo.startswith("github") or not repo.startswith("http"):
             raise ValueError(f"仅支持 GitHub 和 HTTP 协议的插件仓库，不支持 {repo}")
+        repo = repo.rstrip(".git") if repo.startswith("github") else repo.rstrip("/")
+        processed.append(repo)
+    processed = sorted(list(set(processed)))
+    cfg.plugin_repo = processed
 
 
 def _validate_fastapi_config():

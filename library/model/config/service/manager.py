@@ -18,3 +18,12 @@ class ManagerConfig:
 
     auto_update: bool = True
     """ 自动更新，是否在启动时自动更新本体 """
+
+    def register_repo(self, repo_type: str, *data: str):
+        if repo_type.lower() == "github" and len(data) == 3:
+            self.plugin_repo.append(f"github${data[0]}/${data[1]}${data[2]}")
+        elif repo_type.lower() == "http" and len(data) == 1:
+            url = data[0].rstrip("/")
+            self.plugin_repo.append(f"http${url}")
+        else:
+            raise ValueError("无效的仓库类型或参数")
