@@ -29,7 +29,6 @@ class PublicGroup:
                     self.data[group.id].add(app.account)
                 else:
                     self.data[group.id] = {app.account}
-        print(self.data)
 
     async def init_all(self):
         """初始化数据"""
@@ -119,7 +118,6 @@ class PublicGroup:
         """
         group = int(group)
         if group in self.data and account in self.data[group]:
-            print("Need Distribute")
             return len(self.data[group]) > 1
         return False
 
