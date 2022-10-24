@@ -1,3 +1,5 @@
+import asyncio
+
 from creart import it
 from graia.ariadne import Ariadne
 from graia.ariadne.event.lifecycle import AccountLaunch
@@ -56,6 +58,7 @@ async def manager_change_group_module_state(
 
 @listen(AccountLaunch)
 async def manager_account_launch(event: AccountLaunch):
+    await asyncio.sleep(1)
     await it(PublicGroup).init_account(account := event.app.account)
     logger.success(f"[EricService] {account}: 公共群数据初始化完成")
     if not (core := it(EricCore)).initialized:

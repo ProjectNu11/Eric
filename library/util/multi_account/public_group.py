@@ -25,10 +25,11 @@ class PublicGroup:
         with contextlib.suppress(Exception):
             app = Ariadne.current(account)
             for group in await app.get_group_list():
-                if group.id in self.data:
-                    self.data[group.id].add(app.account)
+                group = int(group)
+                if group in self.data:
+                    self.data[group].add(app.account)
                 else:
-                    self.data[group.id] = {app.account}
+                    self.data[group] = {app.account}
 
     async def init_all(self):
         """初始化数据"""
@@ -78,7 +79,7 @@ class PublicGroup:
         """
         group = int(group)
         if group in self.data and account in self.data[group]:
-            return list(self.data[group]).index(account)
+            return sorted(list(self.data[group])).index(account)
         raise ValueError
 
     def get_accounts(self, group: Group | int) -> set[int]:

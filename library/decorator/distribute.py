@@ -6,7 +6,7 @@ from graia.ariadne.message.element import Source
 from graia.ariadne.model import Group, Member
 from graia.broadcast import ExecutionStop
 from graia.broadcast.builtin.decorators import Depend
-from kayaku import create as kayaku_create
+from kayaku import create
 from loguru import logger
 
 from library.model.config.eric import EricConfig
@@ -37,4 +37,4 @@ class Distribution:
 
     @staticmethod
     def is_self(member: Member | int) -> bool:
-        return int(member) in kayaku_create(EricConfig).accounts
+        return int(member) in create(EricConfig).accounts
