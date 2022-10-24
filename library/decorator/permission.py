@@ -21,7 +21,7 @@ class Permission:
                     event.sender.group
                     if isinstance(event, GroupMessage)
                     else event.sender,
-                    MessageChain(on_failure.format(permission=level.value[0])),
+                    MessageChain(on_failure.format(permission=level.value[-1])),
                     app.account,
                 )
                 raise ExecutionStop()

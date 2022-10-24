@@ -20,7 +20,7 @@ class EricConfig:
     """ 机器人描述 """
 
     environment: str = ""
-    """ 包管理器 """
+    """ 包管理器，可选 pip 或 poetry """
 
     host: str = ""
     """ mirai-api-http 服务器地址 """
@@ -38,7 +38,12 @@ class EricConfig:
     """ 是否开启调试模式 """
 
     proxy: str = ""
-    """ 代理地址 """
+    """
+    代理地址
+
+    示例：
+        http://localhost:1080
+    """
 
     log_rotate: int = 7
     """ 日志文件保留天数 """

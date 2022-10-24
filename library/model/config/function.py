@@ -25,13 +25,13 @@ class FunctionConfig:
     """功能配置"""
 
     default: bool = False
-    """ 是否默认启用 """
+    """ 是否默认启用所有模块 """
 
     allow_bot: bool = False
-    """ 是否允许机器人使用 """
+    """ 是否允许其他机器人调用 """
 
     allow_anonymous: bool = False
     """ 是否允许匿名使用 """
 
-    prefix: list[str] = field(default_factory=lambda: [".", "。"])
+    prefix: list[str] = field(default_factory=lambda: [".", "。", "/"])
     """ 命令前缀 """

@@ -7,7 +7,7 @@ from kayaku import config, create
 @config("library.state")
 class ModuleState:
     loaded: dict[str, bool] = field(default_factory=dict)
-    """已加载模块，不建议直接修改"""
+    """ 模块加载状态，不建议直接修改 """
 
     def load(self, module: str):
         self.loaded[module] = True

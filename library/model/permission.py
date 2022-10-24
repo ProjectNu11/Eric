@@ -10,28 +10,28 @@ from library.model.config.eric import EricConfig
 class UserPerm(Enum):
     """用户权限"""
 
-    BLOCKED = ("BLOCKED", -1)
+    BLOCKED = ("BLOCKED", -1, "封禁用户")
     """ 被封禁 """
 
-    BOT = ("BOT", 0)
+    BOT = ("BOT", 0, "机器人")
     """ 机器人 """
 
-    MEMBER = ("MEMBER", 1)
+    MEMBER = ("MEMBER", 1, "普通成员")
     """ 普通成员 """
 
-    ADMINISTRATOR = ("ADMINISTRATOR", 2)
+    ADMINISTRATOR = ("ADMINISTRATOR", 2, "群管理员")
     """ 管理员 """
 
-    OWNER = ("OWNER", 3)
+    OWNER = ("OWNER", 3, "群主")
     """ 群主 """
 
-    BOT_ADMIN = ("BOT_ADMIN", 4)
+    BOT_ADMIN = ("BOT_ADMIN", 4, "机器人管理员")
     """ 机器人管理员 """
 
-    BOT_OWNER = ("BOT_OWNER", 5)
+    BOT_OWNER = ("BOT_OWNER", 5, "机器人所有者")
     """ 机器人所有者 """
 
-    INFINITE = ("INFINITE", 999)
+    INFINITE = ("INFINITE", 999, "测试权限等级")
     """ 无限权限，仅用于测试 """
 
     def __lt__(self, other: "UserPerm"):

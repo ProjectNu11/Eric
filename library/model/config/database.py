@@ -20,7 +20,13 @@ class DatabaseConfig:
     """数据库配置"""
 
     link: str = "sqlite+aiosqlite:///data/data.db"
-    """ 数据库链接 """
+    """
+    数据库链接，目前仅支持 SQLite 和 MySQL
+
+    示例：
+        MySQL:  mysql+aiomysql://user:password@localhost:3306/database
+        SQLite: sqlite+aiosqlite:///data/data.db
+    """
 
     @property
     def is_mysql(self) -> bool:
