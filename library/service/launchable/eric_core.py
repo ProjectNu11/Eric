@@ -76,6 +76,7 @@ class EricService(Launchable):
         for commit in update:
             sha = commit.get("sha", "")[:7]
             message = commit.get("commit", {}).get("message", "")
+            message = message.replace("<", r"\<").splitlines()[0]
             output.append(f"<red>{sha}</red> <yellow>{message}</yellow>")
         history = "\n".join(["", *output, ""])
         logger.opt(colors=True).warning(
@@ -85,5 +86,5 @@ class EricService(Launchable):
         if not config.auto_update:
             return
         logger.opt(colors=True).info("<cyan>[EricService] 正在自动更新</cyan>")
-        await asyncio.to_thread(perform_update())
+        await asyncio.to_thread(perform_update)
         logger.success("[EricService] 更新完成，将在重新启动后生效")
