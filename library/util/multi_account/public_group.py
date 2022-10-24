@@ -21,17 +21,21 @@ class PublicGroup:
     def __init__(self):
         self.data = {}
 
-    async def data_init(self):
+    async def init_account(self, account: int):
+        with contextlib.suppress(Exception):
+            app = Ariadne.current(account)
+            for group in await app.get_group_list():
+                if group.id in self.data:
+                    self.data[group.id].add(app.account)
+                else:
+                    self.data[group.id] = {app.account}
+        print(self.data)
+
+    async def init_all(self):
         """初始化数据"""
         config = create(EricConfig)
-        with contextlib.suppress(Exception):
-            for account in config.accounts:
-                app = Ariadne.current(account)
-                for group in await app.get_group_list():
-                    if group.id in self.data:
-                        self.data[group.id].add(app.account)
-                    else:
-                        self.data[group.id] = {app.account}
+        for account in config.accounts:
+            await self.init_account(account)
 
     def add_group(self, group: Group | int, account: int):
         """
@@ -115,6 +119,7 @@ class PublicGroup:
         """
         group = int(group)
         if group in self.data and account in self.data[group]:
+            print("Need Distribute")
             return len(self.data[group]) > 1
         return False
 

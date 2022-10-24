@@ -1,3 +1,6 @@
+import re
+
+
 def seconds_to_string(seconds: int) -> str:
     minutes, seconds = divmod(seconds, 60)
     hours, minutes = divmod(minutes, 60)
@@ -17,3 +20,6 @@ def inflate(*obj) -> list:
         else:
             result.append(o)
     return result
+
+
+QUOTE_PATTERN = re.compile(r"""(".+?"|'.+?'|[^ "']+)""")

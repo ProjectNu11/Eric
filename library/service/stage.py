@@ -34,7 +34,7 @@ def initialize():
     ariadne: list[Ariadne] = [
         Ariadne(
             config(
-                account,
+                int(account),
                 str(eric_config.verify_key),
                 HttpClientConfig(host=eric_config.host),
                 WebsocketClientConfig(host=eric_config.host),

@@ -1,7 +1,6 @@
-import re
-
 from creart import it
 from graia.ariadne import Ariadne
+from graia.ariadne.event.lifecycle import AccountLaunch
 from graia.ariadne.event.message import GroupMessage, MessageEvent
 from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.message.element import At
@@ -15,20 +14,19 @@ from graia.ariadne.message.parser.twilight import (
 )
 from graia.ariadne.util.saya import listen, dispatch, decorate
 from graia.saya import Channel
+from loguru import logger
 
 from library.decorator.distribute import Distribution
 from library.decorator.mention import MentionMeOptional
 from library.decorator.permission import Permission
-from library.model.config.group_config import GroupConfig
-from library.model.module import Module
+from library.model.core import EricCore
 from library.model.permission import UserPerm
-from library.module.manager.util import search_module
+from library.module.manager.util.module.state import change_state
 from library.util.dispatcher import PrefixMatch
 from library.util.message import send_message
+from library.util.multi_account.public_group import PublicGroup
 
 channel = Channel.current()
-
-STATE_PATTERN = re.compile(r"""(".+?"|'.+?'|[^ "']+)""")
 
 
 @listen(GroupMessage)
@@ -51,26 +49,15 @@ async def manager_change_group_module_state(
 ):
     action: str = action.result.display
     content: str = content.result.display
-    success = 0
-    failed: list[str] = []
-    if modules := STATE_PATTERN.findall(content):
-        modules: list[str] = [module.strip('"').strip("'") for module in modules]
-        modules: list[Module] = [
-            mod for module in modules if (mod := search_module(module))
-        ]
-        group_cfg: GroupConfig = it(GroupConfig)
-        switch = group_cfg.get_switch(int(event.sender.group))
-        for module in modules:
-            try:
-                switch.update(module, action == "打开")
-                group_cfg.save()
-                success += 1
-            except NotImplementedError:
-                failed.append(module.name)
-    if failed:
-        msg = (
-            f"已{action}插件{success}个\n" f"失败{len(failed)}个\n" f"失败列表：{', '.join(failed)}"
-        )
-    else:
-        msg = f"已{action}插件{success}个"
-    await send_message(event.sender.group, MessageChain(msg), app.account)
+    field: int = int(event.sender.group) if isinstance(event, GroupMessage) else 0
+    msg: MessageChain = change_state(content, field, action == "打开")
+    await send_message(event.sender.group, msg, app.account)
+
+
+@listen(AccountLaunch)
+async def manager_account_launch(event: AccountLaunch):
+    await it(PublicGroup).init_account(account := event.app.account)
+    logger.success(f"[EricService] {account}: 公共群数据初始化完成")
+    if not (core := it(EricCore)).initialized:
+        core.finish_init()
+        logger.success("[EricService] Eric 核心初始化完成")

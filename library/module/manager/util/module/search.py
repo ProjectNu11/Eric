@@ -16,3 +16,14 @@ def search_module(name: str) -> Module | None:
     ):
         return result[0]
     return None
+
+
+def bulk_search_module(*names: str) -> tuple[list[Module], list[str]]:
+    found: list[Module] = []
+    not_found: list[str] = []
+    for name in names:
+        if module := search_module(name):
+            found.append(module)
+        else:
+            not_found.append(name)
+    return found, not_found
