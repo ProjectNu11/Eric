@@ -138,6 +138,9 @@ class PublicGroup:
         if group not in self.data:
             self.add_group(group, account)
             return True
+        if account not in self.data[group]:
+            self.add_group(group, account)
+            return True
         return (source.id + int(time.mktime(source.time.timetuple()))) % len(
             self.data[group]
         ) != self.get_index(group, account)
