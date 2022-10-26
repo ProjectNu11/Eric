@@ -1,6 +1,9 @@
 import sys
 
 from creart import it
+from graia.ariadne.console import Console
+from graia.ariadne.console.saya import ConsoleBehaviour
+from graia.broadcast import Broadcast
 from kayaku import create
 from fastapi import FastAPI
 from graia.amnesia.builtins.uvicorn import UvicornService
@@ -26,7 +29,7 @@ from library.service.launchable.eric_core import EricService
 from library.util.log import setup_logger
 
 
-def initialize():
+def initialize(*, with_console: bool):
     setup_logger()
     initialize_config()
 
@@ -68,9 +71,15 @@ def initialize():
     Ariadne.launch_manager.add_service(EricService())
 
     it(GraiaScheduler)
+
     saya = it(Saya)
     saya.install_behaviours(
         it(BroadcastBehaviour),
         it(GraiaSchedulerBehaviour),
         FastAPIBehaviour(it(FastAPI)),
     )
+
+    if with_console:
+        saya.install_behaviours(
+            ConsoleBehaviour(Console(broadcast=it(Broadcast), prompt="Eric> "))
+        )

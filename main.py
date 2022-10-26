@@ -10,8 +10,12 @@ if __name__ == "__main__":
 
     kayaku.initialize({"{**}": "./config/{**}"})
 
+    import sys
+
+    with_console = "--console" in sys.argv
+
     from library.service.stage import initialize
 
-    initialize()
+    initialize(with_console=with_console)
 
     Ariadne.launch_blocking()

@@ -8,6 +8,7 @@ from launart import Launart, Launchable
 from loguru import logger
 
 from library.decorator.core import CoreInitCheck
+from library.model.config.eric import EricConfig
 from library.model.config.group_config import GroupConfig
 from library.model.config.path import PathConfig
 from library.model.config.service.manager import ManagerConfig
@@ -32,17 +33,19 @@ class EricService(Launchable):
         return {"preparing", "blocking", "cleanup"}
 
     async def launch(self, _mgr: Launart):
+        config: EricConfig = create(EricConfig)
+
         _path_config: PathConfig = create(PathConfig)
         _lib_module_path = Path("library/module")
+        create(ModuleState).initialize()
         _lib_modules = list_module(_lib_module_path)
         _user_modules = list_module(Path(_path_config.module))
         it(Modules).add(*_lib_modules, *_user_modules)
         logger.success(
             f"[EricService] 已校验 {len(_lib_modules) + len(_user_modules)} 个模块"
         )
-        create(ModuleState).initialize()
-        require(_lib_modules)
-        require(_user_modules)
+        require(_lib_modules, debug=config.debug)
+        require(_user_modules, debug=config.debug)
 
         # Inject CoreInitCheck to all modules, ensure that the core is initialized
         inject(CoreInitCheck())

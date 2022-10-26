@@ -152,7 +152,6 @@ cython_debug/
 .idea/
 
 # Generated files
-/config.*
 /config/
 /data/
 /log/
