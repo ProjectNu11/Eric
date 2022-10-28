@@ -18,7 +18,7 @@ def iter_metadata(
             file.name.startswith("_")
             or file.name.startswith(".")
             or path.suffix == ".py"
-            or file.name == "metadata.json"
+            or (file.is_file() and file.suffix != ".py")
         ):
             continue
         try:

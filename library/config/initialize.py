@@ -1,4 +1,5 @@
 import sys
+from contextvars import ContextVar
 from pathlib import Path
 
 import kayaku
@@ -15,13 +16,12 @@ from library.model.config.service.manager import ManagerConfig
 from library.model.config.state import ModuleState
 
 
-FIRST_RUN: bool = False
+FIRST_RUN = ContextVar("FIRST_RUN", default=False)
 
 
 def first_run_check():
-    global FIRST_RUN
     with (Path("config") / "config.jsonc").open("r", encoding="utf-8") as f:
-        FIRST_RUN = f.read() == ""
+        FIRST_RUN.set(f.read() == "")
 
 
 def initialize_config():
@@ -36,7 +36,7 @@ def initialize_config():
     create(FastAPIConfig)
     create(ManagerConfig)
     create(EricConfig)
-    if FIRST_RUN:
+    if FIRST_RUN.get():
         kayaku.bootstrap()
         kayaku.save_all()
         logger.success("已写入默认配置文件，请修改后重启")

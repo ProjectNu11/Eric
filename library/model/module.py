@@ -39,6 +39,9 @@ class ModuleMetadata(BaseModel):
     authors: list[str] = []
     """ 模块作者 """
 
+    required: list[str] = []
+    """ 模块依赖 """
+
     description: str = ""
     """ 模块描述 """
 

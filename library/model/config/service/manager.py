@@ -33,7 +33,6 @@ class ManagerConfig:
     def parse_repo(self) -> list[GeneralPluginRepo]:
         repos: list[GeneralPluginRepo] = []
         for repo in self.plugin_repo:
-            print(repo)
             if repo.startswith("github$"):
                 repos.append(self._parse_github_repo(repo))
             elif repo.startswith("http$"):

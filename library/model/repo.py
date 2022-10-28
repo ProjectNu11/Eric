@@ -10,9 +10,6 @@ from library.model.config.eric import EricConfig
 
 
 class GeneralPluginRepo:
-    def __init__(self):
-        pass
-
     @property
     def __name__(self):
         return "GeneralPluginRepo"
