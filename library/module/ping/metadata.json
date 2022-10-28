@@ -5,6 +5,7 @@
     "authors": [
         "nullqwertyuiop"
     ],
+    "required": [],
     "description": "测试机器人是否在线",
     "category": [
         "basic:基础",

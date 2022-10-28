@@ -4,7 +4,6 @@ from typing import Type
 from creart import AbstractCreator, CreateTargetInfo, exists_module
 from fastapi import FastAPI
 from kayaku import create
-from kayaku.backend.types import JWrapper
 
 from library.model.config.service.fastapi import FastAPIConfig
 

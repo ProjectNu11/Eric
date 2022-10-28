@@ -5,6 +5,7 @@
     "authors": [
         "nullqwertyuiop"
     ],
+    "required": [],
     "description": "获取当前系统的状态",
     "category": [
         "basic:基础",

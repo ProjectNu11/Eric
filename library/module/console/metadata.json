@@ -5,6 +5,9 @@
     "authors": [
         "nullqwertyuiop"
     ],
+    "required": [
+        "library.module.manager"
+    ],
     "description": "为 Eric 提供控制台支持",
     "category": [
         "basic:基础",

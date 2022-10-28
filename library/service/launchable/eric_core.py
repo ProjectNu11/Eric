@@ -35,17 +35,15 @@ class EricService(Launchable):
     async def launch(self, _mgr: Launart):
         config: EricConfig = create(EricConfig)
 
-        _path_config: PathConfig = create(PathConfig)
-        _lib_module_path = Path("library/module")
         create(ModuleState).initialize()
-        _lib_modules = list_module(_lib_module_path)
-        _user_modules = list_module(Path(_path_config.module))
-        it(Modules).add(*_lib_modules, *_user_modules)
+        _lib_modules = list_module(Path("library/module"))
+        _user_modules = list_module(Path(create(PathConfig).module))
+        modules = it(Modules)
+        modules.add(*_lib_modules, *_user_modules)
         logger.success(
             f"[EricService] 已校验 {len(_lib_modules) + len(_user_modules)} 个模块"
         )
-        require(_lib_modules, debug=config.debug)
-        require(_user_modules, debug=config.debug)
+        require(*modules.ordered, debug=config.debug)
 
         # Inject CoreInitCheck to all modules, ensure that the core is initialized
         inject(CoreInitCheck())

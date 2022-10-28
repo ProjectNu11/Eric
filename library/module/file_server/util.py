@@ -12,8 +12,8 @@ from loguru import logger
 from sqlalchemy import select
 
 from library.model.config.service.fastapi import FastAPIConfig
-from library.module.file_server.vars import ENTRYPOINT
 from library.module.file_server.table import FileServer
+from library.module.file_server.vars import ENTRYPOINT
 from library.util.module import Modules
 from library.util.orm import orm
 

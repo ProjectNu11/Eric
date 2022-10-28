@@ -5,6 +5,7 @@
     "authors": [
         "nullqwertyuiop"
     ],
+    "required": [],
     "description": "提供文件下载服务",
     "category": [
         "basic:基础",

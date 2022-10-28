@@ -5,6 +5,7 @@
     "authors": [
         "nullqwertyuiop"
     ],
+    "required": [],
     "description": "管理 Eric 模块以及设置",
     "category": [
         "basic:基础",
