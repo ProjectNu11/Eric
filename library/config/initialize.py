@@ -15,7 +15,6 @@ from library.model.config.service.fastapi import FastAPIConfig
 from library.model.config.service.manager import ManagerConfig
 from library.model.config.state import ModuleState
 
-
 FIRST_RUN = ContextVar("FIRST_RUN", default=False)
 
 

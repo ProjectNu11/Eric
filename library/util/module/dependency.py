@@ -14,7 +14,7 @@ def _get_requirements_by_module(module: ModuleMetadata) -> list[str]:
         Path().resolve(), *module.pack.split("."), "requirements.txt"
     )
     return (
-        requirements_path.read_text().splitlines()
+        requirements_path.read_text(encoding="utf-8").splitlines()
         if requirements_path.is_file()
         else []
     )
