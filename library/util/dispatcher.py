@@ -10,5 +10,5 @@ class PrefixMatch(UnionMatch):
     def __init__(self, *prefixes: str, optional: bool = False):
         config: FunctionConfig = create(FunctionConfig)
         super().__init__(
-            *list({str(p) for p in [*config.prefix, *prefixes]}), optional=optional
+            *{str(p) for p in [*config.prefix, *prefixes]}, optional=optional
         )

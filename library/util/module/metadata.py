@@ -25,7 +25,7 @@ def generate_metadata(module: Path) -> ModuleMetadata:
 
 def write_metadata(metadata: ModuleMetadata):
     module_path = Path(metadata.pack.replace(".", "/"))
-    with (module_path / "metadata.json").open("w") as f:
+    with (module_path / "metadata.json").open("w", encoding="utf-8") as f:
         f.write(metadata.json(indent=4, ensure_ascii=False))
         # Trailing new line to prevent pre-commit from complaining
         f.write("\n")

@@ -1,5 +1,4 @@
 from abc import abstractmethod
-from asyncio import StreamReader
 from pathlib import Path
 
 import aiofiles
@@ -14,10 +13,9 @@ class GeneralPluginRepo:
     def __init__(self):
         pass
 
-    @abstractmethod
     @property
     def __name__(self):
-        pass
+        return "GeneralPluginRepo"
 
     def __hash__(self):
         return hash(f"_{self.__name__}")
@@ -26,27 +24,24 @@ class GeneralPluginRepo:
     def get_file_url(self, path: str) -> str:
         pass
 
-    async def get_file_stream(
-        self, session: ClientSession, path: str, **params
-    ) -> StreamReader:
+    async def get_file(self, session: ClientSession, path: str, **params) -> bytes:
         config: EricConfig = create(EricConfig)
         async with session.get(
             self.get_file_url(path), **{"proxy": config.proxy, **params}
         ) as resp:
             resp.raise_for_status()
-            return resp.content
+            return await resp.read()
 
-    async def file_to_disk(self, base_path: Path, *paths: str) -> list[str]:
+    async def file_to_disk(self, base_path: Path, *paths: str, **params) -> list[str]:
         failed: list[str] = []
         async with ClientSession() as session:
             for path in paths:
                 write_path = base_path / path
                 write_path.parent.mkdir(parents=True, exist_ok=True)
                 try:
-                    stream = await self.get_file_stream(session, path)
+                    data = await self.get_file(session, path, **params)
                     async with aiofiles.open(write_path, "ab") as f:
-                        while data := await stream.read(1024 * 1024):
-                            await f.write(data)
+                        await f.write(data)
                         logger.success(f"[PluginRepo] 下载文件成功: {path}")
                 except ClientResponseError as err:
                     logger.error(f"[PluginRepo] 下载文件失败: {err}")

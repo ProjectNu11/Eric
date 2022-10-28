@@ -1,10 +1,6 @@
 import sys
 
 from creart import it
-from graia.ariadne.console import Console
-from graia.ariadne.console.saya import ConsoleBehaviour
-from graia.broadcast import Broadcast
-from kayaku import create
 from fastapi import FastAPI
 from graia.amnesia.builtins.uvicorn import UvicornService
 from graia.ariadne import Ariadne
@@ -13,12 +9,16 @@ from graia.ariadne.connection.config import (
     WebsocketClientConfig,
     config,
 )
+from graia.ariadne.console import Console
+from graia.ariadne.console.saya import ConsoleBehaviour
+from graia.broadcast import Broadcast
 from graia.saya import Saya
 from graia.saya.builtins.broadcast import BroadcastBehaviour
 from graia.scheduler import GraiaScheduler
 from graia.scheduler.saya import GraiaSchedulerBehaviour
 from graiax.fastapi import FastAPIService, FastAPIBehaviour
 from graiax.playwright import PlaywrightService
+from kayaku import create
 from loguru import logger
 from playwright.async_api import ProxySettings
 
