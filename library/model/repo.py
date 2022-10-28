@@ -5,14 +5,15 @@ import aiofiles
 from aiohttp import ClientSession, ClientResponseError
 from kayaku import create
 from loguru import logger
+from pydantic import BaseModel
 
 from library.model.config.eric import EricConfig
 
 
-class GeneralPluginRepo:
+class GenericPluginRepo(BaseModel):
     @property
     def __name__(self):
-        return "GeneralPluginRepo"
+        return "GenericPluginRepo"
 
     def __hash__(self):
         return hash(f"_{self.__name__}")
@@ -46,7 +47,7 @@ class GeneralPluginRepo:
         return failed
 
 
-class GithubPluginRepo(GeneralPluginRepo):
+class GithubPluginRepo(GenericPluginRepo):
     RAW_URL = "https://raw.githubusercontent.com/{owner}/{repo}/{branch}/{path}"
 
     owner: str
@@ -54,10 +55,7 @@ class GithubPluginRepo(GeneralPluginRepo):
     branch: str
 
     def __init__(self, owner: str, repo: str, branch: str):
-        super().__init__()
-        self.owner = owner
-        self.repo = repo
-        self.branch = branch
+        super().__init__(owner=owner, repo=repo, branch=branch)
 
     @property
     def __name__(self) -> str:
@@ -69,14 +67,13 @@ class GithubPluginRepo(GeneralPluginRepo):
         )
 
 
-class HTTPPluginRepo(GeneralPluginRepo):
+class HTTPPluginRepo(GenericPluginRepo):
     RAW_URL = "{url}/{path}"
 
     url: str
 
     def __init__(self, url: str):
-        super().__init__()
-        self.url = url
+        super().__init__(url=url)
 
     @property
     def __name__(self) -> str:

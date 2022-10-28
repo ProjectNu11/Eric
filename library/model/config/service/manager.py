@@ -2,7 +2,7 @@ from dataclasses import field
 
 from kayaku import config
 
-from library.model.repo import GeneralPluginRepo, GithubPluginRepo, HTTPPluginRepo
+from library.model.repo import GenericPluginRepo, GithubPluginRepo, HTTPPluginRepo
 
 
 @config("library.service.manager")
@@ -30,8 +30,8 @@ class ManagerConfig:
         else:
             raise ValueError("无效的仓库类型或参数")
 
-    def parse_repo(self) -> list[GeneralPluginRepo]:
-        repos: list[GeneralPluginRepo] = []
+    def parse_repo(self) -> list[GenericPluginRepo]:
+        repos: list[GenericPluginRepo] = []
         for repo in self.plugin_repo:
             if repo.startswith("github$"):
                 repos.append(self._parse_github_repo(repo))
