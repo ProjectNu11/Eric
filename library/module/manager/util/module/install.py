@@ -22,7 +22,17 @@ def _resolve(*modules: RemoteModule) -> list[RemoteModule]:
     result: list[RemoteModule] = []
 
     while unresolved:
-        layer = {module for module in unresolved if set(module.required) <= resolved}
+        layer = {
+            module
+            for module in unresolved
+            if {
+                _req
+                for _req in module.required
+                if not _req.startswith("library.module")
+            }
+            <= resolved
+        }
+
         if not layer:
             for _unsolved in unresolved.copy():
                 dependencies, not_found = bulk_search(*_unsolved.required)
