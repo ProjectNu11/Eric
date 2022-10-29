@@ -8,8 +8,8 @@ from graia.saya import Channel
 from loguru import logger
 
 from library.model.repo import GenericPluginRepo
+from library.module.manager.context import repositories
 from library.module.manager.model.module import RemoteModule, RemoteModuleCache
-from library.module.manager.util.remote.context import repositories, remote_cache
 from library.util.module import Modules
 
 channel = Channel.current()
@@ -37,7 +37,9 @@ async def update() -> list[RemoteModule]:
         result.extend(await _update_single(repo))
     result = sorted(list(set(result)), key=lambda m: m.name)
     cache = RemoteModuleCache(last_update=datetime.now(), modules=result)
-    remote_cache.set(cache)
+    _cache = it(RemoteModuleCache)
+    _cache.last_update = cache.last_update
+    _cache.modules = cache.modules
     await _update_cache(cache)
     logger.success("[Manager] 远端模块缓存更新成功")
     return result

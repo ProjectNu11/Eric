@@ -30,14 +30,16 @@ class GenericPluginRepo(BaseModel):
             resp.raise_for_status()
             return await resp.read()
 
-    async def file_to_disk(self, base_path: Path, *paths: str, **params) -> list[str]:
+    async def file_to_disk(
+        self, base_path: Path, module: str, *paths: str, **params
+    ) -> list[str]:
         failed: list[str] = []
         async with ClientSession() as session:
             for path in paths:
                 write_path = base_path / path
                 write_path.parent.mkdir(parents=True, exist_ok=True)
                 try:
-                    data = await self.get_file(session, path, **params)
+                    data = await self.get_file(session, f"{module}/{path}", **params)
                     async with aiofiles.open(write_path, "ab") as f:
                         await f.write(data)
                         logger.success(f"[PluginRepo] 下载文件成功: {path}")

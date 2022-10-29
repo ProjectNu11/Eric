@@ -24,10 +24,11 @@ from library.decorator.permission import Permission
 from library.model.core import EricCore
 from library.model.permission import UserPerm
 from library.module.manager.util.module.state import change_state
+from library.module.manager.util.module.state import change_state
+from library.module.manager.util.remote.update import update
 from library.util.dispatcher import PrefixMatch
 from library.util.message import send_message
 from library.util.multi_account.public_group import PublicGroup
-from library.module.manager.util.remote.update import update
 
 channel = Channel.current()
 

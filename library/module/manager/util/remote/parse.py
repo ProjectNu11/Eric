@@ -1,7 +1,7 @@
 from kayaku import create
 
 from library.model.config.service.manager import ManagerConfig
-from library.module.manager.util.remote.context import repositories
+from library.module.manager.context import repositories
 
 
 def parse_repo():
