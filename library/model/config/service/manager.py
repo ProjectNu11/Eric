@@ -44,11 +44,11 @@ class ManagerConfig:
 
     @staticmethod
     def _parse_github_repo(data: str) -> GithubPluginRepo:
-        _, _repo, branch = data.split("$")
-        owner, repo = _repo.split("/")
+        _, _repo, branch = data.split("$", maxsplit=2)
+        owner, repo = _repo.split("/", maxsplit=1)
         return GithubPluginRepo(owner=owner, repo=repo, branch=branch)
 
     @staticmethod
     def _parse_http_repo(data: str) -> HTTPPluginRepo:
-        _, url = data.split("$")
+        _, url = data.split("$", maxsplit=1)
         return HTTPPluginRepo(url=url)

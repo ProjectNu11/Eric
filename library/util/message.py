@@ -1,6 +1,12 @@
 from creart import it
 from graia.ariadne import Ariadne
-from graia.ariadne.event.message import ActiveGroupMessage, ActiveFriendMessage
+from graia.ariadne.event.message import (
+    ActiveGroupMessage,
+    ActiveFriendMessage,
+    GroupMessage,
+    FriendMessage,
+    MessageEvent,
+)
 from graia.ariadne.exception import AccountMuted, UnknownTarget, RemoteException
 from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.message.element import Source
@@ -34,7 +40,7 @@ async def _send_friend_message(
 
 
 async def send_message(
-    target: Group | Friend | int,
+    target: Group | Friend | int | MessageEvent,
     message_chain: MessageChain,
     account: int,
     *,
@@ -48,7 +54,7 @@ async def send_message(
     发送消息
 
     Args:
-        target (Group | Friend | int): 目标
+        target (Group | Friend | int | MessageEvent): 目标
         message_chain (MessageChain): 消息链
         account (int): 账号
         is_group (bool): 是否为群组
@@ -67,6 +73,13 @@ async def send_message(
         Exception: 其他异常
     """
     try:
+        if isinstance(target, MessageEvent):
+            if isinstance(target, GroupMessage):
+                target = target.sender.group
+            elif isinstance(target, FriendMessage):
+                target = target.sender
+            else:
+                raise NotImplementedError(f"不支持的消息类型：{type(target)}")
         if isinstance(target, int) and is_group is None:
             raise ValueError(f"无法判断 {target} 为群聊或好友")
         if isinstance(target, Group) if is_group is None else is_group:

@@ -2,8 +2,9 @@ from typing import NoReturn
 
 from creart import it
 from graia.ariadne import Ariadne
+from graia.ariadne.event.message import MessageEvent, GroupMessage
 from graia.ariadne.message.element import Source
-from graia.ariadne.model import Group, Member
+from graia.ariadne.model import Member
 from graia.broadcast import ExecutionStop
 from graia.broadcast.builtin.decorators import Depend
 from kayaku import create
@@ -16,9 +17,11 @@ from library.util.multi_account.public_group import PublicGroup
 class Distribution:
     @classmethod
     def distribute(cls, show_log: bool = False) -> Depend:
-        async def judge(
-            app: Ariadne, group: Group, member: Member, source: Source
-        ) -> NoReturn:
+        async def judge(app: Ariadne, event: MessageEvent, source: Source) -> NoReturn:
+            if not isinstance(event, GroupMessage):
+                return
+            group = event.sender.group
+            member = event.sender
             if cls.is_self(member):
                 if show_log:
                     logger.warning(f"[Distribution] 由已登录账号 {member.id} 触发，停止分发")

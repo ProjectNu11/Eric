@@ -25,3 +25,21 @@ async def console_stop(app: Ariadne, console: Console):
     if res.lower() in {"y", "yes"}:
         app.stop()
         console.stop()
+
+
+@channel.use(ConsoleSchema([Twilight(PrefixMatch(optional=True), FullMatch("update"))]))
+async def console_update():
+    from library.module.manager.util.remote.update import update
+
+    await update()
+
+
+@channel.use(ConsoleSchema([Twilight(PrefixMatch(optional=True), FullMatch("test"))]))
+async def console_test():
+    from library.module.manager.util.remote.install import install
+    from library.module.manager.util.remote.search import search
+
+    _module = search("今日牛子")
+    print(_module)
+    if _module:
+        await install(_module)

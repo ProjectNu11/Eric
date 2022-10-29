@@ -10,7 +10,6 @@ from pydantic import BaseModel, ValidationError
 
 from library.model.module import ModuleMetadata
 from library.model.repo import GithubPluginRepo, HTTPPluginRepo
-from library.module.manager.util.remote import parse_repo
 from library.util.module import Modules
 
 channel = Channel.current()
@@ -34,6 +33,20 @@ class RemoteModuleCache(BaseModel):
     modules: list[RemoteModule] = []
     """模块列表"""
 
+    @property
+    def modules_dict(self) -> dict:
+        return {module.pack: module for module in self.modules}
+
+    def __iter__(self):
+        return iter(self.modules)
+
+    def __contains__(self, item):
+        if not isinstance(item, (ModuleMetadata, str)):
+            return False
+        if isinstance(item, ModuleMetadata):
+            item = item.pack
+        return item in self.modules_dict.keys()
+
 
 class RemoteCacheCreator(AbstractCreator, ABC):
     targets = (
@@ -46,7 +59,6 @@ class RemoteCacheCreator(AbstractCreator, ABC):
 
     @staticmethod
     def create(_create_type: Type[RemoteModuleCache]) -> RemoteModuleCache:
-        parse_repo()
         cache = it(Modules).get(channel.module).data_path / "repo_cache.json"
         try:
             _cache = RemoteModuleCache.parse_file(cache)

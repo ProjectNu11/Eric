@@ -2,14 +2,14 @@ import json
 from datetime import datetime
 
 import aiofiles
-from aiohttp import ClientSession
+from aiohttp import ClientSession, ClientResponseError
 from creart import it
 from graia.saya import Channel
 from loguru import logger
 
 from library.model.repo import GenericPluginRepo
-from library.module.manager.context import repositories
 from library.module.manager.model.module import RemoteModule, RemoteModuleCache
+from library.module.manager.model.repository import ParsedRepository
 from library.util.module import Modules
 
 channel = Channel.current()
@@ -31,10 +31,14 @@ async def _update_cache(cache: RemoteModuleCache):
         await f.write(cache.json(ensure_ascii=False))
 
 
-async def update() -> list[RemoteModule]:
+async def update() -> tuple[list[RemoteModule], list[GenericPluginRepo]]:
+    failed: list[GenericPluginRepo] = []
     result: list[RemoteModule] = []
-    for repo in repositories.get():
-        result.extend(await _update_single(repo))
+    for repo in it(ParsedRepository):
+        try:
+            result.extend(await _update_single(repo))
+        except ClientResponseError:
+            failed.append(repo)
     result = sorted(list(set(result)), key=lambda m: m.name)
     cache = RemoteModuleCache(last_update=datetime.now(), modules=result)
     _cache = it(RemoteModuleCache)
@@ -42,4 +46,4 @@ async def update() -> list[RemoteModule]:
     _cache.modules = cache.modules
     await _update_cache(cache)
     logger.success("[Manager] 远端模块缓存更新成功")
-    return result
+    return result, failed

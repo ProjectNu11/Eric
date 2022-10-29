@@ -20,8 +20,8 @@ def _pre_check(module: RemoteModule):
 
 def _prepare_module_dir(module: RemoteModule) -> tuple[Path, Path]:
     path_cfg: PathConfig = create(PathConfig)
-    temp_dir: Path = Path(path_cfg.module) / f"__temp_{module.pack.split('.')[-1]}__"
-    install_dir: Path = Path(path_cfg.module) / module.pack.split(".")[-1]
+    temp_dir: Path = Path(path_cfg.module) / f"__temp_{module.clean_name}__"
+    install_dir: Path = Path(path_cfg.module) / module.clean_name
     if temp_dir.exists():
         logger.warning("临时目录已存在，正在删除")
         remove_recursive(temp_dir)
@@ -36,7 +36,7 @@ async def _download_files(module: RemoteModule, temp_dir: Path, max_retries: int
     while to_download and max_retries - retries > 0:
         if not (
             to_download := await module.repo.file_to_disk(
-                temp_dir, module.pack.split(".")[-1], *to_download
+                temp_dir, module.clean_name, *to_download
             )
         ):
             return
