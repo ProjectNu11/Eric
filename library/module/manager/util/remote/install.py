@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from creart import it
 from kayaku import create
 from loguru import logger
 
@@ -8,6 +9,7 @@ from library.model.config.state import ModuleState
 from library.model.module import Module
 from library.module.manager.model.module import RemoteModule
 from library.util.file import remove_recursive
+from library.util.module import Modules
 from library.util.module.metadata import update_metadata
 from library.util.module.require import require
 from library.util.module.standardize import standardize_structure
@@ -59,14 +61,16 @@ def _install(temp_dir: Path, install_dir: Path):
 
 def _post_install(install_dir: Path):
     install_dir = standardize_structure(install_dir)
-    module = update_metadata(install_dir)
+    metadata = update_metadata(install_dir)
     state: ModuleState = create(ModuleState)
     try:
-        state.load(module.pack)
+        state.load(metadata.pack)
+        module = Module(**metadata.dict(), loaded=True)
+        it(Modules).add(module)
         require(Module(**module.dict(), loaded=True), debug=False, suppress=False)
     except Exception as e:
         logger.error(f"安装时出现错误：\n{e.with_traceback(e.__traceback__)}")
-        state.unload(module.pack)
+        state.unload(metadata.pack)
         raise
 
 
