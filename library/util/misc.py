@@ -15,7 +15,7 @@ def seconds_to_string(seconds: int) -> str:
 def inflate(*obj) -> list:
     result = []
     for o in obj:
-        if isinstance(o, (tuple, list)):
+        if isinstance(o, (tuple, list, set)):
             result.extend(inflate(*o))
         else:
             result.append(o)

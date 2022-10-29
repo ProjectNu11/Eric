@@ -4,6 +4,7 @@ from graia.ariadne.event.message import MessageEvent, GroupMessage
 from graia.ariadne.message.chain import MessageChain
 from graia.broadcast.interrupt import InterruptControl
 
+from library.model.exception import RequirementResolveFailed
 from library.module.manager import RemoteModule
 from library.module.manager.util.remote.search import bulk_search
 from library.module.manager.util.remote.install import install as remote_install
@@ -13,6 +14,35 @@ from library.util.waiter.friend import FriendConfirmWaiter
 from library.util.waiter.group import GroupConfirmWaiter
 
 inc = it(InterruptControl)
+
+
+def _resolve(*modules: RemoteModule) -> list[RemoteModule]:
+    resolved: set[str] = set()
+    unresolved: set[RemoteModule] = set(modules)
+    result: list[RemoteModule] = []
+
+    while unresolved:
+        layer = {module for module in unresolved if set(module.required) <= resolved}
+        if not layer:
+            for _unsolved in unresolved.copy():
+                dependencies, not_found = bulk_search(*_unsolved.required)
+                if not_found:
+                    raise RequirementResolveFailed(unresolved)
+                unresolved |= set(dependencies)
+        unresolved -= layer
+        resolved |= {module.pack for module in layer}
+        result.extend(layer)
+
+    return result
+
+
+def _get_resolve_failed_msg(*modules: RemoteModule) -> MessageChain:
+    msg = "无法解决依赖关系"
+    for module in modules:
+        msg += f"\n - {module.name} ({module.version})"
+        for required in module.required:
+            msg += f"\n   - {required}"
+    return MessageChain(msg)
 
 
 def _get_msg_empty() -> MessageChain:
@@ -90,6 +120,12 @@ async def install(
         return _get_msg_empty()
     names = [name.strip('"').strip("'") for name in QUOTE_PATTERN.findall(content)]
     found, not_found = bulk_search(*names)
+    if not found:
+        return _get_msg_not_found(not_found)
+    try:
+        found = _resolve(*found)
+    except RequirementResolveFailed as e:
+        return _get_resolve_failed_msg(*e.modules)
     if not yes and (msg := await _wait(app, event, found)):
         return msg
     success, failed = await _propose_install(*found)
