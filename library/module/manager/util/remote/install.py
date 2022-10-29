@@ -65,7 +65,7 @@ def _post_install(install_dir: Path):
     state: ModuleState = create(ModuleState)
     try:
         state.load(metadata.pack)
-        module = Module(**{"loaded": True, **metadata.dict().items()})
+        module = Module(**{"loaded": True, **metadata.dict()})
         it(Modules).add(module)
         require(module, debug=False, suppress=False)
     except Exception as e:
