@@ -11,7 +11,7 @@ class ManagerConfig:
 
     plugin_repo: list[str] = field(default_factory=list)
     """
-    插件仓库，绝大多数情况下不需要手动配置
+    模块仓库，绝大多数情况下不需要手动配置
 
     格式：
         Github: `github$<owner>/<repo>$<branch>`

@@ -30,9 +30,10 @@ from library.model.core import EricCore
 from library.model.permission import UserPerm
 from library.module.manager.model.module import RemoteModule
 from library.module.manager.model.repository import ParsedRepository
+from library.module.manager.util.module.install import install
 from library.module.manager.util.module.state import change_state
 from library.module.manager.util.module.state import change_state
-from library.module.manager.util.remote.install import install
+from library.module.manager.util.remote.install import install as remote_install
 from library.module.manager.util.remote.update import update
 from library.module.manager.util.remote.version import check_update
 from library.module.manager.util.repository.register import wait_and_register
@@ -197,11 +198,11 @@ async def manager_upgrade(app: Ariadne, event: MessageEvent, yes: ArgResult):
     success: list[RemoteModule] = []
     for _, remote in updates:
         try:
-            await install(remote)
+            await remote_install(remote)
             success.append(remote)
         except Exception as e:
             logger.error(e.with_traceback(e.__traceback__))
-            msg = f"已更新 {len(success)} 个插件"
+            msg = f"已更新 {len(success)} 个模块"
             for _suc in success:
                 msg += f"\n - {_suc.name} ({_suc.clean_name}) {_suc.version}"
             msg += f"更新 {remote.name} ({remote.clean_name}) 时出现错误，已中止更新\n{e}"
@@ -210,7 +211,7 @@ async def manager_upgrade(app: Ariadne, event: MessageEvent, yes: ArgResult):
                 MessageChain(msg),
                 app.account,
             )
-    msg = f"已更新 {len(success)} 个插件"
+    msg = f"已更新 {len(success)} 个模块"
     for _suc in success:
         msg += f"\n - {_suc.name} ({_suc.clean_name}) {_suc.version}"
     return await send_message(
@@ -218,3 +219,31 @@ async def manager_upgrade(app: Ariadne, event: MessageEvent, yes: ArgResult):
         MessageChain(msg),
         app.account,
     )
+
+
+@listen(GroupMessage, FriendMessage)
+@dispatch(
+    Twilight(
+        ElementMatch(At, optional=True),
+        PrefixMatch(),
+        FullMatch("manager").space(SpacePolicy.FORCE),
+        FullMatch("install"),
+        ArgumentMatch("-y", action="store_true") @ "yes",
+        WildcardMatch() @ "content",
+    )
+)
+@decorate(
+    MentionMeOptional.check(),
+    Distribution.distribute(),
+    Permission.require(UserPerm.BOT_OWNER),
+)
+async def manager_list(
+    app: Ariadne, event: MessageEvent, yes: ArgResult, content: RegexResult
+):
+    yes: bool = yes.result
+    content: str = content.result.display
+
+    try:
+        await send_message(event, await install(app, event, content, yes), app.account)
+    except TimeoutError:
+        await send_message(event, MessageChain("等待超时"), app.account)

@@ -33,13 +33,13 @@ def _propose_change_state(
 
 
 def _get_msg_empty() -> MessageChain:
-    return MessageChain("用法：\n" ' - 打开插件 "插件名" "插件名"...\n' ' - 关闭插件 "插件名" "插件名"...')
+    return MessageChain('用法：\n - 打开模块 "模块名" "模块名"...\n - 关闭模块 "模块名" "模块名"...')
 
 
 def _get_msg_success(*result: Module, value: bool) -> MessageChain | None:
     if not result:
         return
-    msg = f"已{'打开' if value else '关闭'} {len(result)} 个插件"
+    msg = f"已{'打开' if value else '关闭'} {len(result)} 个模块"
     for result in result:
         msg += f"\n - {result.name}"
     return MessageChain(msg)
@@ -48,7 +48,7 @@ def _get_msg_success(*result: Module, value: bool) -> MessageChain | None:
 def _get_msg_failed(*result: Module, value: bool) -> MessageChain | None:
     if not result:
         return
-    msg = f"{len(result)} 个插件{'打开' if value else '关闭'}失败"
+    msg = f"{len(result)} 个模块{'打开' if value else '关闭'}失败"
     for result in result:
         msg += f"\n - {result.name}"
     return MessageChain(msg)
@@ -57,7 +57,7 @@ def _get_msg_failed(*result: Module, value: bool) -> MessageChain | None:
 def _get_msg_not_found(*result: str) -> MessageChain | None:
     if not result:
         return
-    msg = f"未找到 {len(result)} 个插件"
+    msg = f"未找到 {len(result)} 个模块"
     for result in result:
         msg += f"\n - {result}"
     return MessageChain(msg)
