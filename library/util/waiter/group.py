@@ -1,8 +1,10 @@
+from graia.ariadne import Ariadne
 from graia.ariadne.event.message import GroupMessage
 from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.model import Group, Member
 from graia.broadcast.interrupt import Waiter
 
+from library.decorator.distribute import Distribution
 from library.util.misc import inflate
 
 
@@ -14,7 +16,15 @@ class GroupConfirmWaiter(Waiter.create([GroupMessage])):
         self.group_id = int(group)
         self.member_id = int(member)
 
-    async def detected_event(self, group: Group, member: Member, message: MessageChain):
+    async def detected_event(
+        self,
+        app: Ariadne,
+        group: Group,
+        member: Member,
+        message: MessageChain,
+        event: GroupMessage,
+    ):
+        await Distribution.judge(app, event, event.source)
         if int(group) == self.group_id and int(member) == self.member_id:
             return message.display.strip() in self.confirm_words
 
@@ -29,7 +39,15 @@ class GroupSelectWaiter(Waiter.create([GroupMessage])):
         self.group_id = int(group)
         self.member_id = int(member)
 
-    async def detected_event(self, group: Group, member: Member, message: MessageChain):
+    async def detected_event(
+        self,
+        app: Ariadne,
+        group: Group,
+        member: Member,
+        message: MessageChain,
+        event: GroupMessage,
+    ):
+        await Distribution.judge(app, event, event.source)
         if (
             int(group) == self.group_id
             and int(member) == self.member_id
@@ -43,6 +61,9 @@ class GroupMessageWaiter(Waiter.create([GroupMessage])):
         self.group_id = int(group)
         self.member_id = int(member)
 
-    async def detected_event(self, group: Group, member: Member, event: GroupMessage):
+    async def detected_event(
+        self, app: Ariadne, group: Group, member: Member, event: GroupMessage
+    ):
+        await Distribution.judge(app, event, event.source)
         if int(group) == self.group_id and int(member) == self.member_id:
             return event

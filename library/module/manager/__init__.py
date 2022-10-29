@@ -21,13 +21,11 @@ from graia.ariadne.util.saya import listen, dispatch, decorate
 from graia.broadcast.interrupt import InterruptControl
 from graia.saya import Channel
 from graia.saya.builtins.broadcast import ListenerSchema
-from kayaku import create
 from loguru import logger
 
 from library.decorator.distribute import Distribution
 from library.decorator.mention import MentionMeOptional
 from library.decorator.permission import Permission
-from library.model.config.service.manager import ManagerConfig
 from library.model.core import EricCore
 from library.model.permission import UserPerm
 from library.module.manager.model.module import RemoteModule
@@ -37,17 +35,14 @@ from library.module.manager.util.module.state import change_state
 from library.module.manager.util.remote.install import install
 from library.module.manager.util.remote.update import update
 from library.module.manager.util.remote.version import check_update
+from library.module.manager.util.repository.register import wait_and_register
 from library.util.dispatcher import PrefixMatch
 from library.util.message import send_message
 from library.util.multi_account.public_group import PublicGroup
 from library.util.waiter.friend import (
-    FriendSelectWaiter,
-    FriendMessageWaiter,
     FriendConfirmWaiter,
 )
 from library.util.waiter.group import (
-    GroupSelectWaiter,
-    GroupMessageWaiter,
     GroupConfirmWaiter,
 )
 
@@ -122,57 +117,13 @@ async def manager_account_launch(event: AccountLaunch):
     Permission.require(UserPerm.BOT_OWNER),
 )
 async def manager_register_repository(app: Ariadne, event: MessageEvent):
-    await send_message(
-        event, MessageChain("请在一分钟内发送需要注册的仓库类型 (github/http)"), app.account
-    )
-
     try:
-        repo_type: str = await inc.wait(
-            GroupSelectWaiter(event.sender.group, event.sender, "github", "http")
-            if isinstance(event, GroupMessage)
-            else FriendSelectWaiter(event.sender, "github", "http"),
-            timeout=60,
-        )
-        if repo_type == "github":
-            await send_message(
-                event,
-                MessageChain(
-                    "请在一分钟内发送需要注册的仓库地址\n"
-                    "示例：owner/repo\n"
-                    "示例：owner/repo:branch\n"
-                    '如未填写分支，则将使用默认分支 "modules"'
-                ),
-                app.account,
-            )
-        else:
-            await send_message(
-                event,
-                MessageChain("请在一分钟内发送需要注册的仓库地址\n示例：example.com"),
-                app.account,
-            )
-        reply_event: MessageEvent = await inc.wait(
-            GroupMessageWaiter(event.sender.group, event.sender)
-            if isinstance(event, GroupMessage)
-            else FriendMessageWaiter(event.sender),
-            timeout=60,
-        )
-        reply = reply_event.message_chain.display
+        msg = await wait_and_register(app, event)
     except TimeoutError:
         await send_message(event, MessageChain("等待超时"), app.account)
+    except ValueError:
+        await send_message(event, MessageChain("数值输入错误，取消注册"), app.account)
     else:
-        mgr_cfg: ManagerConfig = create(ManagerConfig)
-        if repo_type == "github":
-            owner, repo = reply.split("/")
-            branch = ""
-            if ":" in repo:
-                repo, branch = repo.split(":")
-            branch = branch or "modules"
-            mgr_cfg.register_repo("github", owner, repo, branch)
-            msg = f"已注册仓库 {owner}/{repo}:{branch}"
-        else:
-            mgr_cfg.register_repo("http", reply)
-            msg = f"已注册仓库 {reply}"
-        it(ParsedRepository).__init__()
         await send_message(event, MessageChain(msg), app.account)
 
 
