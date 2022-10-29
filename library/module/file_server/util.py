@@ -34,7 +34,7 @@ async def _serve_file_keep_original(file: Path, file_id: str) -> str:
 
 async def _get_hash_by_path(file: Path) -> str:
     async with aiofiles.open(file, "rb") as f:
-        return md5(await f.read(10 * 1024 * 1024)).hexdigest()
+        return md5(await f.read()).hexdigest()
 
 
 async def _serve_file_by_path(
@@ -62,32 +62,23 @@ async def compare_hash(hashed: str) -> str | None:
     )
 
 
-async def _write_and_compare(file_io, hash_obj: Any, chunk) -> str:
-    size = 10 * 1024 * 1024 - len(hash_obj.to_hash)
-    if size > 0:
-        hash_obj.to_hash += chunk[:size]
-    if f := await compare_hash(md5(hash_obj.to_hash).hexdigest()):
-        raise FileExistsError(f)
-    await file_io.write(chunk)
-    return md5(hash_obj.to_hash).hexdigest()
-
-
 async def _serve_file_by_bytes(
     file: bytes | Generator[bytes, None, None] | AsyncGenerator[bytes, None],
     file_id: str,
 ) -> tuple[str, str]:
     logger.debug(f"[FileServer] 正在写入文件 -> {file_id}")
-    async with aiofiles.open(Path(DATA_PATH, file_id), "ab") as out:
-        obj = object()
-        obj.to_hash = b""
+    async with aiofiles.open((fp := Path(DATA_PATH, file_id)), "ab") as out:
         if isinstance(file, bytes):
-            hashed = await _write_and_compare(out, obj, file)
+            await out.write(file)
+            hashed = md5(file).hexdigest()
         elif isinstance(file, Generator):
             for chunk in file:
-                hashed = await _write_and_compare(out, obj, chunk)
+                await out.write(chunk)
+            hashed = _get_hash_by_path(fp)
         else:
             async for chunk in file:
-                hashed = await _write_and_compare(out, obj, chunk)
+                await out.write(chunk)
+            hashed = _get_hash_by_path(fp)
     return file_id, hashed
 
 
