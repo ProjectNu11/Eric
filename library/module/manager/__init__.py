@@ -14,6 +14,8 @@ from graia.ariadne.message.parser.twilight import (
     WildcardMatch,
     RegexResult,
     SpacePolicy,
+    ArgumentMatch,
+    ArgResult,
 )
 from graia.ariadne.util.saya import listen, dispatch, decorate
 from graia.broadcast.interrupt import InterruptControl
@@ -28,16 +30,26 @@ from library.decorator.permission import Permission
 from library.model.config.service.manager import ManagerConfig
 from library.model.core import EricCore
 from library.model.permission import UserPerm
+from library.module.manager.model.module import RemoteModule
 from library.module.manager.model.repository import ParsedRepository
 from library.module.manager.util.module.state import change_state
 from library.module.manager.util.module.state import change_state
+from library.module.manager.util.remote.install import install
 from library.module.manager.util.remote.update import update
 from library.module.manager.util.remote.version import check_update
 from library.util.dispatcher import PrefixMatch
 from library.util.message import send_message
 from library.util.multi_account.public_group import PublicGroup
-from library.util.waiter.friend import FriendSelectWaiter, FriendMessageWaiter
-from library.util.waiter.group import GroupSelectWaiter, GroupMessageWaiter
+from library.util.waiter.friend import (
+    FriendSelectWaiter,
+    FriendMessageWaiter,
+    FriendConfirmWaiter,
+)
+from library.util.waiter.group import (
+    GroupSelectWaiter,
+    GroupMessageWaiter,
+    GroupConfirmWaiter,
+)
 
 channel = Channel.current()
 inc = it(InterruptControl)
@@ -51,7 +63,7 @@ inc = it(InterruptControl)
                 ElementMatch(At, optional=True),
                 PrefixMatch(optional=True),
                 UnionMatch("打开", "关闭") @ "action",
-                FullMatch("插件"),
+                FullMatch("模块"),
                 WildcardMatch() @ "content",
             )
         ],
@@ -69,7 +81,7 @@ inc = it(InterruptControl)
             Twilight(
                 PrefixMatch(optional=True),
                 UnionMatch("打开", "关闭") @ "action",
-                FullMatch("插件"),
+                FullMatch("模块"),
                 WildcardMatch() @ "content",
             )
         ],
@@ -189,8 +201,69 @@ async def manager_update(app: Ariadne, event: MessageEvent):
         for repo in failed:
             msg += f"\n - {repo.__name__}"
     if updates := check_update():
-        msg += f"\n\n{len(updates)} 个插件可更新"
+        msg += f"\n\n{len(updates)} 个模块可更新"
         for local, remote in updates:
             msg += f"\n - {local.name} ({local.clean_name})"
             msg += f"\n   {local.version} -> {remote.version}"
     await send_message(event, MessageChain(msg), app.account)
+
+
+@listen(GroupMessage, FriendMessage)
+@dispatch(
+    Twilight(
+        ElementMatch(At, optional=True),
+        PrefixMatch(),
+        FullMatch("manager").space(SpacePolicy.FORCE),
+        FullMatch("upgrade"),
+        ArgumentMatch("-y", action="store_true") @ "yes",
+    )
+)
+@decorate(
+    MentionMeOptional.check(),
+    Distribution.distribute(),
+    Permission.require(UserPerm.BOT_OWNER),
+)
+async def manager_upgrade(app: Ariadne, event: MessageEvent, yes: ArgResult):
+    yes: bool = yes.result
+    if not (updates := check_update()):
+        return await send_message(event, MessageChain("无可用更新"), app.account)
+    if not yes:
+        msg = f"将更新 {len(updates)} 个模块 (y/n)"
+        for local, remote in updates:
+            msg += f"\n - {local.name} ({local.clean_name})"
+            msg += f"\n   {local.version} -> {remote.version}"
+        await send_message(event, MessageChain(msg), app.account)
+        try:
+            if not await inc.wait(
+                GroupConfirmWaiter(event.sender.group, event.sender, "y")
+                if isinstance(event, GroupMessage)
+                else FriendConfirmWaiter(event.sender, "y"),
+                timeout=60,
+            ):
+                return await send_message(event, MessageChain("已取消更新"), app.account)
+        except TimeoutError:
+            return await send_message(event, MessageChain("等待超时"), app.account)
+    success: list[RemoteModule] = []
+    for _, remote in updates:
+        try:
+            await install(remote)
+            success.append(remote)
+        except Exception as e:
+            logger.error(e.with_traceback(e.__traceback__))
+            msg = f"已更新 {len(success)} 个插件"
+            for _suc in success:
+                msg += f"\n - {_suc.name} ({_suc.clean_name}) {_suc.version}"
+            msg += f"更新 {remote.name} ({remote.clean_name}) 时出现错误，已中止更新\n{e}"
+            return await send_message(
+                event,
+                MessageChain(msg),
+                app.account,
+            )
+    msg = f"已更新 {len(success)} 个插件"
+    for _suc in success:
+        msg += f"\n - {_suc.name} ({_suc.clean_name}) {_suc.version}"
+    return await send_message(
+        event,
+        MessageChain(msg),
+        app.account,
+    )
