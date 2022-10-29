@@ -341,7 +341,7 @@ loguru = ">=0.5.3,<0.7"
 
 [[package]]
 name = "graia-scheduler"
-version = "0.0.8"
+version = "0.0.10"
 description = "a scheduler for graia framework"
 category = "main"
 optional = false
@@ -349,7 +349,10 @@ python-versions = ">=3.7,<4.0"
 
 [package.dependencies]
 croniter = ">=1.0.0,<2.0.0"
-graia-broadcast = ">=0.12.1"
+graia-broadcast = ">=0.19.0"
+
+[package.extras]
+saya = ["graia-saya (>=0.0.16,<0.1)"]
 
 [[package]]
 name = "graiax-fastapi"
@@ -890,7 +893,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "cd3a637279d605c404f1a201f86cf0a241f82b9e16400a7fd4110afa1f1fe95f"
+content-hash = "46ba08a3fff1ef146686f5713c1d6e0baebfb0905cd9b23d5f190653980460c9"
 
 [metadata.files]
 aiofiles = [
@@ -1163,8 +1166,8 @@ graia-saya = [
     {file = "graia_saya-0.0.16-py3-none-any.whl", hash = "sha256:21748a48a5d55d58d946cb8d4339360c2774caea21139f8952799e61819638e4"},
 ]
 graia-scheduler = [
-    {file = "graia-scheduler-0.0.8.tar.gz", hash = "sha256:b26731e8f83f413e3dda435b5b46d49e78f6bae4b902596c9c51adc9f93b5a18"},
-    {file = "graia_scheduler-0.0.8-py3-none-any.whl", hash = "sha256:73515cc46a71e7e9c5b48825b20df3fa8d97f5708637d6cf29e51b152294c0fa"},
+    {file = "graia-scheduler-0.0.10.tar.gz", hash = "sha256:fbfd2043dbeaa4faec4bf38416297dbb9b5314941b4c22f30cec643bd7fb54b9"},
+    {file = "graia_scheduler-0.0.10-py3-none-any.whl", hash = "sha256:9e725b83aeb36c9f95754c979fe01a4b6e23eea0ae6c527e3d3bb7ca388e02aa"},
 ]
 graiax-fastapi = [
     {file = "graiax-fastapi-0.2.0.tar.gz", hash = "sha256:234521f33cb4f3b8e16aaf61236e9f16505ec04c8457db250d29a2b44387adba"},
