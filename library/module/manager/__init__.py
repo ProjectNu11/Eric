@@ -27,6 +27,7 @@ from library.module.manager.util.module.state import change_state
 from library.util.dispatcher import PrefixMatch
 from library.util.message import send_message
 from library.util.multi_account.public_group import PublicGroup
+from library.module.manager.util.remote.update import update
 
 channel = Channel.current()
 
@@ -59,8 +60,7 @@ async def manager_change_group_module_state(
 @listen(AccountLaunch)
 async def manager_account_launch(event: AccountLaunch):
     await asyncio.sleep(1)
-    await it(PublicGroup).init_account(account := event.app.account)
-    logger.success(f"[EricService] {account}: 公共群数据初始化完成")
+    await it(PublicGroup).init_account(event.app.account)
     if not (core := it(EricCore)).initialized:
         core.finish_init()
         logger.success("[EricService] Eric 核心初始化完成")

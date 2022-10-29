@@ -8,6 +8,7 @@ from graia.ariadne import Ariadne
 from graia.ariadne.message.element import Source
 from graia.ariadne.model import Group
 from kayaku import create
+from loguru import logger
 
 from library.model.config.eric import EricConfig
 
@@ -30,6 +31,7 @@ class PublicGroup:
                     self.data[group].add(app.account)
                 else:
                     self.data[group] = {app.account}
+        logger.success(f"[PublicGroup] {account}: 公共群数据初始化完成")
 
     async def init_all(self):
         """初始化数据"""

@@ -48,36 +48,34 @@ class GenericPluginRepo(BaseModel):
 
 
 class GithubPluginRepo(GenericPluginRepo):
-    RAW_URL = "https://raw.githubusercontent.com/{owner}/{repo}/{branch}/{path}"
-
     owner: str
     repo: str
     branch: str
 
-    def __init__(self, owner: str, repo: str, branch: str):
-        super().__init__(owner=owner, repo=repo, branch=branch)
+    @property
+    def raw_url(self) -> str:
+        return "https://raw.githubusercontent.com/{owner}/{repo}/{branch}/{path}"
 
     @property
     def __name__(self) -> str:
         return f"GithubPluginRepo:{self.owner}/{self.repo}@{self.branch}"
 
     def get_file_url(self, path: str) -> str:
-        return self.RAW_URL.format(
+        return self.raw_url.format(
             owner=self.owner, repo=self.repo, branch=self.branch, path=path
         )
 
 
 class HTTPPluginRepo(GenericPluginRepo):
-    RAW_URL = "{url}/{path}"
-
     url: str
 
-    def __init__(self, url: str):
-        super().__init__(url=url)
+    @property
+    def raw_url(self) -> str:
+        return "{url}/{path}"
 
     @property
     def __name__(self) -> str:
         return f"HTTPPluginRepo:{self.url}"
 
     def get_file_url(self, path: str) -> str:
-        return self.RAW_URL.format(url=self.url, path=path)
+        return self.raw_url.format(url=self.url, path=path)
