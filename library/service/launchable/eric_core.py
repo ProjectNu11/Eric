@@ -68,6 +68,8 @@ class EricService(Launchable):
             it(GroupConfig).save()
             logger.success("[EricService] 已保存配置文件")
 
+            await self.check_update()
+
     @staticmethod
     async def check_update():
         if not (update := await check_update()):
