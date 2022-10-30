@@ -30,7 +30,7 @@ async def get_file(file_id: str):
     return FileResponse(DATA_PATH / file_id, filename=await get_filename(file_id))
 
 
-@channel.use(SchedulerSchema(timers.every_custom_minutes(15)))
+@channel.use(SchedulerSchema(timers.every_minute()))
 async def scheduled_cleanup():
     with contextlib.suppress(Exception):
         await cleanup()

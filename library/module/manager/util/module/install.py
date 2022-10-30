@@ -6,8 +6,8 @@ from graia.broadcast.interrupt import InterruptControl
 
 from library.model.exception import RequirementResolveFailed
 from library.module.manager import RemoteModule
-from library.module.manager.util.remote.search import bulk_search
 from library.module.manager.util.remote.install import install as remote_install
+from library.module.manager.util.remote.search import bulk_search
 from library.util.message import send_message
 from library.util.misc import QUOTE_PATTERN
 from library.util.waiter.friend import FriendConfirmWaiter

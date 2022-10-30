@@ -1,8 +1,9 @@
+import contextlib
 import uuid
 from datetime import datetime, timedelta
 from hashlib import md5
 from pathlib import Path
-from typing import Generator, AsyncGenerator, Any
+from typing import Generator, AsyncGenerator
 
 import aiofiles
 from creart import it
@@ -97,7 +98,8 @@ async def insert(
 
 def ensure_unlink(file: Path):
     while file.is_file():
-        file.unlink()
+        with contextlib.suppress(Exception):
+            file.unlink()
 
 
 async def delete_file(file_id: str):
@@ -183,7 +185,6 @@ async def get_filename(file_id: str) -> str:
 
 
 async def _cleanup_outdated_files():
-    logger.debug("[FileServer] 正在清理过期文件")
     outdated = 0
     if files := await orm.all(
         select(FileServer.uuid, FileServer.time, FileServer.lifespan).where(
@@ -202,7 +203,6 @@ async def _cleanup_outdated_files():
 
 
 async def _cleanup_invalid_files():
-    logger.debug("[FileServer] 正在清理无效文件")
     invalid = 0
     for file in Path(DATA_PATH).iterdir():
         if not file.is_file():
