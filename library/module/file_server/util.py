@@ -184,6 +184,7 @@ async def get_filename(file_id: str) -> str:
 
 async def _cleanup_outdated_files():
     logger.debug("[FileServer] 正在清理过期文件")
+    outdated = 0
     if files := await orm.all(
         select(FileServer.uuid, FileServer.time, FileServer.lifespan).where(
             FileServer.available
@@ -194,10 +195,10 @@ async def _cleanup_outdated_files():
             for file_id, serve_time, lifespan in files
             if datetime.now() - serve_time > timedelta(seconds=lifespan)
         ]:
+            outdated += 1
             await delete_file(file)
-    else:
-        files = []
-    logger.debug(f"[FileServer] 已清理过期文件 {len(files)} 个")
+    if outdated:
+        logger.debug(f"[FileServer] 已清理过期文件 {outdated} 个")
 
 
 async def _cleanup_invalid_files():
