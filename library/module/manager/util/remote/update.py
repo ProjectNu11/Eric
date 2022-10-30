@@ -8,6 +8,7 @@ from graia.saya import Channel
 from loguru import logger
 
 from library.model.repo import GenericPluginRepo
+from library.module.manager.util.remote.version import check_update
 from library.module.manager.model.module import RemoteModule, RemoteModuleCache
 from library.module.manager.model.repository import ParsedRepository
 from library.util.module import Modules
@@ -47,3 +48,20 @@ async def update() -> tuple[list[RemoteModule], list[GenericPluginRepo]]:
     await _update_cache(cache)
     logger.success("[Manager] 远端模块缓存更新成功")
     return result, failed
+
+
+async def update_gen_msg() -> str:
+    modules, failed = await update()
+    msg = f"成功拉取 {len(modules)} 个模块"
+    for module in modules:
+        msg += f"\n - {module.name} ({module.clean_name})"
+    if failed:
+        msg += f"\n\n{len(failed)} 个仓库拉取失败"
+        for repo in failed:
+            msg += f"\n - {repo.__name__}"
+    if updates := check_update():
+        msg += f"\n\n{len(updates)} 个模块可更新"
+        for local, remote in updates:
+            msg += f"\n - {local.name} ({local.clean_name})"
+            msg += f"\n   {local.version} -> {remote.version}"
+    return msg

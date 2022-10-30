@@ -34,7 +34,7 @@ from library.module.manager.util.module.install import install
 from library.module.manager.util.module.state import change_state
 from library.module.manager.util.module.state import change_state
 from library.module.manager.util.remote.install import install as remote_install
-from library.module.manager.util.remote.update import update
+from library.module.manager.util.remote.update import update_gen_msg
 from library.module.manager.util.remote.version import check_update
 from library.module.manager.util.repository.register import wait_and_register
 from library.util.dispatcher import PrefixMatch
@@ -144,20 +144,7 @@ async def manager_register_repository(app: Ariadne, event: MessageEvent):
 )
 async def manager_update(app: Ariadne, event: MessageEvent):
     await send_message(event, MessageChain("正在拉取仓库更新中..."), app.account)
-    modules, failed = await update()
-    msg = f"成功拉取 {len(modules)} 个模块"
-    for module in modules:
-        msg += f"\n - {module.name} ({module.clean_name})"
-    if failed:
-        msg += f"\n\n{len(failed)} 个仓库拉取失败"
-        for repo in failed:
-            msg += f"\n - {repo.__name__}"
-    if updates := check_update():
-        msg += f"\n\n{len(updates)} 个模块可更新"
-        for local, remote in updates:
-            msg += f"\n - {local.name} ({local.clean_name})"
-            msg += f"\n   {local.version} -> {remote.version}"
-    await send_message(event, MessageChain(msg), app.account)
+    await send_message(event, MessageChain(await update_gen_msg()), app.account)
 
 
 @listen(GroupMessage, FriendMessage)
