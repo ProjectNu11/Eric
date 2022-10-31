@@ -30,7 +30,7 @@ def _require_install_deps(
             logger.warning(e)
             return
         if debug:
-            logger.error(e.with_traceback(e.__traceback__))
+            logger.exception(e.with_traceback(e.__traceback__))
         elif suppress:
             logger.error(e)
         else:
