@@ -1,0 +1,131 @@
+from pydantic import Field, BaseModel
+
+
+class ColorSingle(BaseModel):
+    color: tuple[int, int, int]
+
+    def hex(self) -> str:
+        return f"#{''.join(map(lambda x: hex(x)[2:].zfill(2), self.color))}"
+
+    def rgb(self) -> str:
+        return f"rgb({', '.join(map(str, self.color))})"
+
+
+class ColorPair(BaseModel):
+    light: ColorSingle
+    dark: ColorSingle
+
+    def get(self, dark: bool) -> ColorSingle:
+        return self.dark if dark else self.light
+
+    def hex(self, dark: bool) -> str:
+        return self.dark.hex() if dark else self.light.hex()
+
+    def rgb(self, dark: bool) -> str:
+        return self.dark.rgb() if dark else self.light.rgb()
+
+    class Config:
+        allow_mutation = False
+
+
+class ColorSchema(BaseModel):
+    """配色方案"""
+
+    TEXT: ColorPair = Field(
+        default=ColorPair(
+            light=(ColorSingle(color=(37, 37, 37))),
+            dark=(ColorSingle(color=(250, 250, 250))),
+        ),
+        alias="text",
+    )
+    """ 文本颜色 """
+
+    DESCRIPTION: ColorPair = Field(
+        default=ColorPair(
+            light=(ColorSingle(color=(140, 140, 140))),
+            dark=(ColorSingle(color=(204, 204, 204))),
+        ),
+        alias="description",
+    )
+    """ 描述颜色 """
+
+    SECONDARY_DESCRIPTION: ColorPair = Field(
+        default=ColorPair(
+            light=(ColorSingle(color=(156, 156, 156))),
+            dark=(ColorSingle(color=(99, 99, 99))),
+        ),
+        alias="secondary_description",
+    )
+    """ 次要描述颜色 """
+
+    FOREGROUND: ColorPair = Field(
+        default=ColorPair(
+            light=(ColorSingle(color=(252, 252, 252))),
+            dark=(ColorSingle(color=(23, 23, 23))),
+        ),
+        alias="foreground",
+    )
+    """ 前景色 """
+
+    BACKGROUND: ColorPair = Field(
+        default=ColorPair(
+            light=(ColorSingle(color=(246, 246, 246))),
+            dark=(ColorSingle(color=(1, 1, 1))),
+        ),
+        alias="background",
+    )
+    """ 背景色 """
+
+    LINE: ColorPair = Field(
+        default=ColorPair(
+            light=(ColorSingle(color=(232, 232, 232))),
+            dark=(ColorSingle(color=(58, 58, 58))),
+        ),
+        alias="line",
+    )
+    """ 分割线颜色 """
+
+    HINT: ColorPair = Field(
+        default=ColorPair(
+            light=(ColorSingle(color=(231, 238, 244))),
+            dark=(ColorSingle(color=(0, 43, 78))),
+        ),
+        alias="hint",
+    )
+    """ 提示颜色 """
+
+    HIGHLIGHT: ColorPair = Field(
+        default=ColorPair(
+            light=(ColorSingle(color=(0, 114, 221))),
+            dark=(ColorSingle(color=(67, 144, 245))),
+        ),
+        alias="highlight",
+    )
+    """ 高亮颜色 """
+
+    SECONDARY_HIGHLIGHT: ColorPair = Field(
+        default=ColorPair(
+            light=(ColorSingle(color=(235, 235, 235))),
+            dark=(ColorSingle(color=(59, 59, 59))),
+        ),
+        alias="secondary_highlight",
+    )
+    """ 次要高亮颜色 """
+
+    SWITCH_ENABLE: ColorPair = Field(
+        default=ColorPair(
+            light=(ColorSingle(color=(4, 129, 255))),
+            dark=(ColorSingle(color=(4, 129, 255))),
+        ),
+        alias="switch_enable",
+    )
+    """ 开关开启颜色 """
+
+    SWITCH_DISABLE: ColorPair = Field(
+        default=ColorPair(
+            light=(ColorSingle(color=(153, 153, 153))),
+            dark=(ColorSingle(color=(101, 102, 96))),
+        ),
+        alias="switch_disable",
+    )
+    """ 开关关闭颜色 """
