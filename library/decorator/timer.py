@@ -16,26 +16,38 @@ def timer(module_name: str):
 
         @functools.wraps(func)
         def wrapper_timer(*args, **kwargs):
+            call_time = datetime.now()
             start_time = time.perf_counter()
             value = func(*args, **kwargs)
             run_time = time.perf_counter() - start_time
             try:
-
-                async def _insert():
-                    await orm.add(
-                        ProcessTimeStat,
-                        time=datetime.now(),
-                        module=module_name,
-                        function=func.__name__,
-                        time_used=run_time,
+                # Only insert when returning value
+                if value:
+                    asyncio.get_event_loop().create_task(
+                        insert_timing_record(
+                            call_time=call_time,
+                            module=module_name,
+                            function=func.__name__,
+                            time_used=run_time,
+                        )
                     )
-
-                loop = asyncio.get_event_loop()
-                loop.create_task(_insert())
             except SQLAlchemyError as e:
                 logger.error(f"插入 {module_name}:{func.__name__} 计时数据时出错: {e}")
-            return value
+            finally:
+                return value
 
         return wrapper_timer
 
     return wrapper
+
+
+async def insert_timing_record(
+    call_time: datetime, module: str, function: str, time_used: float
+):
+    await orm.add(
+        ProcessTimeStat,
+        time=call_time,
+        module=module,
+        function=function,
+        time_used=time_used,
+    )

@@ -16,13 +16,12 @@ def _validate_mysql_config():
     if not db_cfg.is_mysql:
         return
     cfg: MySQLConfig = create(MySQLConfig)
-    if all(
+    assert not all(
         [
             cfg.pool_size + cfg.max_overflow <= 0,
             not cfg.disable_pooling,
         ]
-    ):
-        raise ValueError("禁用连接池时，连接池大小和最大溢出数必须大于 0")
+    ), "禁用连接池时，连接池大小和最大溢出数必须大于 0"
 
 
 def _validate_database_link():
@@ -32,23 +31,20 @@ def _validate_database_link():
         "MySQL:\tmysql+aiomysql://user:password@localhost:3306/database\n"
         "SQLite:\tsqlite+aiosqlite:///data/data.db"
     )
-    if not cfg.link:
-        raise ValueError(f"数据库链接不能为空\n{example}")
-    if not any(
+    assert cfg.link, f"数据库链接不能为空\n{example}"
+    assert any(
         [
             cfg.link.startswith("mysql+aiomysql://"),
             cfg.link.startswith("sqlite+aiosqlite://"),
         ]
-    ):
-        raise NotImplementedError(f"仅支持 MySQL 和 SQLite 数据库\n{example}")
+    ), f"仅支持 MySQL 和 SQLite 数据库\n{example}"
 
 
 def _validate_path():
     cfg = [create(PathConfig), create(DataPathConfig)]
     for c in cfg:
         for name, path in c.__dict__.items():
-            if not path:
-                raise ValueError(f"{name} 不能为空")
+            assert path, f"{name} 不能为空"
             if not Path(path).is_dir():
                 logger.info(f"创建 {name} 目录 {path}")
                 Path(path).mkdir(parents=True)
@@ -56,27 +52,23 @@ def _validate_path():
 
 def _validate_eric_config():
     cfg: EricConfig = create(EricConfig)
-    if not cfg.name:
-        raise ValueError("机器人名称不能为空")
+    assert cfg.name, "机器人名称不能为空"
     cfg.accounts = sorted(list(set(cfg.accounts)))
-    if not cfg.accounts:
-        raise ValueError("机器人账号不能为空")
-    if not cfg.host:
-        raise ValueError("mirai-api-http 服务器地址不能为空")
-    if not cfg.verify_key:
-        raise ValueError("mirai-api-http 验证密钥不能为空")
+    assert cfg.accounts, "机器人账号不能为空"
+    assert cfg.host, "mirai-api-http 服务器地址不能为空"
+    assert cfg.verify_key, "mirai-api-http 验证密钥不能为空"
     cfg.owners = sorted(list(set(cfg.owners)))
     cfg.dev_groups = sorted(list(set(cfg.dev_groups)))
-    if cfg.log_rotate < 0:
-        raise ValueError("日志保留天数不能小于 0")
+    assert cfg.log_rotate, "日志保留天数不能小于 0"
 
 
 def _validate_plugin_repo():
     cfg: ManagerConfig = create(ManagerConfig)
     processed = []
     for repo in cfg.plugin_repo:
-        if not repo.startswith("github") and not repo.startswith("http"):
-            raise ValueError(f"仅支持 GitHub 和 HTTP 协议的模块仓库，不支持 {repo}")
+        assert repo.startswith("github") or repo.startswith(
+            "http"
+        ), f"仅支持 GitHub 和 HTTP 协议的模块仓库，不支持 {repo}"
         repo = repo.rstrip(".git") if repo.startswith("github") else repo.rstrip("/")
         processed.append(repo)
     processed = sorted(list(set(processed)))
@@ -85,11 +77,10 @@ def _validate_plugin_repo():
 
 def _validate_fastapi_config():
     cfg: FastAPIConfig = create(FastAPIConfig)
-    if not re.match(
+    assert re.match(
         r"^((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)$",
         cfg.host,
-    ):
-        raise ValueError("FastAPI 服务器地址不合法")
+    ), "FastAPI 服务器地址不合法"
     cfg.domain = cfg.domain.rstrip("/")
 
 

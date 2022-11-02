@@ -86,14 +86,16 @@ class GroupConfig(BaseModel):
 
     def load(self):
         """加载配置"""
-        groups: set[int] = set()
-        for file in CONFIG_PATH.iterdir():
+        groups: set[int] = {
+            int(file.name)
+            for file in CONFIG_PATH.iterdir()
             if (
                 file.is_dir()
                 and file.name.isdigit()
                 and (file / "switch.json").is_file()
-            ):
-                groups.add(int(file.name))
+            )
+        }
+
         self.groups = groups
         for group in self.groups:
             self.switch[group] = GroupSwitch.load(group)
