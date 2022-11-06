@@ -1,14 +1,29 @@
 from pydantic import Field, BaseModel
+from typing_extensions import Self
 
 
 class ColorSingle(BaseModel):
-    color: tuple[int, int, int]
+    color: tuple[int, int, int] | tuple[int, int, int, float]
+
+    @property
+    def has_alpha(self) -> bool:
+        return len(self.color) == 4
 
     def hex(self) -> str:
-        return f"#{''.join(map(lambda x: hex(x)[2:].zfill(2), self.color))}"
+        if self.has_alpha:
+            return (
+                f"#{''.join(f'{int(c * self.color[3]):02X}' for c in self.color[:3])}"
+            )
+        return f"#{''.join(f'{int(c):02X}' for c in self.color)}"
 
     def rgb(self) -> str:
-        return f"rgb({', '.join(map(str, self.color))})"
+        return f"{'rgba' if self.has_alpha else 'rgb'}{self.color}"
+
+    def add_alpha(self, alpha: float) -> Self:
+        return ColorSingle(color=self.color[:3] + (alpha,))
+
+    def remove_alpha(self) -> Self:
+        return ColorSingle(color=self.color[:3])
 
 
 class ColorPair(BaseModel):
