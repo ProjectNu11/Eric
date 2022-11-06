@@ -30,6 +30,7 @@ from library.model.core import EricCore
 from library.model.permission import UserPerm
 from library.module.manager.model.module import RemoteModule
 from library.module.manager.model.repository import ParsedRepository
+from library.module.manager.util.lock import lock
 from library.module.manager.util.module.install import install
 from library.module.manager.util.module.state import change_state
 from library.module.manager.util.module.state import change_state
@@ -40,12 +41,8 @@ from library.module.manager.util.repository.register import wait_and_register
 from library.util.dispatcher import PrefixMatch
 from library.util.message import send_message
 from library.util.multi_account.public_group import PublicGroup
-from library.util.waiter.friend import (
-    FriendConfirmWaiter,
-)
-from library.util.waiter.group import (
-    GroupConfirmWaiter,
-)
+from library.util.waiter.friend import FriendConfirmWaiter
+from library.util.waiter.group import GroupConfirmWaiter
 
 channel = Channel.current()
 inc = it(InterruptControl)
@@ -119,11 +116,15 @@ async def manager_account_launch(event: AccountLaunch):
 )
 async def manager_register_repository(app: Ariadne, event: MessageEvent):
     try:
-        msg = await wait_and_register(app, event)
+        assert not lock.locked(), "未能取得管理器锁，请检查是否正在其他操作"
+        async with lock:
+            msg = await wait_and_register(app, event)
     except TimeoutError:
         await send_message(event, MessageChain("等待超时"), app.account)
     except ValueError:
         await send_message(event, MessageChain("数值输入错误，取消注册"), app.account)
+    except AssertionError as e:
+        await send_message(event, MessageChain(e.args[0]), app.account)
     else:
         await send_message(event, MessageChain(msg), app.account)
 
@@ -143,8 +144,13 @@ async def manager_register_repository(app: Ariadne, event: MessageEvent):
     Permission.require(UserPerm.BOT_OWNER),
 )
 async def manager_update(app: Ariadne, event: MessageEvent):
-    await send_message(event, MessageChain("正在拉取仓库更新中..."), app.account)
-    await send_message(event, MessageChain(await update_gen_msg()), app.account)
+    try:
+        assert not lock.locked(), "未能取得管理器锁，请检查是否正在其他操作"
+        async with lock:
+            await send_message(event, MessageChain("正在拉取仓库更新中..."), app.account)
+            await send_message(event, MessageChain(await update_gen_msg()), app.account)
+    except AssertionError as e:
+        await send_message(event, MessageChain(e.args[0]), app.account)
 
 
 @listen(GroupMessage, FriendMessage)
@@ -231,6 +237,12 @@ async def manager_list(
     content: str = content.result.display
 
     try:
-        await send_message(event, await install(app, event, content, yes), app.account)
+        assert not lock.locked(), "未能取得管理器锁，请检查是否正在其他操作"
+        async with lock:
+            await send_message(
+                event, await install(app, event, content, yes), app.account
+            )
     except TimeoutError:
         await send_message(event, MessageChain("等待超时"), app.account)
+    except AssertionError as e:
+        await send_message(event, MessageChain(e.args[0]), app.account)
