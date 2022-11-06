@@ -10,26 +10,27 @@ class _GenericBoxText(Element):
 
     size: int
     text: str
+    is_desc: bool
+    highlight: bool
 
-    def __init__(self, text: str, size: int):
+    def __init__(self, text: str, size: int, is_desc: bool, highlight: bool):
         self.text = text
         self.size = size
+        self.is_desc = is_desc
+        self.highlight = highlight
 
-    @property
-    def style_color(self) -> str:
-        return f"color: {self.schema.DESCRIPTION.rgb(self.dark)}"
-
-    @property
-    def style(self) -> set[Style[str, str]]:
-        return {Style({"color-description": self.style_color})}
+    def style(self, schema: ColorSchema, dark: bool) -> set[Style[str, str]]:
+        return (
+            {Style({"color-description": f"color: {schema.DESCRIPTION.rgb(dark)}"})}
+            if self.is_desc
+            else {Style({"color-text": f"color: {schema.TEXT.rgb(dark)}"})}
+        )
 
     def to_e(self, *, schema: ColorSchema, dark: bool, **_kwargs) -> str:
-        self.schema = schema
-        self.dark = dark
         return builder.DIV(
             self.text,
             {
-                "class": " ".join(self.style_keys),
+                "class": " ".join(self.style_keys(schema, dark)),
                 "style": f"font-size: {self.size}px; word-wrap: break-word",
             },
         )
@@ -40,46 +41,127 @@ class GenericBoxItem(Element):
     TEXT_SIZE: int = 35
     DESCRIPTION_SIZE: int = 25
 
-    text: _GenericBoxText
-    description: _GenericBoxText
+    text: _GenericBoxText | None
+    description: _GenericBoxText | None
 
-    def __init__(self, text: str, description: str):
-        self.text = _GenericBoxText(text, self.TEXT_SIZE)
-        self.description = _GenericBoxText(description, self.DESCRIPTION_SIZE)
+    def __init__(
+        self,
+        text: str | None,
+        description: str | None = None,
+        switch: bool | None = None,
+        highlight: bool = False,
+    ):
+        assert (
+            text is not None or description is not None
+        ), "text and description cannot be None at the same time"
+        self.text = (
+            _GenericBoxText(text, self.TEXT_SIZE, False, highlight)
+            if text is not None
+            else None
+        )
+        self.description = (
+            _GenericBoxText(description, self.DESCRIPTION_SIZE, True, highlight)
+            if description is not None
+            else None
+        )
 
-    @property
-    def style(self) -> set[Style[str, str]]:
-        return (
-            self.text.style
-            | self.description.style
-            | {
+    def style(self, schema: ColorSchema, dark: bool) -> set[Style[str, str]]:
+        return set().union(
+            self.text.style(schema, dark) if self.text is not None else set(),
+            self.description.style(schema, dark)
+            if self.description is not None
+            else set(),
+            {
                 Style(
                     {
                         "color-foreground": f"background-color: "
-                        f"{self.schema.FOREGROUND.rgb(self.dark)}"
+                        f"{schema.FOREGROUND.rgb(dark)}"
                     }
                 ),
-            }
+            },
         )
 
-    def set_text(self, text: str) -> Self:
-        self.text.text = text
+    def set_text(self, text: str, highlight: bool = False) -> Self:
+        if self.text:
+            self.text.text = text
+        else:
+            self.text = _GenericBoxText(text, self.TEXT_SIZE, False, highlight)
         return self
 
-    def set_description(self, description: str) -> Self:
-        self.description.text = description
+    def set_description(self, description: str, highlight: bool = False) -> Self:
+        if self.description:
+            self.description.text = description
+        else:
+            self.description = _GenericBoxText(
+                description, self.DESCRIPTION_SIZE, True, highlight
+            )
         return self
 
-    def to_e(self, *, boarder: int = 40, **_kwargs) -> str:
+    def to_e(self, *, schema: ColorSchema, dark: bool, **_kwargs) -> str:
+        parts = [
+            self.text.to_e(schema=schema, dark=dark) if self.text else None,
+            self.description.to_e(schema=schema, dark=dark)
+            if self.description
+            else None,
+        ]
         return builder.DIV(
-            self.text.to_e(schema=self.schema, dark=self.dark),
-            self.description.to_e(schema=self.schema, dark=self.dark),
+            *[part for part in parts if part is not None],
             {
-                "class": " ".join({*self.style_keys, "auto-width"}),
+                "class": " ".join({*self.style_keys(schema, dark)}),
                 "style": "display: flex; "
-                f"border-radius: {boarder}px; "
-                "margin: 0 auto;"
-                "padding: 40px;"
+                "padding: 40px 0 40px 0;"
                 "flex-direction: column",
             },
+        )
+
+
+class GenericBox(Element):
+
+    items: list[GenericBoxItem]
+    boarder: int
+
+    def __init__(self, *items: GenericBoxItem, boarder: int = 40):
+        self.items = []
+        self.boarder = boarder
+        self.add(*items)
+
+    def add(self, *items: GenericBoxItem) -> Self:
+        for item in items:
+            if self.items:
+                self.items.append(self._divider)
+            self.items.append(item)
+        return self
+
+    @property
+    def _divider(self):
+        return builder.DIV({"class": "color-line", "style": "height: 3px"})
+
+    def style(self, schema: ColorSchema, dark: bool) -> set[Style[str, str]]:
+        return {
+            Style({"color-line": f"background-color: {schema.LINE.rgb(dark)}"})
+        }.union(
+            inflate(
+                [
+                    item.style(schema, dark)
+                    for item in self.items
+                    if isinstance(item, GenericBoxItem)
+                ]
+            )
+        )
+
+    def to_e(self, *, schema: ColorSchema, dark: bool, **_kwargs) -> str:
+        return builder.DIV(
+            builder.DIV(
+                *[
+                    item.to_e(schema=schema, dark=dark)
+                    if isinstance(item, GenericBoxItem)
+                    else item
+                    for item in self.items
+                ],
+                {
+                    "class": "color-foreground round-corner",
+                    "style": "padding: 0 40px 0 40px",
+                },
+            ),
+            {},
         )
