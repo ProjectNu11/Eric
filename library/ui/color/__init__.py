@@ -12,6 +12,7 @@ from library.ui.color.schema import ColorSchema, ColorSingle
 class Color(BaseModel):
     schemas: dict[str, ColorSchema] = {"default": ColorSchema()}
     colors: dict[str, ColorSingle] = {}
+    current_using: str = "default"
 
     def initialize(self) -> Self:
         self.colors |= {
@@ -39,8 +40,11 @@ class Color(BaseModel):
         }
         return self
 
-    def get_schema(self, name: str = "default") -> ColorSchema:
-        return self.schemas[name] if name in self.schemas else self.schemas["default"]
+    def current(self) -> ColorSchema:
+        return self.get_schema(self.current_using)
+
+    def get_schema(self, name: str = None) -> ColorSchema:
+        return self.current() if name is None else self.schemas[name]
 
     def get_color(self, name: str) -> ColorSingle:
         return self.colors[name]
