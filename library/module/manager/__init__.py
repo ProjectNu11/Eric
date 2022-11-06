@@ -33,7 +33,6 @@ from library.module.manager.model.repository import ParsedRepository
 from library.module.manager.util.lock import lock
 from library.module.manager.util.module.install import install
 from library.module.manager.util.module.state import change_state
-from library.module.manager.util.module.state import change_state
 from library.module.manager.util.remote.install import install as remote_install
 from library.module.manager.util.remote.update import update_gen_msg
 from library.module.manager.util.remote.version import check_update

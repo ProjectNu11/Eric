@@ -1,6 +1,6 @@
-from library.ui.element.base import Element
-
 from lxml.html import builder
+
+from library.ui.element.base import Element
 
 
 class Blank(Element):

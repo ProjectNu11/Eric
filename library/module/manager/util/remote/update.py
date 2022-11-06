@@ -8,9 +8,9 @@ from graia.saya import Channel
 from loguru import logger
 
 from library.model.repo import GenericPluginRepo
-from library.module.manager.util.remote.version import check_update
 from library.module.manager.model.module import RemoteModule, RemoteModuleCache
 from library.module.manager.model.repository import ParsedRepository
+from library.module.manager.util.remote.version import check_update
 from library.util.module import Modules
 
 channel = Channel.current()

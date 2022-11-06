@@ -1,8 +1,8 @@
+import contextlib
 from base64 import b64encode
 from pathlib import Path
 
 import PIL
-import contextlib
 from PIL import Image
 from lxml.html import builder
 from typing_extensions import Self

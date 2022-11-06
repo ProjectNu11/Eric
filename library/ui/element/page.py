@@ -1,6 +1,5 @@
-from typing_extensions import Self
-
 from lxml.html import builder, tostring
+from typing_extensions import Self
 
 from library.ui.color import ColorSchema, is_dark
 from library.ui.element.base import Element, Style
