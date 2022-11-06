@@ -26,9 +26,9 @@ from library.config.initialize import initialize_config
 from library.model.config.eric import EricConfig
 from library.model.config.service.fastapi import FastAPIConfig
 from library.service.launchable.core_data import EricCoreData
-from library.service.launchable.core_module import EricCoreModule
 from library.service.launchable.core_updater import EricCoreUpdater
 from library.util.log import setup_logger
+from library.util.module.launch import launch_require
 
 
 def initialize(*, with_console: bool):
@@ -70,7 +70,6 @@ def initialize(*, with_console: bool):
     Ariadne.launch_manager.add_service(
         UvicornService(host=fastapi_config.host, port=fastapi_config.port)
     )
-    Ariadne.launch_manager.add_service(EricCoreModule())
     Ariadne.launch_manager.add_service(EricCoreUpdater())
     Ariadne.launch_manager.add_service(EricCoreData())
 
@@ -82,6 +81,7 @@ def initialize(*, with_console: bool):
         it(GraiaSchedulerBehaviour),
         FastAPIBehaviour(it(FastAPI)),
     )
+    launch_require()
 
     if with_console:
         saya.install_behaviours(
