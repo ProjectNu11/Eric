@@ -20,6 +20,8 @@ class _GenericBoxText(Element):
         self.highlight = highlight
 
     def style(self, schema: ColorSchema, dark: bool) -> set[Style[str, str]]:
+        if not self.is_desc:
+            return {Style({"color-text": f"color: {schema.TEXT.rgb(dark)}"})}
         return (
             {Style({"color-description": f"color: {schema.DESCRIPTION.rgb(dark)}"})}
             if self.is_desc

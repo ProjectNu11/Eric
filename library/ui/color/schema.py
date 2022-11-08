@@ -1,3 +1,5 @@
+import re
+
 from pydantic import Field, BaseModel
 from typing_extensions import Self
 
@@ -25,19 +27,27 @@ class ColorSingle(BaseModel):
     def remove_alpha(self) -> Self:
         return ColorSingle(color=self.color[:3])
 
+    @classmethod
+    def from_hex(cls, value: str) -> Self:
+        value = value.lstrip("#")
+        assert re.match(r"^[\dA-Fa-f]{6}$", value), f"Invalid hex value: {value}"
+        return cls(color=(int(value[:2], 16), int(value[2:4], 16), int(value[4:6], 16)))
+
 
 class ColorPair(BaseModel):
     light: ColorSingle
     dark: ColorSingle
 
-    def get(self, dark: bool) -> ColorSingle:
-        return self.dark if dark else self.light
+    def get(self, dark: bool, alpha: float = 1.0) -> ColorSingle:
+        assert 0.0 <= alpha <= 1.0, "Invalid value for alpha"
+        color = self.dark if dark else self.light
+        return color if float == 1.0 else color.add_alpha(alpha)
 
-    def hex(self, dark: bool) -> str:
-        return self.dark.hex() if dark else self.light.hex()
+    def hex(self, dark: bool, alpha: float = 1.0) -> str:
+        return self.get(dark, alpha).hex()
 
-    def rgb(self, dark: bool) -> str:
-        return self.dark.rgb() if dark else self.light.rgb()
+    def rgb(self, dark: bool, alpha: float = 1.0) -> str:
+        return self.get(dark, alpha).rgb()
 
     class Config:
         allow_mutation = False

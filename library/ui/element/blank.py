@@ -1,6 +1,6 @@
 from lxml.html import builder
 
-from library.ui.element.base import Element
+from library.ui.element.base import Element, Style
 
 
 class Blank(Element):
@@ -10,9 +10,8 @@ class Blank(Element):
     def __init__(self, height: int):
         self.height = height
 
-    @property
-    def style(self) -> set:
+    def style(self, *_args, **_kwargs) -> set[Style[str, str]]:
         return set()
 
-    def to_e(self) -> str:
+    def to_e(self, *_args, **_kwargs) -> str:
         return builder.DIV(style=f"height: {self.height}px;")
