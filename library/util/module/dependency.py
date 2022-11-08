@@ -28,7 +28,11 @@ def install_dependency(
     if module:
         requirements = _get_requirements_by_module(module)
     config: EricConfig = create(EricConfig)
-    command = ["pip", "install"] if config.environment == "pip" else ["poetry", "add"]
+    command = (
+        ["pip", "install"]
+        if config.environment == "pip"
+        else ["poetry", "run", "python", "-m", "pip", "install"]
+    )
     process = subprocess.Popen(
         [*command, *requirements],
         stdout=subprocess.PIPE,
