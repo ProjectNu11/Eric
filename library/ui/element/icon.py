@@ -7,7 +7,8 @@ from PIL import Image
 from lxml.html import builder
 from typing_extensions import Self
 
-from library.ui.element.base import Element
+from library.ui.color import ColorSchema
+from library.ui.element.base import Element, Style
 
 
 class Icon(Element):
@@ -18,6 +19,9 @@ class Icon(Element):
         assert svg or img
         self.svg = svg
         self.img = img
+
+    def style(self, schema: ColorSchema, dark: bool) -> set[Style[str, str]]:
+        return set()
 
     @classmethod
     def from_file(cls, path: Path | str) -> Self:
