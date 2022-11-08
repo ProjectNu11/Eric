@@ -1,3 +1,6 @@
+from graia.ariadne import Ariadne
+from graiax.playwright import PlaywrightBrowser
+from loguru import logger
 from lxml.html import builder, tostring
 from typing_extensions import Self
 
@@ -19,13 +22,15 @@ class Page(Element):
     def __init__(
         self,
         *elements: Element | list[Element] | tuple[Element],
-        schema: ColorSchema,
+        schema: ColorSchema = None,
         dark: bool = None,
         max_width: int = 800,
         border_radius: int = 40,
     ):
         if dark is None:
             dark = is_dark()
+        if schema is None:
+            schema = ColorSchema()
         self.schema = schema
         self.dark = dark
         self.max_width = max_width
@@ -87,5 +92,22 @@ class Page(Element):
 
     def to_html(self, *_args, **_kwargs) -> str:
         return tostring(
-            self.to_e(schema=self.schema, dark=self.dark), encoding="unicode"
+            self.to_e(schema=self.schema, dark=self.dark),
+            encoding="unicode",
+            pretty_print=True,
         )
+
+    async def render(self, width: int = 720, device_scale_factor: float = 1.0) -> bytes:
+        browser = Ariadne.launch_manager.get_interface(PlaywrightBrowser)
+        async with browser.page(
+            viewport={"width": width, "height": 10},
+            device_scale_factor=device_scale_factor,
+        ) as page:
+            logger.info("[Page] Setting content...")
+            await page.set_content(self.to_html())
+            logger.info("[Page] Getting screenshot...")
+            img = await page.screenshot(
+                type="jpeg", quality=80, full_page=True, scale="device"
+            )
+            logger.success("[Page] Done.")
+            return img

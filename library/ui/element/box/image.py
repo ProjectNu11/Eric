@@ -11,19 +11,33 @@ from library.ui.element.base import Element, Style
 
 
 class ImageBox(Element):
-    img: bytes
+    img: bytes = None
+    url: str = None
+    base64: str = None
 
-    def __init__(self, img: Image.Image | bytes | Path):
-        if isinstance(img, Path):
-            img = Image.open(img)
-        if isinstance(img, Image.Image):
-            output = BytesIO()
-            img.save(output, "JPEG" if img.mode == "RGB" else "PNG")
-            img = output.getvalue()
-        if isinstance(img, bytes):
-            self.img = img
+    def __init__(
+        self,
+        *,
+        img: Image.Image | bytes | Path = None,
+        url: str = None,
+        base64: str = None,
+    ):
+        assert img or url or base64, "ImageBox must have img or url or base64"
+        if url:
+            self.url = url
+        elif base64:
+            self.base64 = base64
         else:
-            raise TypeError
+            if isinstance(img, Path):
+                img = Image.open(img)
+            if isinstance(img, Image.Image):
+                output = BytesIO()
+                img.save(output, "JPEG" if img.mode == "RGB" else "PNG")
+                img = output.getvalue()
+            if isinstance(img, bytes):
+                self.img = img
+            else:
+                raise TypeError
 
     def style(self, schema: ColorSchema, dark: bool) -> set[Style[str, str]]:
         return set()
@@ -32,8 +46,20 @@ class ImageBox(Element):
     def from_file(cls, path: Path | str) -> Self:
         return cls(img=Image.open(path))
 
-    def to_e(self, *_args, **_kwargs):
-        data = b64encode(self.img).decode("utf-8")
+    @classmethod
+    def from_base64(cls, data: str) -> Self:
+        return cls(base64=data)
+
+    @classmethod
+    def from_bytes(cls, data: bytes) -> Self:
+        return cls(img=data)
+
+    @classmethod
+    def from_url(cls, url: str) -> Self:
+        return cls(url=url)
+
+    def _to_e_bytes(self):
+        data = self.base64 or b64encode(self.img).decode("utf-8")
         return builder.IMG(
             {
                 "src": f"data:image/png;base64,{data}",
@@ -41,3 +67,15 @@ class ImageBox(Element):
                 "style": "width: 100%",
             }
         )
+
+    def _to_e_url(self):
+        return builder.IMG(
+            {
+                "src": self.url,
+                "class": "round-corner",
+                "style": "width: 100%",
+            }
+        )
+
+    def to_e(self, *_args, **_kwargs):
+        return self._to_e_bytes() if self.img or self.base64 else self._to_e_url()
