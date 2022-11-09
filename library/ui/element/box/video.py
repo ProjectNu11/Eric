@@ -23,13 +23,16 @@ class VideoBox(Element):
         return cls(url=url)
 
     def to_e(self, *_args, **_kwargs):
+        properties = [
+            {"loop": "1"} if self.loop else {},
+            {"controls": "1"} if self.controls else {},
+            {"autoplay": "1"} if self.loop else {},
+        ]
         return E.video(
             {
                 "src": self.url,
                 "class": "round-corner",
                 "style": "width: 100%",
             },
-            "loop" if self.loop else "",
-            "controls" if self.controls else "",
-            "autoplay",
+            *properties,
         )
