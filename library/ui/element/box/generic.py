@@ -19,6 +19,11 @@ class _GenericBoxText(Element):
         self.is_desc = is_desc
         self.highlight = highlight
 
+    def __hash__(self):
+        return hash(
+            f"_GenericBoxText:{self.text}:{self.size}:{self.is_desc}:{self.highlight}"
+        )
+
     def style(self, schema: ColorSchema, dark: bool) -> set[Style[str, str]]:
         if not self.is_desc:
             return {Style({"color-text": f"color: {schema.TEXT.rgb(dark)}"})}
@@ -66,6 +71,9 @@ class GenericBoxItem(Element):
             if description is not None
             else None
         )
+
+    def __hash__(self):
+        return hash(f"_GenericBoxItem:{hash(self.text)}:{hash(self.description)}")
 
     def style(self, schema: ColorSchema, dark: bool) -> set[Style[str, str]]:
         return set().union(
@@ -126,6 +134,9 @@ class GenericBox(Element):
         self.items = []
         self.boarder = boarder
         self.add(*items)
+
+    def __hash__(self):
+        return hash(f"GenericBox:{':'.join(str(hash(item)) for item in self.items)})")
 
     def add(self, *items: GenericBoxItem) -> Self:
         for item in items:

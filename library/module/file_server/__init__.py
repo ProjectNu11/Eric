@@ -15,12 +15,17 @@ from library.module.file_server.util import (
     get_filename,
     file_registered,
 )
-from library.module.file_server.vars import ENTRYPOINT
+from library.module.file_server.vars import (
+    FILE_ENTRYPOINT,
+    LIB_ASSETS_ENTRYPOINT,
+    MODULE_ASSETS_ENTRYPOINT,
+    LIB_ASSETS_DIR,
+)
 
 channel = Channel.current()
 
 
-@route.get(ENTRYPOINT)
+@route.get(FILE_ENTRYPOINT)
 async def get_file(file_id: str):
     if not file_exist(file_id) or not await file_registered(file_id):
         raise HTTPException(status_code=404, detail="File not found")
@@ -34,3 +39,17 @@ async def get_file(file_id: str):
 async def scheduled_cleanup():
     with contextlib.suppress(Exception):
         await cleanup()
+
+
+@route.get(LIB_ASSETS_ENTRYPOINT)
+async def library_assets(file: str):
+    print(LIB_ASSETS_DIR / file)
+    if (file := LIB_ASSETS_DIR / file).exists():
+        return FileResponse(file)
+    raise HTTPException(status_code=404, detail="File not found")
+
+
+@route.get(MODULE_ASSETS_ENTRYPOINT)
+async def module_assets(module: str, file: str):
+    # TODO implement this
+    raise HTTPException(status_code=501, detail="Not implemented yet")

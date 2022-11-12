@@ -10,6 +10,9 @@ class Blank(Element):
     def __init__(self, height: int):
         self.height = height
 
+    def __hash__(self):
+        return hash(f"_Blank:{self.height}")
+
     def style(self, *_args, **_kwargs) -> set[Style[str, str]]:
         return set()
 

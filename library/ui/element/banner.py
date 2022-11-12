@@ -32,6 +32,9 @@ class Banner(Element):
         self.blank_height = blank_height
         self.font_size = font_size
 
+    def __hash__(self):
+        return hash(f"_Banner:{self.text}:{hash(self.icon)}:{self.blank_height}")
+
     @staticmethod
     def _get_icon(icon: str | Image.Image | Path) -> Icon:
         if isinstance(icon, Image.Image):

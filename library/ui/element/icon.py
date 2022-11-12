@@ -20,6 +20,9 @@ class Icon(Element):
         self.svg = svg
         self.img = img
 
+    def __hash__(self):
+        return hash(f"_Icon:{self.svg}:{hash(self.img)}")
+
     def style(self, schema: ColorSchema, dark: bool) -> set[Style[str, str]]:
         return set()
 

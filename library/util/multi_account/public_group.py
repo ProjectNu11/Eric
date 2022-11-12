@@ -16,10 +16,14 @@ from library.model.config.eric import EricConfig
 class PublicGroup:
     """公共群分发"""
 
+    accounts: set[int]
+    """ 已登录账号 """
+
     data: dict[int, set[int]]
     """ 群组数据 """
 
     def __init__(self):
+        self.accounts = set()
         self.data = {}
 
     async def init_account(self, account: int):
@@ -31,6 +35,7 @@ class PublicGroup:
                     self.data[group].add(app.account)
                 else:
                     self.data[group] = {app.account}
+        self.accounts.add(app.account)
         logger.success(f"[PublicGroup] {account}: 公共群数据初始化完成")
 
     async def init_all(self):
