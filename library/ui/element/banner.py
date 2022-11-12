@@ -36,7 +36,7 @@ class Banner(Element):
     def _get_icon(icon: str | Image.Image | Path) -> Icon:
         if isinstance(icon, Image.Image):
             return Icon(img=icon)
-        elif isinstance(icon, Path):
+        if isinstance(icon, Path):
             return Icon.from_file(icon)
         return Icon(svg=icon)
 
