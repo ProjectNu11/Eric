@@ -39,6 +39,9 @@ class ImageBox(Element):
             else:
                 raise TypeError
 
+    def __hash__(self):
+        return hash(f"_ImageBox:{self.img}:{self.url}:{self.base64}")
+
     def style(self, schema: ColorSchema, dark: bool) -> set[Style[str, str]]:
         return set()
 

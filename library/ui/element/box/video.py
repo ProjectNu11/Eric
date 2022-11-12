@@ -15,6 +15,9 @@ class VideoBox(Element):
         self.loop = loop
         self.controls = controls
 
+    def __hash__(self):
+        return hash(f"_VideoBox:{self.url}:{self.loop}:{self.controls}")
+
     def style(self, schema: ColorSchema, dark: bool) -> set[Style[str, str]]:
         return set()
 
@@ -26,7 +29,7 @@ class VideoBox(Element):
         properties = [
             {"loop": "1"} if self.loop else {},
             {"controls": "1"} if self.controls else {},
-            {"autoplay": "1"} if self.loop else {},
+            {"autoplay": "1"},
         ]
         return E.video(
             {

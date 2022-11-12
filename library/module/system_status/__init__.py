@@ -5,7 +5,7 @@ from creart import it
 from graia.ariadne import Ariadne
 from graia.ariadne.event.message import GroupMessage, FriendMessage, MessageEvent
 from graia.ariadne.message.chain import MessageChain
-from graia.ariadne.message.element import Plain
+from graia.ariadne.message.element import Image
 from graia.ariadne.message.parser.twilight import Twilight, FullMatch
 from graia.saya import Channel
 from graia.saya.builtins.broadcast import ListenerSchema
@@ -16,9 +16,12 @@ from library.decorator.permission import Permission
 from library.model.config.eric import EricConfig
 from library.model.core import EricCore
 from library.model.permission import UserPerm
+from library.ui import Page
+from library.ui.element import Banner, GenericBox, GenericBoxItem, ProgressBar
 from library.util.dispatcher import PrefixMatch
 from library.util.message import send_message
 from library.util.misc import seconds_to_string
+from library.util.multi_account.public_group import PublicGroup
 
 channel = Channel.current()
 
@@ -33,25 +36,43 @@ channel = Channel.current()
 async def system_status(app: Ariadne, event: MessageEvent):
     core: EricCore = it(EricCore)
     config: EricConfig = create(EricConfig)
+    public_group: PublicGroup = it(PublicGroup)
 
     mem = psutil.virtual_memory()
     total_memery = round(mem.total / 1024**3, 2)
+
+    page = Page(
+        Banner("系统状态"),
+        GenericBox(
+            GenericBoxItem(
+                "登录账号", f"{len(public_group.accounts)} 个 / {len(config.accounts)} 个"
+            ),
+            GenericBoxItem("启动时间", core.launch_time.strftime("%Y-%m-%d, %H:%M:%S")),
+            GenericBoxItem(
+                "运行时间", seconds_to_string((datetime.now() - core.launch_time).seconds)
+            ),
+        ),
+        GenericBox(
+            GenericBoxItem("内存总大小", f"{total_memery} GB"),
+        ),
+        ProgressBar(
+            round(mem.used / mem.total, 2),
+            "内存使用率",
+            f"{round(mem.used / 1024 ** 3, 2)}GB / {total_memery}GB "
+            f"({round(mem.used / mem.total * 100, 2)}%)",
+        ),
+        GenericBox(
+            GenericBoxItem("CPU 物理核心数", str(psutil.cpu_count(logical=False))),
+            GenericBoxItem("CPU 频率", f"{psutil.cpu_freq().current}MHz"),
+        ),
+        ProgressBar(
+            (cpu_percent := psutil.cpu_percent()) / 100,
+            "CPU 总体占用",
+            f"{cpu_percent}%",
+        ),
+    )
     await send_message(
         event.sender.group if isinstance(event, GroupMessage) else event.sender,
-        MessageChain(
-            Plain(
-                f"登录账号：{len(config.accounts)} 个\n"
-                f"启动时间：{core.launch_time.strftime('%Y-%m-%d, %H:%M:%S')}\n"
-                f"已运行时间：{seconds_to_string((datetime.now() - core.launch_time).seconds)}\n"
-                "内存相关：\n    "
-                f"内存总大小：{total_memery}GB\n    "
-                f"内存使用量：{round(mem.used / 1024 ** 3, 2)}GB / {total_memery}GB ({round(mem.used / mem.total * 100, 2)}%)\n    "
-                f"内存空闲量：{round(mem.free / 1024 ** 3, 2)}GB / {total_memery}GB ({round(mem.free / mem.total * 100, 2)}%)\n"
-                "CPU相关：\n    "
-                f"CPU 物理核心数：{psutil.cpu_count(logical=False)}\n    "
-                f"CPU总体占用：{psutil.cpu_percent()}%\n    "
-                f"CPU频率：{psutil.cpu_freq().current}MHz"
-            )
-        ),
+        MessageChain(Image(data_bytes=await page.render())),
         app.account,
     )

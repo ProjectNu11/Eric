@@ -1,13 +1,19 @@
 from graia.ariadne import Ariadne
 from graiax.playwright import PlaywrightBrowser
+from kayaku import create
 from loguru import logger
 from lxml.html import builder, tostring
 from typing_extensions import Self
 
+from library.model.config.service.fastapi import FastAPIConfig
 from library.ui.color import ColorSchema, is_dark
 from library.ui.element.base import Element, Style
 from library.ui.element.blank import Blank
 from library.util.misc import inflate
+
+_HARMONY_FONT_URL = (
+    f"http://{create(FastAPIConfig).link}/assets/library/HarmonyOSHans.ttf"  # noqa
+)
 
 
 class Page(Element):
@@ -24,8 +30,8 @@ class Page(Element):
         *elements: Element | list[Element] | tuple[Element],
         schema: ColorSchema = None,
         dark: bool = None,
-        max_width: int = 800,
-        border_radius: int = 40,
+        max_width: int = 1000,
+        border_radius: int = 50,
     ):
         if dark is None:
             dark = is_dark()
@@ -38,11 +44,15 @@ class Page(Element):
         self.elements = []
         self.add(*elements)
 
+    def __hash__(self):
+        return hash(
+            f"_Page:{':' .join(str(hash(element)) for element in self.elements)}"
+        )
+
     def add(self, *elements: Element | list[Element] | tuple[Element]) -> Self:
         for element in elements:
-            if self.elements:
-                self.elements.append(Blank(self.border_radius))
             self.elements.append(element)
+            self.elements.append(Blank(self.border_radius))
         return self
 
     def style(self, *_) -> set[Style[str, str]]:
@@ -66,6 +76,10 @@ class Page(Element):
                 )
                 for key in value
             )
+            # Add font
+            + f" @font-face {{font-family: HarmonyOS; src: url('{_HARMONY_FONT_URL}');}}"
+            # Global Roboto font
+            + " * {font-family: HarmonyOS, Roboto, Arial, Helvetica, sans-serif;}"
         )
 
     def head(self, schema: ColorSchema, dark: bool):
@@ -97,10 +111,12 @@ class Page(Element):
             pretty_print=True,
         )
 
-    async def render(self, width: int = 720, device_scale_factor: float = 1.0) -> bytes:
+    async def render(
+        self, width: int = 720, height: int = 10, device_scale_factor: float = 1.0
+    ) -> bytes:
         browser = Ariadne.launch_manager.get_interface(PlaywrightBrowser)
         async with browser.page(
-            viewport={"width": width, "height": 10},
+            viewport={"width": width, "height": height},
             device_scale_factor=device_scale_factor,
         ) as page:
             logger.info("[Page] Setting content...")

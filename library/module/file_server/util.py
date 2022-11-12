@@ -14,7 +14,7 @@ from sqlalchemy import select
 
 from library.model.config.service.fastapi import FastAPIConfig
 from library.module.file_server.table import FileServer
-from library.module.file_server.vars import ENTRYPOINT
+from library.module.file_server.vars import FILE_ENTRYPOINT
 from library.util.module import Modules
 from library.util.orm import orm
 
@@ -230,4 +230,4 @@ async def cleanup():
 
 def get_link(file_id: str) -> str:
     fastapi_cfg: FastAPIConfig = create(FastAPIConfig)
-    return f"{fastapi_cfg.link}{ENTRYPOINT.format(file_id=file_id)}"
+    return f"{fastapi_cfg.link}{FILE_ENTRYPOINT.format(file_id=file_id)}"
