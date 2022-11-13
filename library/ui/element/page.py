@@ -78,9 +78,9 @@ class Page(Element):
                 for key in value
             )
             # Add font
-            + f" @font-face {{font-family: HarmonyOS; src: url('{_HARMONY_FONT_URL}');}}"
+            + f" @font-face {{font-family: HarmonyOS; src: url('{_HARMONY_FONT_URL}')}}"
             # Global Roboto font
-            + " * {font-family: HarmonyOS, Roboto, Arial, Helvetica, sans-serif;}"
+            + " * {font-family: HarmonyOS}"
         )
 
     def head(self, schema: ColorSchema, dark: bool):
