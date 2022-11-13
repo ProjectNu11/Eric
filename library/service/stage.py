@@ -81,9 +81,11 @@ def initialize(*, with_console: bool):
         it(GraiaSchedulerBehaviour),
         FastAPIBehaviour(it(FastAPI)),
     )
-    launch_require()
-
     if with_console:
         saya.install_behaviours(
-            ConsoleBehaviour(Console(broadcast=it(Broadcast), prompt="Eric> "))
+            ConsoleBehaviour(
+                Console(broadcast=it(Broadcast), prompt=f"{eric_config.name}> ")
+            )
         )
+
+    launch_require()
