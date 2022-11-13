@@ -12,7 +12,7 @@ from library.ui.element.blank import Blank
 from library.util.misc import inflate
 
 _HARMONY_FONT_URL = (
-    f"http://{create(FastAPIConfig).link}"
+    f"http://{create(FastAPIConfig).local_link}"
     f"/assets/library/fonts/HarmonyOSHans.ttf"  # noqa
 )
 
@@ -78,9 +78,10 @@ class Page(Element):
                 for key in value
             )
             # Add font
-            + f" @font-face {{font-family: HarmonyOS; src: url('{_HARMONY_FONT_URL}')}}"
-            # Global Roboto font
-            + " * {font-family: HarmonyOS}"
+            + " @font-face {font-family: homo; "
+            f"src: url('{_HARMONY_FONT_URL}') format('truetype')}}"
+            # Apply font to body
+            + " body {font-family: 'homo'}",
         )
 
     def head(self, schema: ColorSchema, dark: bool):

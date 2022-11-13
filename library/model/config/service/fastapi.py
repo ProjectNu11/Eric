@@ -36,3 +36,8 @@ class FastAPIConfig:
             if self.show_port
             else self.domain or self.host
         )
+
+    @property
+    def local_link(self) -> str:
+        """FastAPI 本地服务器链接，包含端口"""
+        return f"{self.host}:{self.port}"
