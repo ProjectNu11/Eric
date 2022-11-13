@@ -1,7 +1,9 @@
 from graia.ariadne import Ariadne
 from graia.ariadne.event.message import GroupMessage
 from graia.ariadne.message.chain import MessageChain
+from graia.ariadne.message.element import Image
 from graia.ariadne.model import Group, Member
+from graia.broadcast import Force
 from graia.broadcast.interrupt import Waiter
 
 from library.decorator.distribute import Distribution
@@ -67,3 +69,25 @@ class GroupMessageWaiter(Waiter.create([GroupMessage])):
         await Distribution.judge(app, event, event.source)
         if int(group) == self.group_id and int(member) == self.member_id:
             return event
+
+
+class GroupImageWaiter(Waiter.create([GroupMessage])):
+    def __init__(self, group: Group | int, member: Member | int, force: bool = False):
+        self.group_id = int(group)
+        self.member_id = int(member)
+        self.force = force
+
+    async def detected_event(
+        self,
+        app: Ariadne,
+        group: Group,
+        member: Member,
+        message: MessageChain,
+        event: GroupMessage,
+    ):
+        await Distribution.judge(app, event, event.source)
+        if int(group) == self.group_id and int(member) == self.member_id:
+            if image := message.get(Image):
+                return image[0]
+            elif self.force:
+                return Force(None)
