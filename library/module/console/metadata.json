@@ -16,8 +16,8 @@
     ],
     "advanced": {
         "enable_by_default": false,
-        "allow_disable": true,
-        "allow_unload": true,
+        "allow_disable": false,
+        "allow_unload": false,
         "hidden": false
     }
 }
