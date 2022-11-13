@@ -47,7 +47,7 @@ async def send_message(
     is_group: bool = None,
     suppress: bool = True,
     resend: bool = True,
-    quote: Source | int | MessageChain | None = None,
+    quote: Source | int | None = None,
     excluded_account: set[int] = None,
 ) -> ActiveGroupMessage | ActiveFriendMessage | None:
     """

@@ -1,0 +1,20 @@
+{
+    "name": "错误处理",
+    "version": "0.1.0",
+    "pack": "library.module.exception_handler",
+    "authors": [
+        "nullqwertyuiop"
+    ],
+    "required": [],
+    "description": "抓获异常并生成错误报告",
+    "category": [
+        "basic:基础",
+        "utility:实用工具"
+    ],
+    "advanced": {
+        "enable_by_default": true,
+        "allow_disable": false,
+        "allow_unload": true,
+        "hidden": false
+    }
+}
