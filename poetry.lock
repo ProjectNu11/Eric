@@ -329,15 +329,18 @@ python-versions = ">=3.7,<4.0"
 
 [[package]]
 name = "graia-saya"
-version = "0.0.16"
+version = "0.0.17"
 description = ""
 category = "main"
 optional = false
 python-versions = ">=3.7,<4.0"
 
 [package.dependencies]
-graia-broadcast = ">=0.12.1"
 loguru = ">=0.5.3,<0.7"
+
+[package.extras]
+broadcast = ["graia-broadcast (>=0.12.1)"]
+scheduler = ["graia-scheduler (>=0.0.8,<0.0.9)"]
 
 [[package]]
 name = "graia-scheduler"
@@ -1043,7 +1046,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "0ee0a4411c6d4454bcaa92c5aac318537ca54852c864190f0e5f0f525b030d96"
+content-hash = "bb92434cdf74fbb044817ea5c111be465425af5441609005bde5605ba169a81b"
 
 [metadata.files]
 aiofiles = [
@@ -1312,8 +1315,8 @@ graia-broadcast = [
     {file = "graia_broadcast-0.19.0-py3-none-any.whl", hash = "sha256:16a6cb0eaa7e405f243d5380a7e9acdf563000e2b8158dc3bc5c2b984d1b4411"},
 ]
 graia-saya = [
-    {file = "graia-saya-0.0.16.tar.gz", hash = "sha256:4150d288a6a852b3d275715ded5e1de9031b4aa63ed98b5ba4232e1a0908ea11"},
-    {file = "graia_saya-0.0.16-py3-none-any.whl", hash = "sha256:21748a48a5d55d58d946cb8d4339360c2774caea21139f8952799e61819638e4"},
+    {file = "graia_saya-0.0.17-py3-none-any.whl", hash = "sha256:d286edd2cc5955c588bb515bdaeadda5fbbf6a60341e0db79772a3181b393e8a"},
+    {file = "graia_saya-0.0.17.tar.gz", hash = "sha256:3d093b9a63733483b57ae677e9e70dfd2b7a12931ca554625cdaf04a34e4f3b2"},
 ]
 graia-scheduler = [
     {file = "graia-scheduler-0.0.10.tar.gz", hash = "sha256:fbfd2043dbeaa4faec4bf38416297dbb9b5314941b4c22f30cec643bd7fb54b9"},
