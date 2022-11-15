@@ -359,16 +359,16 @@ saya = ["graia-saya (>=0.0.16,<0.1)"]
 
 [[package]]
 name = "graiax-fastapi"
-version = "0.2.0"
+version = "0.2.1"
 description = "FastAPI for GraiaCommunity."
 category = "main"
 optional = false
 python-versions = ">=3.8"
 
 [package.dependencies]
-fastapi = ">=0.70.0"
+fastapi = ">=0.87.0"
 graia-amnesia = ">=0.6.0"
-graia-saya = ">=0.0.16"
+graia-saya = ">=0.0.17"
 typing-extensions = ">=4.0.0"
 
 [[package]]
@@ -1046,7 +1046,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "7823cecc88f905e2cb480f0682d81a76065abfbceb0003b2b2013bc4c7948176"
+content-hash = "541145a9ebebb66fd22e59375ee2b2b8f4ac12e5b4cf9842728c8aceb33d7bdc"
 
 [metadata.files]
 aiofiles = [
@@ -1323,8 +1323,8 @@ graia-scheduler = [
     {file = "graia_scheduler-0.0.10-py3-none-any.whl", hash = "sha256:9e725b83aeb36c9f95754c979fe01a4b6e23eea0ae6c527e3d3bb7ca388e02aa"},
 ]
 graiax-fastapi = [
-    {file = "graiax-fastapi-0.2.0.tar.gz", hash = "sha256:234521f33cb4f3b8e16aaf61236e9f16505ec04c8457db250d29a2b44387adba"},
-    {file = "graiax_fastapi-0.2.0-py3-none-any.whl", hash = "sha256:474b43dd514667e1883391469195232464ebef3cd89280ad60d914579607e657"},
+    {file = "graiax-fastapi-0.2.1.tar.gz", hash = "sha256:078aa586710822dddc45000744f8d5de2f68f3adbaf47287f8fbf663aa30ae97"},
+    {file = "graiax_fastapi-0.2.1-py3-none-any.whl", hash = "sha256:729da9167e585cf47b1ee892c9c8f229711b3ac9ca26ea8cf943b8b84083a07c"},
 ]
 graiax-playwright = [
     {file = "graiax-playwright-0.2.1.tar.gz", hash = "sha256:1dc6f14c1bb44edb52e0f002976780d5d92cab71e122ede278c1200dc0a0535d"},
