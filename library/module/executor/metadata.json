@@ -1,0 +1,20 @@
+{
+    "name": "指令执行器",
+    "version": "0.0.1",
+    "pack": "library.module.executor",
+    "authors": [
+        "nullqwertyuiop"
+    ],
+    "required": [],
+    "description": "执行终端指令",
+    "category": [
+        "basic:基础",
+        "utility:实用工具"
+    ],
+    "advanced": {
+        "enable_by_default": true,
+        "allow_disable": false,
+        "allow_unload": false,
+        "hidden": false
+    }
+}
