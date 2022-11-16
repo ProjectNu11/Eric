@@ -12,6 +12,7 @@ _Let go of it all._
 ![Python version: 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/624187ab6cd5409188dd86fcfe9f0443)](https://www.codacy.com/gh/nullqwertyuiop/Eric/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=nullqwertyuiop/Eric&amp;utm_campaign=Badge_Grade)
 [![DeepSource](https://deepsource.io/gh/nullqwertyuiop/Eric.svg/?label=active+issues&token=B3VBW5DBd_og4EPma6Cgk3E7)](https://deepsource.io/gh/nullqwertyuiop/Eric/?ref=repository-badge)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/nullqwertyuiop/Eric/main.svg)](https://results.pre-commit.ci/latest/github/nullqwertyuiop/Eric/main)
 
 </div>
 
