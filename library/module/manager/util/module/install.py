@@ -1,3 +1,4 @@
+import kayaku
 from creart import it
 from graia.ariadne import Ariadne
 from graia.ariadne.event.message import MessageEvent, GroupMessage
@@ -67,6 +68,8 @@ async def _propose_install(
     for module in modules:
         try:
             await remote_install(module)
+            kayaku.bootstrap()
+            kayaku.save_all()
             success.append(module)
         except Exception:  # noqa
             # Already logged, just add to failed list

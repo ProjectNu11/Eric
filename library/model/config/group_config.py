@@ -1,9 +1,7 @@
-from abc import ABC
 from json import JSONDecodeError
 from pathlib import Path
-from typing import Type
 
-from creart import AbstractCreator, CreateTargetInfo, exists_module, it
+from creart import it
 from kayaku import create
 from pydantic import BaseModel, ValidationError
 from typing_extensions import Self
@@ -99,17 +97,3 @@ class GroupConfig(BaseModel):
         self.groups = groups
         for group in self.groups:
             self.switch[group] = GroupSwitch.load(group)
-
-
-class GroupConfigCreator(AbstractCreator, ABC):
-    targets = (CreateTargetInfo("library.model.config.group_config", "GroupConfig"),)
-
-    @staticmethod
-    def available() -> bool:
-        return exists_module("library.model.config.group_config")
-
-    @staticmethod
-    def create(_create_type: Type[GroupConfig]) -> GroupConfig:
-        cfg = GroupConfig()
-        cfg.load()
-        return cfg

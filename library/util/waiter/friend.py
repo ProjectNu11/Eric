@@ -1,6 +1,8 @@
 from graia.ariadne.event.message import FriendMessage
 from graia.ariadne.message.chain import MessageChain
+from graia.ariadne.message.element import Image
 from graia.ariadne.model import Friend
+from graia.broadcast import Force
 from graia.broadcast.interrupt import Waiter
 
 from library.util.misc import inflate
@@ -38,3 +40,16 @@ class FriendMessageWaiter(Waiter.create([FriendMessage])):
     async def detected_event(self, friend: Friend, event: FriendMessage):
         if int(friend) == self.friend_id:
             return event
+
+
+class FriendImageWaiter(Waiter.create([FriendMessage])):
+    def __init__(self, friend: Friend | int, force: bool = False):
+        self.friend_id = int(friend)
+        self.force = force
+
+    async def detected_event(self, friend: Friend, message: MessageChain):
+        if int(friend) == self.friend_id:
+            if image := message.get(Image):
+                return image[0]
+            elif self.force:
+                return Force(None)

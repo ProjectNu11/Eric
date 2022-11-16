@@ -3,6 +3,7 @@ from contextlib import suppress
 from datetime import datetime
 from io import StringIO
 
+from creart import it
 from graia.ariadne import Ariadne
 from graia.ariadne.event.message import GroupMessage, FriendMessage
 from graia.ariadne.message.chain import MessageChain
@@ -12,17 +13,29 @@ from graia.ariadne.util.saya import listen, dispatch, decorate
 from graia.broadcast.builtin.event import ExceptionThrowed
 from kayaku import create
 
+from library.decorator.distribute import Distribution
 from library.decorator.permission import Permission
 from library.model.config.eric import EricConfig
 from library.model.permission import UserPerm
 from library.util.image import render_md
 from library.util.message import send_message
+from library.util.multi_account.public_group import PublicGroup
 
 
 @listen(ExceptionThrowed)
 async def except_handle(app: Ariadne, event: ExceptionThrowed):
     if not isinstance(event.event, (GroupMessage, FriendMessage)):
         return
+
+    if isinstance(event.event, GroupMessage):
+        p_group = it(PublicGroup)
+        if p_group.need_distribute(
+            event.event.sender.group, app.account
+        ) and p_group.execution_stop(
+            event.event.sender.group, app.account, event.event.source
+        ):
+            return
+
     with StringIO() as fp:
         traceback.print_tb(event.exception.__traceback__, file=fp)
         tb = fp.getvalue()
@@ -53,7 +66,7 @@ async def except_handle(app: Ariadne, event: ExceptionThrowed):
 
 @listen(GroupMessage, FriendMessage)
 @dispatch(Twilight(FullMatch(".raise")))
-@decorate(Permission.require(UserPerm.BOT_ADMIN))
+@decorate(Distribution.distribute(), Permission.require(UserPerm.BOT_ADMIN))
 async def raise_runtime_error():
     raise RuntimeError("Manually raised error for testing purpose")
 

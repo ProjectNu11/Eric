@@ -1,3 +1,4 @@
+import asyncio
 from pathlib import Path
 
 from creart import it
@@ -59,7 +60,7 @@ def _install(temp_dir: Path, install_dir: Path):
     temp_dir.rename(install_dir)
 
 
-def _post_install(install_dir: Path):
+async def _post_install(install_dir: Path):
     install_dir = standardize_structure(install_dir)
     metadata = update_metadata(install_dir)
     state: ModuleState = create(ModuleState)
@@ -67,7 +68,7 @@ def _post_install(install_dir: Path):
         state.load(metadata.pack)
         module = Module(**{"loaded": True, **metadata.dict()})
         it(Modules).add(module)
-        require(module, debug=False, suppress=False)
+        await asyncio.to_thread(require, module, debug=False, suppress=False)
     except Exception as e:
         logger.error(f"安装时出现错误：\n{e.with_traceback(e.__traceback__)}")
         state.unload(metadata.pack)
@@ -79,4 +80,4 @@ async def install(module: RemoteModule, *, max_retries: int = 5):
     temp_dir, install_dir = _prepare_module_dir(module)
     await _download_files(module, temp_dir, max_retries)
     _install(temp_dir, install_dir)
-    _post_install(install_dir)
+    await _post_install(install_dir)

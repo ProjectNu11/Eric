@@ -12,7 +12,8 @@ from library.ui.element.blank import Blank
 from library.util.misc import inflate
 
 _HARMONY_FONT_URL = (
-    f"http://{create(FastAPIConfig).link}/assets/library/HarmonyOSHans.ttf"  # noqa
+    f"http://{create(FastAPIConfig).link}"
+    f"/assets/library/fonts/HarmonyOSHans.ttf"  # noqa
 )
 
 
@@ -24,6 +25,7 @@ class Page(Element):
     dark: bool
     styles: set[Style[str, str]]
     border_radius: int
+    title: str
 
     def __init__(
         self,
@@ -32,6 +34,7 @@ class Page(Element):
         dark: bool = None,
         max_width: int = 1000,
         border_radius: int = 50,
+        title: str = "Page",
     ):
         if dark is None:
             dark = is_dark()
@@ -41,6 +44,7 @@ class Page(Element):
         self.dark = dark
         self.max_width = max_width
         self.border_radius = border_radius
+        self.title = title
         self.elements = []
         self.add(*elements)
 
@@ -77,14 +81,15 @@ class Page(Element):
                 for key in value
             )
             # Add font
-            + f" @font-face {{font-family: HarmonyOS; src: url('{_HARMONY_FONT_URL}');}}"
-            # Global Roboto font
-            + " * {font-family: HarmonyOS, Roboto, Arial, Helvetica, sans-serif;}"
+            + " @font-face {font-family: homo; "
+            f"src: url('{_HARMONY_FONT_URL}') format('truetype')}}"
+            # Apply font to body
+            + " body {font-family: 'homo'}",
         )
 
     def head(self, schema: ColorSchema, dark: bool):
         return builder.HEAD(
-            builder.TITLE("Page"),
+            builder.TITLE(self.title),
             builder.META(charset="utf-8"),
             self.styles(schema, dark),
         )

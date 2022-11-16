@@ -43,7 +43,6 @@ async def scheduled_cleanup():
 
 @route.get(LIB_ASSETS_ENTRYPOINT)
 async def library_assets(file: str):
-    print(LIB_ASSETS_DIR / file)
     if (file := LIB_ASSETS_DIR / file).exists():
         return FileResponse(file)
     raise HTTPException(status_code=404, detail="File not found")
