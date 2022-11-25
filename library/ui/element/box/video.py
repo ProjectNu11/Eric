@@ -1,4 +1,4 @@
-from lxml.html.builder import E
+from lxml.html.builder import E, CLASS
 from typing_extensions import Self
 
 from library.ui.color import ColorSchema
@@ -32,10 +32,8 @@ class VideoBox(Element):
             {"autoplay": "1"},
         ]
         return E.video(
-            {
-                "src": self.url,
-                "class": "round-corner",
-                "style": "width: 100%",
-            },
+            CLASS("round-corner"),
+            src=self.url,
+            style="width: 100%",
             *properties,
         )

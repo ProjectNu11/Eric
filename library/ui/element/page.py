@@ -3,6 +3,7 @@ from graiax.playwright import PlaywrightBrowser
 from kayaku import create
 from loguru import logger
 from lxml.html import builder, tostring
+from lxml.html.builder import CLASS
 from typing_extensions import Self
 
 from library.model.config.service.fastapi import FastAPIConfig
@@ -12,8 +13,8 @@ from library.ui.element.blank import Blank
 from library.util.misc import inflate
 
 _HARMONY_FONT_URL = (
-    f"http://{create(FastAPIConfig).link}"
-    f"/assets/library/fonts/HarmonyOSHans.ttf"  # noqa
+    f"http://{create(FastAPIConfig).link}"  # noqa
+    f"/assets/library/fonts/HarmonyOSHans.ttf"
 )
 
 
@@ -82,9 +83,12 @@ class Page(Element):
             )
             # Add font
             + " @font-face {font-family: homo; "
-            f"src: url('{_HARMONY_FONT_URL}') format('truetype')}}"
+            f"src: url('{_HARMONY_FONT_URL}') format('truetype')}}"  # noqa
             # Apply font to body
-            + " body {font-family: 'homo'}",
+            + " body {font-family: 'homo'}"
+            # Apply color to a
+            + f" a {{ color: {self.schema.HYPERLINK.rgb(dark)}; "
+            "text-decoration: none }"
         )
 
     def head(self, schema: ColorSchema, dark: bool):
@@ -96,11 +100,9 @@ class Page(Element):
 
     def body(self, schema: ColorSchema, dark: bool):
         return builder.BODY(
-            {
-                "class": "color-background auto-width",
-                "style": "margin: 0 auto",
-            },
             *(element.to_e(schema=schema, dark=dark) for element in self.elements),
+            CLASS("color-background auto-width"),
+            style="margin: 0 auto",
         )
 
     def to_e(self, *_args, schema: ColorSchema, dark: bool, **_kwargs):
@@ -124,11 +126,11 @@ class Page(Element):
             viewport={"width": width, "height": height},
             device_scale_factor=device_scale_factor,
         ) as page:
-            logger.info("[Page] Setting content...")
+            logger.info(f"[{self.title}] Setting content...")
             await page.set_content(self.to_html())
-            logger.info("[Page] Getting screenshot...")
+            logger.info(f"[{self.title}] Getting screenshot...")
             img = await page.screenshot(
                 type="jpeg", quality=80, full_page=True, scale="device"
             )
-            logger.success("[Page] Done.")
+            logger.success(f"[{self.title}] Done.")
             return img

@@ -154,3 +154,12 @@ class ColorSchema(BaseModel):
         alias="switch_disable",
     )
     """ 开关关闭颜色 """
+
+    HYPERLINK: ColorPair = Field(
+        default=ColorPair(
+            light=(ColorSingle(color=(0, 114, 221))),
+            dark=(ColorSingle(color=(67, 144, 245))),
+        ),
+        alias="hyperlink",
+    )
+    """ 超链接颜色 """

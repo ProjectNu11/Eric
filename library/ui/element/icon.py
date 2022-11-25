@@ -4,7 +4,7 @@ from pathlib import Path
 
 import PIL
 from PIL import Image
-from lxml.html import builder
+from lxml import etree
 from typing_extensions import Self
 
 from library.ui.color import ColorSchema
@@ -41,16 +41,14 @@ class Icon(Element):
         return Icon(img=Image.open(path))
 
     def _to_html_svg(self):
-        return builder.IMG(
-            src=f"data:image/svg+xml;base64,{b64encode(self.svg.encode('utf-8')).decode('utf-8')}",
-            style="width: 100%; height: 100%;",
-        )
+        return etree.XML(self.svg)
 
     def _to_html_img(self) -> str:
         data = self.img.tobytes()
         data = b64encode(data).decode("utf-8")
-        return builder.IMG(
-            src=f"data:image/png;base64,{data}", style="width: 100%; height: 100%;"
+        return etree.XML(
+            f'<img src="data:image/png;base64,{data}" '
+            'style="width: 100%; height: 100%;" />'
         )
 
     def to_e(self, *_args, **_kwargs):

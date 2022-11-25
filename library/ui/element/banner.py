@@ -2,11 +2,13 @@ from pathlib import Path
 
 from PIL import Image
 from lxml.html import builder
+from lxml.html.builder import CLASS
 
 from library.ui.color import ColorSchema
 from library.ui.element.base import Element, Style
 from library.ui.element.blank import Blank
 from library.ui.element.icon import Icon
+from library.ui.util import wrap_text
 
 
 class Banner(Element):
@@ -50,11 +52,9 @@ class Banner(Element):
         return builder.DIV(
             Blank(self.blank_height).to_e(),
             builder.DIV(
-                self.text,
-                {
-                    "class": " ".join(self.style_keys(schema, dark)),
-                    "style": f"padding: 0 40px 0 40px; "
-                    f"font-size: {self.font_size}px; word-wrap: break-word",
-                },
+                *wrap_text(self.text),
+                CLASS(" ".join(self.style_keys(schema, dark))),
+                style=f"padding: 0 40px 0 40px; "
+                f"font-size: {self.font_size}px; word-wrap: break-word",
             ),
         )

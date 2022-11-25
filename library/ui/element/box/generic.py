@@ -1,13 +1,14 @@
 from lxml.html import builder
+from lxml.html.builder import CLASS
 from typing_extensions import Self
 
 from library.ui.color import ColorSchema
 from library.ui.element.base import Element, Style
+from library.ui.util import wrap_text
 from library.util.misc import inflate
 
 
 class _GenericBoxText(Element):
-
     size: int
     text: str
     is_desc: bool
@@ -35,16 +36,13 @@ class _GenericBoxText(Element):
 
     def to_e(self, *, schema: ColorSchema, dark: bool, **_kwargs) -> str:
         return builder.DIV(
-            self.text,
-            {
-                "class": " ".join(self.style_keys(schema, dark)),
-                "style": f"font-size: {self.size}px; word-wrap: break-word",
-            },
+            *wrap_text(self.text),
+            CLASS(" ".join(self.style_keys(schema, dark))),
+            style=f"font-size: {self.size}px; word-wrap: break-word",
         )
 
 
 class GenericBoxItem(Element):
-
     TEXT_SIZE: int = 35
     DESCRIPTION_SIZE: int = 25
 
@@ -116,17 +114,12 @@ class GenericBoxItem(Element):
         ]
         return builder.DIV(
             *[part for part in parts if part is not None],
-            {
-                "class": " ".join({*self.style_keys(schema, dark)}),
-                "style": "display: flex; "
-                "padding: 40px 0 40px 0;"
-                "flex-direction: column",
-            },
+            CLASS(" ".join({*self.style_keys(schema, dark)})),
+            style="display: flex; padding: 40px 0 40px 0; flex-direction: column",
         )
 
 
 class GenericBox(Element):
-
     items: list[GenericBoxItem]
     boarder: int
 
@@ -171,10 +164,8 @@ class GenericBox(Element):
                     else item
                     for item in self.items
                 ],
-                {
-                    "class": "color-foreground round-corner",
-                    "style": "padding: 0 40px 0 40px",
-                },
+                CLASS("color-foreground round-corner"),
+                style="padding: 0 40px 0 40px",
             ),
             {},
         )

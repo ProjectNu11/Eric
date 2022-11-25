@@ -3,7 +3,9 @@ from io import BytesIO
 from pathlib import Path
 
 from PIL import Image
+from lxml import etree
 from lxml.html import builder
+from lxml.html.builder import CLASS
 from typing_extensions import Self
 
 from library.ui.color import ColorSchema
@@ -63,22 +65,14 @@ class ImageBox(Element):
 
     def _to_e_bytes(self):
         data = self.base64 or b64encode(self.img).decode("utf-8")
-        return builder.IMG(
-            {
-                "src": f"data:image/png;base64,{data}",
-                "class": "round-corner",
-                "style": "width: 100%",
-            }
+        # 使用 lxml.etree 防止转义
+        return etree.XML(
+            f'<img src="data:image/png;base64,{data}" '
+            f'class="round-corner" style="width: 100%" />'
         )
 
     def _to_e_url(self):
-        return builder.IMG(
-            {
-                "src": self.url,
-                "class": "round-corner",
-                "style": "width: 100%",
-            }
-        )
+        return builder.IMG(CLASS("round-corner"), src=self.url, style="width: 100%")
 
     def to_e(self, *_args, **_kwargs):
         return self._to_e_bytes() if self.img or self.base64 else self._to_e_url()
