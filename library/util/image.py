@@ -1,7 +1,11 @@
 from typing import Literal
 
-from graiax.text2img.playwright.builtin import MarkdownToImg
-from graiax.text2img.playwright.types import PageParams, ScreenshotParams
+from graiax.text2img.playwright import (
+    HTMLRenderer,
+    convert_md,
+    PageOption,
+    ScreenshotOption,
+)
 
 
 async def render_md(
@@ -12,12 +16,12 @@ async def render_md(
     image_type: Literal["jpeg", "png"] = "jpeg",
     quality: int = 80,
 ):
-    return await MarkdownToImg().render(
-        md,
-        page_params=PageParams(
+    return await HTMLRenderer().render(
+        convert_md(md),
+        extra_page_option=PageOption(
             viewport={"width": width, "height": height}, device_scale_factor=factor
         ),
-        screenshot_params=ScreenshotParams(
+        extra_screenshot_option=ScreenshotOption(
             type=image_type, quality=quality, scale="device"
         ),
     )
