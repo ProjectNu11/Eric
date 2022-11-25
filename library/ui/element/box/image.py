@@ -16,6 +16,7 @@ class ImageBox(Element):
     img: bytes = None
     url: str = None
     base64: str = None
+    src: str = None
 
     def __init__(
         self,
@@ -23,12 +24,17 @@ class ImageBox(Element):
         img: Image.Image | bytes | Path = None,
         url: str = None,
         base64: str = None,
+        src: str = None,
     ):
-        assert img or url or base64, "ImageBox must have img or url or base64"
+        assert (
+            img or url or base64 or src
+        ), "ImageBox must have img or url or base64 or src"
         if url:
             self.url = url
         elif base64:
             self.base64 = base64
+        elif src:
+            self.src = src
         else:
             if isinstance(img, Path):
                 img = Image.open(img)
@@ -56,6 +62,10 @@ class ImageBox(Element):
         return cls(base64=data)
 
     @classmethod
+    def from_src(cls, src: str) -> Self:
+        return cls(src=src)
+
+    @classmethod
     def from_bytes(cls, data: bytes) -> Self:
         return cls(img=data)
 
@@ -65,14 +75,22 @@ class ImageBox(Element):
 
     def _to_e_bytes(self):
         data = self.base64 or b64encode(self.img).decode("utf-8")
-        # 使用 lxml.etree 防止转义
         return etree.XML(
             f'<img src="data:image/png;base64,{data}" '
             f'class="round-corner" style="width: 100%" />'
+        )
+
+    def _to_e_src(self):
+        return etree.XML(
+            f'<img src="{self.src}" ' f'class="round-corner" style="width: 100%" />'
         )
 
     def _to_e_url(self):
         return builder.IMG(CLASS("round-corner"), src=self.url, style="width: 100%")
 
     def to_e(self, *_args, **_kwargs):
-        return self._to_e_bytes() if self.img or self.base64 else self._to_e_url()
+        if self.img or self.base64:
+            return self._to_e_bytes()
+        elif self.url:
+            return self._to_e_url()
+        return self._to_e_src()
