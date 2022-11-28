@@ -36,11 +36,13 @@ def initialize_config():
     create(ManagerConfig)
     create(EricConfig)
     if FIRST_RUN.get():
-        kayaku.bootstrap()
-        kayaku.save_all()
-        logger.success("已写入默认配置文件，请修改后重启")
+        _bootstrap("已写入默认配置文件，请修改后重启")
         sys.exit(1)
     validate_config()
+    _bootstrap("配置初始化完成")
+
+
+def _bootstrap(msg):
     kayaku.bootstrap()
     kayaku.save_all()
-    logger.success("配置初始化完成")
+    logger.success(msg)
