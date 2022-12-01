@@ -92,7 +92,7 @@ async def _execute(command: str) -> tuple[str, str]:
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE,
     )
-    stdout, stderr = process.stdout, process.stderr
+    stdout, stderr = await process.stdout.read(), await process.stderr.read()
     try:
         return stdout.decode("utf-8"), stderr.decode("utf-8")
     except UnicodeDecodeError:
