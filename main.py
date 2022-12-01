@@ -16,42 +16,5 @@ if __name__ == "__main__":
 
     from library.service.stage import initialize
 
-    # from library.ui.color import ColorSchema
-    # from library.ui.element import *
-    #
-    # page = Page(
-    #     Title("Dog X Bloods", "this is\na test"),
-    #     Button("test", "https://www.google.com", width=400),
-    #     Button("test", "https://www.google.com", width=400),
-    #     Button("test", width=400),
-    #     GenericBox(
-    #         GenericBoxItem("注意", "本站点仅提供分流下载，官网请至 https://dogbloods.com/"),
-    #     ),
-    #     ImageBox.from_url(
-    #         "https://static.wixstatic.com/media/aed6de_c14eab80467546ecac75fcdc7ebff8fa~mv2.png"
-    #     ),
-    #     GenericBox(
-    #         GenericBoxItem("0.2.3", "下载链接 [官方] "),
-    #         GenericBoxItem("0.2.2", "下载链接 [官方]"),
-    #         GenericBoxItem("0.2.1", "下载链接 [官方] [重打包]"),
-    #         GenericBoxItem("0.2.0", "下载链接 [官方]"),
-    #         GenericBoxItem("0.1.5", "下载链接 [重打包]"),
-    #         GenericBoxItem("0.1.0", "下载链接 [官方]"),
-    #     ),
-    #     GenericBox(
-    #         GenericBoxItem(
-    #             "注释",
-    #             "站点服务由 nullqwertyuiop 提供，内容缓存服务由 Cloudflare 提供，\n\n下载速度受限于 Cloudflare 的带宽。请勿使用迅雷等下载工具下载。",
-    #         ),
-    #     ),
-    # )
-    #
-    # with open("index.html", "w", encoding="utf-8") as f:
-    #     f.write(page.to_html())
-    # print(Page(GenericBoxItem("Hello"), schema=ColorSchema()).to_html())
-    # print(Page(GenericBoxItem(None, "Hello"), schema=ColorSchema()).to_html())
-    # print(Page(GenericBoxItem(None), schema=ColorSchema()).to_html())
-    # exit()
-
     initialize(with_console=with_console)
     Ariadne.launch_blocking()
