@@ -1,0 +1,5 @@
+PORTAL_PAGE = "/service/help/index"
+MODULE_HELP_PAGE = "/service/help/module/get/{pack}"
+MODULE_MARKDOWN_PAGE = "/service/help/module/markdown/{pack}/{file}"
+MODULE_SEARCH_PAGE = "/service/help/module/search/{keyword}"
+CATEGORY_SEARCH_PAGE = "/service/help/category/search/{category}"
