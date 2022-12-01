@@ -1,6 +1,5 @@
 import asyncio
 import re
-import subprocess
 import time
 
 from graia.ariadne import Ariadne
@@ -86,15 +85,14 @@ async def execute_command(app: Ariadne, event: MessageEvent, command: MatchResul
     await send_message(event, MessageChain(Image(data_bytes=image)), app.account)
 
 
-def _execute(command: str) -> tuple[str, str]:
-    process = subprocess.run(
+async def _execute(command: str) -> tuple[str, str]:
+    process = await asyncio.subprocess.create_subprocess_shell(
         command,
         shell=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE,
     )
-    stdout = process.stdout
-    stderr = process.stderr
+    stdout, stderr = await process.stdout.read(), await process.stderr.read()
     try:
         return stdout.decode("utf-8"), stderr.decode("utf-8")
     except UnicodeDecodeError:
@@ -104,7 +102,7 @@ def _execute(command: str) -> tuple[str, str]:
 @timer(channel.module)
 async def execute(command: str) -> tuple[str, str, float]:
     start_time = time.perf_counter()
-    stdout, stderr = await asyncio.to_thread(_execute, command)
+    stdout, stderr = await _execute(command)
     return stdout, stderr, time.perf_counter() - start_time
 
 
