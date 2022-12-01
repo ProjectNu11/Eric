@@ -16,13 +16,14 @@ if __name__ == "__main__":
 
     from library.service.stage import initialize
 
-    # from library.ui.element.box.image import ImageBox
-    # from library.ui.element.banner import Banner
-    # from library.ui.element.box.generic import GenericBoxItem, GenericBox
-    # from library.ui import Page
+    # from library.ui.color import ColorSchema
+    # from library.ui.element import *
     #
     # page = Page(
-    #     Banner("Dog X Bloods"),
+    #     Title("Dog X Bloods", "this is\na test"),
+    #     Button("test", "https://www.google.com", width=400),
+    #     Button("test", "https://www.google.com", width=400),
+    #     Button("test", width=400),
     #     GenericBox(
     #         GenericBoxItem("注意", "本站点仅提供分流下载，官网请至 https://dogbloods.com/"),
     #     ),

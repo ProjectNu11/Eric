@@ -41,9 +41,7 @@ class Banner(Element):
     def _get_icon(icon: str | Image.Image | Path) -> Icon:
         if isinstance(icon, Image.Image):
             return Icon(img=icon)
-        if isinstance(icon, Path):
-            return Icon.from_file(icon)
-        return Icon(svg=icon)
+        return Icon.from_file(icon) if isinstance(icon, Path) else Icon(svg=icon)
 
     def style(self, schema: ColorSchema, dark: bool) -> set[Style[str, str]]:
         return {Style({"color-text": f"color: {schema.TEXT.rgb(dark)}"})}

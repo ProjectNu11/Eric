@@ -5,8 +5,8 @@ from lxml.builder import E
 HYPERLINK_PATTERN = re.compile(r"https?://\S+")
 
 
-def wrap_text(text: str, newline: bool = True, hyperlink: bool = True):
-    wrapped = [text]
+def wrap_text(text: str | list, newline: bool = True, hyperlink: bool = True):
+    wrapped = [text] if isinstance(text, str) else text
     if hyperlink:
         wrapped = _add_hyperlink(wrapped)
     if newline:
