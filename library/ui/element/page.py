@@ -13,8 +13,7 @@ from library.ui.element.blank import Blank
 from library.util.misc import inflate
 
 _HARMONY_FONT_URL = (
-    f"http://{create(FastAPIConfig).link}"  # noqa
-    f"/assets/library/fonts/HarmonyOSHans.ttf"
+    f"{create(FastAPIConfig).link}/assets/library/fonts/HarmonyOSHans.ttf"
 )
 
 
