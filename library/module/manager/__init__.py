@@ -33,6 +33,7 @@ from library.module.manager.model.repository import ParsedRepository
 from library.module.manager.util.lock import lock
 from library.module.manager.util.module.install import install
 from library.module.manager.util.module.state import change_state
+from library.module.manager.util.module.unload import perform_unload
 from library.module.manager.util.remote.install import install as remote_install
 from library.module.manager.util.remote.update import update_gen_msg
 from library.module.manager.util.remote.version import check_update
@@ -80,13 +81,45 @@ inc = it(InterruptControl)
         decorators=[Permission.require(UserPerm.BOT_OWNER)],
     )
 )
+@channel.use(
+    ListenerSchema(
+        listening_events=[FriendMessage],
+        inline_dispatchers=[
+            Twilight(
+                PrefixMatch(),
+                FullMatch("manager"),
+                UnionMatch("enable", "disable") @ "action",
+                WildcardMatch() @ "content",
+            )
+        ],
+        decorators=[Permission.require(UserPerm.BOT_OWNER)],
+    )
+)
+@channel.use(
+    ListenerSchema(
+        listening_events=[FriendMessage],
+        inline_dispatchers=[
+            Twilight(
+                PrefixMatch(),
+                FullMatch("manager"),
+                UnionMatch("enable", "disable") @ "action",
+                WildcardMatch() @ "content",
+            )
+        ],
+        decorators=[
+            MentionMeOptional.check(),
+            Distribution.distribute(),
+            Permission.require(UserPerm.ADMINISTRATOR),
+        ],
+    )
+)
 async def manager_change_group_module_state(
     app: Ariadne, event: MessageEvent, action: RegexResult, content: RegexResult
 ):
     action: str = action.result.display
     content: str = content.result.display
     field: int = int(event.sender.group) if isinstance(event, GroupMessage) else 0
-    msg: MessageChain = change_state(content, field, action == "打开")
+    msg: MessageChain = change_state(content, field, action in {"打开", "enable"})
     await send_message(event, msg, app.account)
 
 
@@ -245,3 +278,25 @@ async def manager_list(
         await send_message(event, MessageChain("等待超时"), app.account)
     except AssertionError as e:
         await send_message(event, MessageChain(e.args[0]), app.account)
+
+
+@listen(GroupMessage, FriendMessage)
+@dispatch(
+    Twilight(
+        ElementMatch(At, optional=True),
+        PrefixMatch(),
+        FullMatch("manager").space(SpacePolicy.FORCE),
+        FullMatch("unload"),
+        WildcardMatch() @ "content",
+    )
+)
+@decorate(
+    MentionMeOptional.check(),
+    Distribution.distribute(),
+    Permission.require(UserPerm.BOT_OWNER),
+)
+async def manager_list(app: Ariadne, event: MessageEvent, content: RegexResult):
+    content: str = content.result.display
+    assert not lock.locked(), "未能取得管理器锁，请检查是否正在其他操作"
+    async with lock:
+        await send_message(event, perform_unload(content), app.account)

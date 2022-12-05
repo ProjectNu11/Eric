@@ -1,4 +1,5 @@
 import asyncio
+from contextlib import suppress
 from pathlib import Path
 
 from creart import it
@@ -9,6 +10,7 @@ from library.model.config.path import PathConfig
 from library.model.config.state import ModuleState
 from library.model.module import Module
 from library.module.manager.model.module import RemoteModule
+from library.module.manager.util.module.unload import unload
 from library.util.file import remove_recursive
 from library.util.module import Modules
 from library.util.module.metadata import update_metadata
@@ -65,8 +67,14 @@ async def _post_install(install_dir: Path):
     metadata = update_metadata(install_dir)
     state: ModuleState = create(ModuleState)
     try:
-        state.load(metadata.pack)
-        module = Module(**{"loaded": True, **metadata.dict()})
+        if not isinstance(_state := state.loaded.get(metadata.pack, None), bool):
+            state.load(metadata.pack)
+            _state = True
+        module = Module(**{"loaded": _state, **metadata.dict()})
+        with suppress(Exception):
+            # Unload the module if it is already loaded
+            # Suppress any exception because the module may not be loaded
+            unload(module)
         it(Modules).add(module)
         await asyncio.to_thread(require, module, debug=False, suppress=False)
     except Exception as e:
