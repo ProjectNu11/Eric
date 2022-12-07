@@ -25,7 +25,7 @@ graiax-fastapi = "^0.2.1"
 GitPython = "^3.1.29"
 psutil = "^5.9.4"
 aiofiles = "^22.1.0"
-prompt-toolkit = "^3.0.32"
+prompt-toolkit = "^3.0.36"
 lxml = "^4.9.1"
 graiax-text2img-playwright = "^0.2.0"
 
