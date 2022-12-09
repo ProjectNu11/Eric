@@ -58,7 +58,7 @@ async def module_assets(module: str, file: str):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail=f"Module {module} not found"
         )
-    path = Path(*module.split("."), file)
+    path = Path(*module.split("."), "assets", file)
     if not path.is_file():
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
