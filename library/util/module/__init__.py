@@ -41,8 +41,11 @@ class Modules:
             for module in modules:
                 del self.__all__[module.pack]
 
-    def get(self, pack: str) -> Module:
-        return self.__all__[pack]
+    def get(self, pack: str) -> Module | None:
+        try:
+            return self.__all__[pack]
+        except KeyError:
+            return
 
     def search(self, *criterion: Callable[[Module], bool]) -> list[Module]:
         result = []
