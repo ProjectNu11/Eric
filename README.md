@@ -12,20 +12,13 @@ _Let go of it all._
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Imports: Isort](https://img.shields.io/badge/imports-isort-%231674b1.svg)](https://pycqa.github.io/isort/)
 ![Python version: 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/624187ab6cd5409188dd86fcfe9f0443)](https://www.codacy.com/gh/nullqwertyuiop/Eric/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=nullqwertyuiop/Eric&amp;utm_campaign=Badge_Grade)
-[![DeepSource](https://deepsource.io/gh/nullqwertyuiop/Eric.svg/?label=active+issues&token=B3VBW5DBd_og4EPma6Cgk3E7)](https://deepsource.io/gh/nullqwertyuiop/Eric/?ref=repository-badge)
-[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/nullqwertyuiop/Eric/main.svg)](https://results.pre-commit.ci/latest/github/nullqwertyuiop/Eric/main)
 
 </div>
-
-本项目仍处于开发阶段，暂不建议部署。
 
 ## 目录
   * [目录](#目录)
   * [项目特色](#项目特色)
-  * [开始使用](#开始使用)
   * [使用文档](#使用文档)
-  * [注意](#注意)
   * [项目结构](#项目结构)
   * [参与贡献](#参与贡献)
   * [许可证](#许可证)
@@ -37,11 +30,9 @@ _Let go of it all._
   * 基于 SQLAlchemy 的异步 ORM
   * 多账号支持
 
-## 开始使用
-
 ## 使用文档
 
-## 注意
+[在此查看文档](https://projectnu11.github.io/Eric/)
 
 ## 项目结构
 
