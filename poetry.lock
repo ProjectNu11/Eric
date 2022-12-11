@@ -387,7 +387,7 @@ typing-extensions = ">=4.4.0"
 
 [[package]]
 name = "graiax-text2img-playwright"
-version = "0.2.0"
+version = "0.3.0"
 description = "基于 Playwright 的适用于 Graia 的文转图工具"
 category = "main"
 optional = false
@@ -1027,7 +1027,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "2be2a176e84d623ea6fc06ffb92bbff8be945abc88d32ca7cc9c10cd62fb36e6"
+content-hash = "9798554d92a708bb15296d36744ef1415ade07833af7dec37557ea1c8da07c53"
 
 [metadata.files]
 aiofiles = [
@@ -1327,8 +1327,8 @@ graiax-playwright = [
     {file = "graiax_playwright-0.2.1-py3-none-any.whl", hash = "sha256:cc76116b52dc92dbef8cefdaa3e067b6c4f70d93e6bd2e8387b2283212f8302a"},
 ]
 graiax-text2img-playwright = [
-    {file = "graiax-text2img-playwright-0.2.0.tar.gz", hash = "sha256:cba18f0abfcd3d50d822baaa821b3a04b4c7438ee677a5fbac6a301dfa08c8d3"},
-    {file = "graiax_text2img_playwright-0.2.0-py3-none-any.whl", hash = "sha256:580920b3a517e827ab651f194b9342ff4138f14b82a545dbc02a8688dfd36c9b"},
+    {file = "graiax-text2img-playwright-0.3.0.tar.gz", hash = "sha256:d7e507e5e02ca9907238af4f37ac16be10119de2872a6cc2189d15f0d76527bf"},
+    {file = "graiax_text2img_playwright-0.3.0-py3-none-any.whl", hash = "sha256:ea69bf84ea4dd91ccec0ada8707b04c2910bc5a5aa8cedc170b68e074d324972"},
 ]
 greenlet = [
     {file = "greenlet-2.0.1-cp27-cp27m-macosx_10_14_x86_64.whl", hash = "sha256:9ed358312e63bf683b9ef22c8e442ef6c5c02973f0c2a939ec1d7b50c974015c"},
