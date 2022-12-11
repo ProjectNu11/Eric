@@ -1,7 +1,7 @@
 from typing import NoReturn
 
-from graia.ariadne.event.message import MessageEvent, GroupMessage
-from graia.ariadne.model import Member, Friend, Group
+from graia.ariadne.event.message import GroupMessage, MessageEvent
+from graia.ariadne.model import Friend, Group, Member
 from graia.broadcast import ExecutionStop
 from graia.broadcast.builtin.decorators import Depend
 from loguru import logger

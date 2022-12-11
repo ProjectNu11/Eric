@@ -6,7 +6,7 @@ from graia.saya import Saya
 from loguru import logger
 
 from library.model.exception import SkipRequiring
-from library.model.module import ModuleMetadata, Module
+from library.model.module import Module, ModuleMetadata
 from library.util.misc import inflate
 from library.util.module.dependency import install_dependency
 from library.util.module.get import list_module

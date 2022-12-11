@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import NoReturn
 
-from graia.ariadne.event.message import MessageEvent, GroupMessage
+from graia.ariadne.event.message import GroupMessage, MessageEvent
 from graia.broadcast.builtin.decorators import Depend
 
 from library.util.orm import orm

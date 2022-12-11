@@ -1,6 +1,6 @@
 from creart import it
 from graia.ariadne import Ariadne
-from graia.ariadne.event.message import MessageEvent, GroupMessage
+from graia.ariadne.event.message import GroupMessage, MessageEvent
 from graia.ariadne.message.chain import MessageChain
 from graia.broadcast.interrupt import InterruptControl
 from kayaku import create
@@ -8,8 +8,8 @@ from kayaku import create
 from library.model.config.service.manager import ManagerConfig
 from library.module.manager import ParsedRepository
 from library.util.message import send_message
-from library.util.waiter.friend import FriendSelectWaiter, FriendMessageWaiter
-from library.util.waiter.group import GroupSelectWaiter, GroupMessageWaiter
+from library.util.waiter.friend import FriendMessageWaiter, FriendSelectWaiter
+from library.util.waiter.group import GroupMessageWaiter, GroupSelectWaiter
 
 inc = it(InterruptControl)
 

@@ -1,6 +1,6 @@
 import re
 
-from pydantic import Field, BaseModel
+from pydantic import BaseModel, Field
 from typing_extensions import Self
 
 

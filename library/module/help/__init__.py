@@ -3,11 +3,11 @@ from pathlib import Path
 from creart import it
 from fastapi import HTTPException
 from graia.ariadne import Ariadne
-from graia.ariadne.event.message import GroupMessage, FriendMessage, MessageEvent
+from graia.ariadne.event.message import FriendMessage, GroupMessage, MessageEvent
 from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.message.element import At, Image
-from graia.ariadne.message.parser.twilight import Twilight, UnionMatch, ElementMatch
-from graia.ariadne.util.saya import listen, dispatch, decorate
+from graia.ariadne.message.parser.twilight import ElementMatch, Twilight, UnionMatch
+from graia.ariadne.util.saya import decorate, dispatch, listen
 from graia.saya import Channel
 from graiax.fastapi.saya import route
 from kayaku import create
@@ -19,18 +19,18 @@ from library.decorator.mention import MentionMeOptional
 from library.decorator.switch import Switch
 from library.model.config.service.fastapi import FastAPIConfig
 from library.module.help.util.module import (
-    portal_page,
-    get_module_page,
     get_module_markdown,
-    search_module,
+    get_module_page,
+    portal_page,
     search_category,
+    search_module,
 )
 from library.module.help.vars import (
-    PORTAL_PAGE,
+    CATEGORY_SEARCH_PAGE,
     MODULE_HELP_PAGE,
     MODULE_MARKDOWN_PAGE,
     MODULE_SEARCH_PAGE,
-    CATEGORY_SEARCH_PAGE,
+    PORTAL_PAGE,
 )
 from library.util.dispatcher import PrefixMatch
 from library.util.message import send_message

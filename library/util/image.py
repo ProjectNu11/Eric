@@ -2,9 +2,9 @@ from typing import Literal
 
 from graiax.text2img.playwright import (
     HTMLRenderer,
-    convert_md,
     PageOption,
     ScreenshotOption,
+    convert_md,
 )
 
 

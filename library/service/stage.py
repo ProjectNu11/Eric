@@ -16,7 +16,7 @@ from graia.saya import Saya
 from graia.saya.builtins.broadcast import BroadcastBehaviour
 from graia.scheduler import GraiaScheduler
 from graia.scheduler.saya import GraiaSchedulerBehaviour
-from graiax.fastapi import FastAPIService, FastAPIBehaviour
+from graiax.fastapi import FastAPIBehaviour, FastAPIService
 from graiax.playwright import PlaywrightService
 from kayaku import create
 from loguru import logger

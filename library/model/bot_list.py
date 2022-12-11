@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from pathlib import Path
 
-from graia.ariadne.model import Member, Friend
+from graia.ariadne.model import Friend, Member
 from kayaku import create
 from loguru import logger
 from pydantic import BaseModel

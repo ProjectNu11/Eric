@@ -1,5 +1,5 @@
 from creart import it
-from graia.broadcast import ExecutionStop, Decorator, DecoratorInterface
+from graia.broadcast import Decorator, DecoratorInterface, ExecutionStop
 
 from library.model.core import EricCore
 

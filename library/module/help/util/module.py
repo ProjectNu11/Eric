@@ -8,12 +8,12 @@ from library.model.config.eric import EricConfig
 from library.model.config.service.fastapi import FastAPIConfig
 from library.model.module import Module
 from library.module.help.vars import (
-    MODULE_MARKDOWN_PAGE,
-    MODULE_HELP_PAGE,
     CATEGORY_SEARCH_PAGE,
+    MODULE_HELP_PAGE,
+    MODULE_MARKDOWN_PAGE,
 )
 from library.ui import Page
-from library.ui.element import GenericBox, GenericBoxItem, Title, Button
+from library.ui.element import Button, GenericBox, GenericBoxItem, Title
 from library.util.misc import inflate
 from library.util.module import Modules
 

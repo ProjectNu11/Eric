@@ -7,7 +7,6 @@ from loguru import logger
 
 from library.model.exception import RequirementResolveFailed
 from library.model.module import Module
-from library.util.module.get import list_module, iter_module
 
 
 class Modules:

@@ -2,7 +2,7 @@ import re
 from pathlib import Path
 
 from aiohttp import ClientSession
-from git import Repo, Commit, Head
+from git import Commit, Head, Repo
 from kayaku import create
 
 from library.model.config.eric import EricConfig

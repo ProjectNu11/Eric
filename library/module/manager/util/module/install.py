@@ -1,7 +1,7 @@
 import kayaku
 from creart import it
 from graia.ariadne import Ariadne
-from graia.ariadne.event.message import MessageEvent, GroupMessage
+from graia.ariadne.event.message import GroupMessage, MessageEvent
 from graia.ariadne.message.chain import MessageChain
 from graia.broadcast.interrupt import InterruptControl
 

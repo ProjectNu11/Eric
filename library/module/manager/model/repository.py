@@ -1,7 +1,7 @@
 from abc import ABC
 from typing import Type
 
-from creart import CreateTargetInfo, AbstractCreator, exists_module, add_creator
+from creart import AbstractCreator, CreateTargetInfo, add_creator, exists_module
 from kayaku import create
 
 from library.model.config.service.manager import ManagerConfig

@@ -1,7 +1,7 @@
 from typing import NoReturn
 
 from graia.ariadne import Ariadne
-from graia.ariadne.event.message import MessageEvent, GroupMessage
+from graia.ariadne.event.message import GroupMessage, MessageEvent
 from graia.ariadne.message.chain import MessageChain
 from graia.broadcast import ExecutionStop
 from graia.broadcast.builtin.decorators import Depend

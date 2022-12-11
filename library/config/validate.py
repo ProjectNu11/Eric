@@ -4,7 +4,7 @@ from pathlib import Path
 from kayaku import create
 from loguru import logger
 
-from library.model.config.database import MySQLConfig, DatabaseConfig
+from library.model.config.database import DatabaseConfig, MySQLConfig
 from library.model.config.eric import EricConfig
 from library.model.config.path import DataPathConfig, PathConfig
 from library.model.config.service.fastapi import FastAPIConfig

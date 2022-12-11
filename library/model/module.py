@@ -5,7 +5,7 @@ from kayaku import create
 from pydantic import BaseModel, validator
 
 from library.model.config.function import FunctionConfig
-from library.model.config.path import PathConfig, DataPathConfig
+from library.model.config.path import DataPathConfig, PathConfig
 
 
 class ModuleAdvancedSetting(BaseModel):

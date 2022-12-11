@@ -3,21 +3,10 @@ import asyncio
 from creart import it
 from graia.ariadne import Ariadne
 from graia.ariadne.event.lifecycle import AccountLaunch
-from graia.ariadne.event.message import GroupMessage, MessageEvent, FriendMessage
+from graia.ariadne.event.message import FriendMessage, GroupMessage, MessageEvent
 from graia.ariadne.message.chain import MessageChain
-from graia.ariadne.message.element import At
-from graia.ariadne.message.parser.twilight import (
-    Twilight,
-    ElementMatch,
-    FullMatch,
-    UnionMatch,
-    WildcardMatch,
-    RegexResult,
-    SpacePolicy,
-    ArgumentMatch,
-    ArgResult,
-)
-from graia.ariadne.util.saya import listen, dispatch, decorate
+from graia.ariadne.message.parser.twilight import ArgResult, RegexResult
+from graia.ariadne.util.saya import decorate, dispatch, listen
 from graia.broadcast.interrupt import InterruptControl
 from graia.saya import Channel
 from graia.saya.builtins.broadcast import ListenerSchema
@@ -29,7 +18,15 @@ from library.decorator.permission import Permission
 from library.model.core import EricCore
 from library.model.permission import UserPerm
 from library.module.manager.model.module import RemoteModule
-from library.module.manager.model.repository import ParsedRepository
+from library.module.manager.twilight import (
+    CHANGE_GROUP_MODULE_STATE_CH,
+    CHANGE_GROUP_MODULE_STATE_EN,
+    INSTALL_EN,
+    REGISTER_REPOSITORY_EN,
+    UNLOAD_EN,
+    UPDATE_EN,
+    UPGRADE_EN,
+)
 from library.module.manager.util.lock import lock
 from library.module.manager.util.module.install import install
 from library.module.manager.util.module.state import change_state
@@ -38,7 +35,6 @@ from library.module.manager.util.remote.install import install as remote_install
 from library.module.manager.util.remote.update import update_gen_msg
 from library.module.manager.util.remote.version import check_update
 from library.module.manager.util.repository.register import wait_and_register
-from library.util.dispatcher import PrefixMatch
 from library.util.message import send_message
 from library.util.multi_account.public_group import PublicGroup
 from library.util.waiter.friend import FriendConfirmWaiter
@@ -51,15 +47,7 @@ inc = it(InterruptControl)
 @channel.use(
     ListenerSchema(
         listening_events=[GroupMessage],
-        inline_dispatchers=[
-            Twilight(
-                ElementMatch(At, optional=True),
-                PrefixMatch(optional=True),
-                UnionMatch("打开", "关闭") @ "action",
-                FullMatch("模块"),
-                WildcardMatch() @ "content",
-            )
-        ],
+        inline_dispatchers=[CHANGE_GROUP_MODULE_STATE_CH],
         decorators=[
             MentionMeOptional.check(),
             Distribution.distribute(),
@@ -70,42 +58,21 @@ inc = it(InterruptControl)
 @channel.use(
     ListenerSchema(
         listening_events=[FriendMessage],
-        inline_dispatchers=[
-            Twilight(
-                PrefixMatch(optional=True),
-                UnionMatch("打开", "关闭") @ "action",
-                FullMatch("模块"),
-                WildcardMatch() @ "content",
-            )
-        ],
+        inline_dispatchers=[CHANGE_GROUP_MODULE_STATE_CH],
         decorators=[Permission.require(UserPerm.BOT_OWNER)],
     )
 )
 @channel.use(
     ListenerSchema(
         listening_events=[FriendMessage],
-        inline_dispatchers=[
-            Twilight(
-                PrefixMatch(),
-                FullMatch("manager"),
-                UnionMatch("enable", "disable") @ "action",
-                WildcardMatch() @ "content",
-            )
-        ],
+        inline_dispatchers=[CHANGE_GROUP_MODULE_STATE_EN],
         decorators=[Permission.require(UserPerm.BOT_OWNER)],
     )
 )
 @channel.use(
     ListenerSchema(
         listening_events=[FriendMessage],
-        inline_dispatchers=[
-            Twilight(
-                PrefixMatch(),
-                FullMatch("manager"),
-                UnionMatch("enable", "disable") @ "action",
-                WildcardMatch() @ "content",
-            )
-        ],
+        inline_dispatchers=[CHANGE_GROUP_MODULE_STATE_EN],
         decorators=[
             MentionMeOptional.check(),
             Distribution.distribute(),
@@ -133,14 +100,7 @@ async def manager_account_launch(event: AccountLaunch):
 
 
 @listen(GroupMessage, FriendMessage)
-@dispatch(
-    Twilight(
-        ElementMatch(At, optional=True),
-        PrefixMatch(),
-        FullMatch("manager").space(SpacePolicy.FORCE),
-        FullMatch("register"),
-    )
-)
+@dispatch(REGISTER_REPOSITORY_EN)
 @decorate(
     MentionMeOptional.check(),
     Distribution.distribute(),
@@ -162,14 +122,7 @@ async def manager_register_repository(app: Ariadne, event: MessageEvent):
 
 
 @listen(GroupMessage, FriendMessage)
-@dispatch(
-    Twilight(
-        ElementMatch(At, optional=True),
-        PrefixMatch(),
-        FullMatch("manager").space(SpacePolicy.FORCE),
-        FullMatch("update"),
-    )
-)
+@dispatch(UPDATE_EN)
 @decorate(
     MentionMeOptional.check(),
     Distribution.distribute(),
@@ -186,15 +139,7 @@ async def manager_update(app: Ariadne, event: MessageEvent):
 
 
 @listen(GroupMessage, FriendMessage)
-@dispatch(
-    Twilight(
-        ElementMatch(At, optional=True),
-        PrefixMatch(),
-        FullMatch("manager").space(SpacePolicy.FORCE),
-        FullMatch("upgrade"),
-        ArgumentMatch("-y", action="store_true") @ "yes",
-    )
-)
+@dispatch(UPGRADE_EN)
 @decorate(
     MentionMeOptional.check(),
     Distribution.distribute(),
@@ -247,22 +192,13 @@ async def manager_upgrade(app: Ariadne, event: MessageEvent, yes: ArgResult):
 
 
 @listen(GroupMessage, FriendMessage)
-@dispatch(
-    Twilight(
-        ElementMatch(At, optional=True),
-        PrefixMatch(),
-        FullMatch("manager").space(SpacePolicy.FORCE),
-        FullMatch("install"),
-        ArgumentMatch("-y", action="store_true") @ "yes",
-        WildcardMatch() @ "content",
-    )
-)
+@dispatch(INSTALL_EN)
 @decorate(
     MentionMeOptional.check(),
     Distribution.distribute(),
     Permission.require(UserPerm.BOT_OWNER),
 )
-async def manager_list(
+async def manager_install(
     app: Ariadne, event: MessageEvent, yes: ArgResult, content: RegexResult
 ):
     yes: bool = yes.result
@@ -281,21 +217,13 @@ async def manager_list(
 
 
 @listen(GroupMessage, FriendMessage)
-@dispatch(
-    Twilight(
-        ElementMatch(At, optional=True),
-        PrefixMatch(),
-        FullMatch("manager").space(SpacePolicy.FORCE),
-        FullMatch("unload"),
-        WildcardMatch() @ "content",
-    )
-)
+@dispatch(UNLOAD_EN)
 @decorate(
     MentionMeOptional.check(),
     Distribution.distribute(),
     Permission.require(UserPerm.BOT_OWNER),
 )
-async def manager_list(app: Ariadne, event: MessageEvent, content: RegexResult):
+async def manager_unload(app: Ariadne, event: MessageEvent, content: RegexResult):
     content: str = content.result.display
     assert not lock.locked(), "未能取得管理器锁，请检查是否正在其他操作"
     async with lock:

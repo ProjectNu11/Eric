@@ -1,4 +1,4 @@
-from sqlalchemy import BIGINT, Column, DateTime, Integer, String, Float
+from sqlalchemy import BIGINT, Column, DateTime, Float, Integer, String
 
 from library.util.orm import Base
 

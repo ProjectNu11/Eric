@@ -2,7 +2,7 @@ from lxml.html import builder
 from lxml.html.builder import CLASS
 
 from library.ui.color import ColorSchema
-from library.ui.element import Element, Blank
+from library.ui.element import Blank, Element
 from library.ui.element.base import Style
 from library.ui.util import wrap_text
 

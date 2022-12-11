@@ -10,7 +10,6 @@ from library.ui.element.progress_bar import ProgressBar
 from library.ui.element.title import Title
 from library.ui.element.video import VideoBox
 
-
 __all__ = [
     "Banner",
     "Element",

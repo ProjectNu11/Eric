@@ -1,5 +1,5 @@
-from graia.ariadne.model import Group, Friend
-from graia.broadcast import Dispatchable, BaseDispatcher
+from graia.ariadne.model import Friend, Group
+from graia.broadcast import BaseDispatcher, Dispatchable
 
 
 class AccountMessageBanned(Dispatchable):

@@ -1,5 +1,5 @@
 from dataclasses import field
-from typing import Union, Any
+from typing import Any, Union
 
 from kayaku import config
 

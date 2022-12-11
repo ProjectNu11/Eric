@@ -1,6 +1,6 @@
 from enum import Enum
 
-from graia.ariadne.model import MemberPerm, Member, Friend
+from graia.ariadne.model import Friend, Member, MemberPerm
 from kayaku import create
 from typing_extensions import Self
 

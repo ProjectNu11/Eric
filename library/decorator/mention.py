@@ -2,7 +2,7 @@ from typing import NoReturn
 
 from graia.ariadne import Ariadne
 from graia.ariadne.event.message import MessageEvent
-from graia.ariadne.message.element import Source, Quote, At
+from graia.ariadne.message.element import At, Quote, Source
 from graia.broadcast import ExecutionStop
 from graia.broadcast.builtin.decorators import Depend
 

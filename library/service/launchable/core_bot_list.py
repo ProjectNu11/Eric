@@ -1,5 +1,5 @@
 from creart import it
-from launart import Launchable, Launart
+from launart import Launart, Launchable
 
 from library.model.bot_list import BotList
 

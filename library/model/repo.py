@@ -2,7 +2,7 @@ from abc import abstractmethod
 from pathlib import Path
 
 import aiofiles
-from aiohttp import ClientSession, ClientResponseError
+from aiohttp import ClientResponseError, ClientSession
 from kayaku import create
 from loguru import logger
 from pydantic import BaseModel

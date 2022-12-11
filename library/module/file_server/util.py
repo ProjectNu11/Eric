@@ -3,7 +3,7 @@ import uuid
 from datetime import datetime, timedelta
 from hashlib import md5
 from pathlib import Path
-from typing import Generator, AsyncGenerator
+from typing import AsyncGenerator, Generator
 
 import aiofiles
 from creart import it

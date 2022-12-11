@@ -11,18 +11,17 @@ from starlette import status
 from starlette.responses import FileResponse
 
 from library.module.file_server.util import (
-    file_exist,
     DATA_PATH,
-    insert,
     cleanup,
-    get_filename,
+    file_exist,
     file_registered,
+    get_filename,
 )
 from library.module.file_server.vars import (
     FILE_ENTRYPOINT,
+    LIB_ASSETS_DIR,
     LIB_ASSETS_ENTRYPOINT,
     MODULE_ASSETS_ENTRYPOINT,
-    LIB_ASSETS_DIR,
 )
 from library.util.module import Modules
 

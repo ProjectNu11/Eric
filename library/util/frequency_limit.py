@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from typing import Type
 
 from creart import AbstractCreator, CreateTargetInfo, exists_module
-from graia.ariadne.model import Member, Friend, Group
+from graia.ariadne.model import Friend, Group, Member
 from kayaku import create
 
 from library.model.config.function import FrequencyLimitConfig

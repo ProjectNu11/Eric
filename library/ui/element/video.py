@@ -1,4 +1,4 @@
-from lxml.html.builder import E, CLASS
+from lxml.html.builder import CLASS, E
 from typing_extensions import Self
 
 from library.ui.color import ColorSchema

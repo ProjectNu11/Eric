@@ -5,8 +5,8 @@ from kayaku import create
 from loguru import logger
 
 from library.model.config.state import ModuleState
-from library.model.module import ModuleMetadata, Module
-from library.util.module.metadata import update_metadata, parse_metadata
+from library.model.module import Module, ModuleMetadata
+from library.util.module.metadata import parse_metadata, update_metadata
 from library.util.module.standardize import standardize_structure
 
 
