@@ -1,8 +1,8 @@
 from pathlib import Path
 
-from PIL import Image
 from lxml.html import builder
 from lxml.html.builder import CLASS
+from PIL import Image
 
 from library.ui.color import ColorSchema
 from library.ui.element.base import Element, Style

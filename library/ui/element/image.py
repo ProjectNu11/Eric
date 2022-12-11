@@ -2,10 +2,10 @@ from base64 import b64encode
 from io import BytesIO
 from pathlib import Path
 
-from PIL import Image
 from lxml import etree
 from lxml.html import builder
 from lxml.html.builder import CLASS
+from PIL import Image
 from typing_extensions import Self
 
 from library.ui.color import ColorSchema

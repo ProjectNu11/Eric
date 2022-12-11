@@ -3,8 +3,8 @@ from base64 import b64encode
 from pathlib import Path
 
 import PIL
-from PIL import Image
 from lxml import etree
+from PIL import Image
 from typing_extensions import Self
 
 from library.ui.color import ColorSchema
