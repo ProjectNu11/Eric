@@ -474,7 +474,7 @@ format-nongpl = ["fqdn", "idna", "isoduration", "jsonpointer (>1.13)", "rfc3339-
 
 [[package]]
 name = "kayaku"
-version = "0.5.0"
+version = "0.5.1"
 description = "An powerful and flexible configuration solution."
 category = "main"
 optional = false
@@ -1027,7 +1027,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "dff6d93ec184b07aa390b2e03353bdc43d9ac3da397c8c07682a9ce53258c9e1"
+content-hash = "9dbc5b36a2bf16148f5716d6be788bde26b41fea5ce5d4ca27f3902fd64a9e4b"
 
 [metadata.files]
 aiofiles = [
@@ -1413,8 +1413,8 @@ jsonschema = [
     {file = "jsonschema-4.17.1.tar.gz", hash = "sha256:05b2d22c83640cde0b7e0aa329ca7754fbd98ea66ad8ae24aa61328dfe057fa3"},
 ]
 kayaku = [
-    {file = "kayaku-0.5.0-py3-none-any.whl", hash = "sha256:6993ced4bf95f9374ee10dbfd28d2218a54680a3975b48e993dff8417b345578"},
-    {file = "kayaku-0.5.0.tar.gz", hash = "sha256:1d07af22f1216f340eb5e4e29e450c688d2ba3e666aee2191b1bdda8732d2b6f"},
+    {file = "kayaku-0.5.1-py3-none-any.whl", hash = "sha256:39d7d795b211268307b1d4845f1448f2645585b772de00504fed19d60e47ce16"},
+    {file = "kayaku-0.5.1.tar.gz", hash = "sha256:e31f0e35ac0bfed8d5670c042a73d09089e08a8353a32970156ac3872b90148c"},
 ]
 lark = [
     {file = "lark-1.1.4-py3-none-any.whl", hash = "sha256:a42f9f18bdc9d5571a371ae658548e81e78d1642c2145cc3b663e0bf2e9e7eae"},
