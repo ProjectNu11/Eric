@@ -55,7 +55,7 @@ class ModuleMetadata(BaseModel):
         return hash(f"_ModuleMetadata:{self.pack}")
 
     @validator("version")
-    def _module_version_validator(cls, version: str):
+    def _module_version_validator(cls, version: str):  # noqa
         """模块版本验证器"""
         if not re.match(r"^\d+\.\d+\.\d+$", version):
             raise ValueError("版本号不符合规范")

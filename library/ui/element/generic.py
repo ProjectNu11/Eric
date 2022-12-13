@@ -53,7 +53,7 @@ class GenericBoxItem(Element):
         self,
         text: str | None,
         description: str | None = None,
-        switch: bool | None = None,
+        _switch: bool | None = None,
         highlight: bool = False,
     ):
         assert (
