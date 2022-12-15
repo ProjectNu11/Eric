@@ -12,7 +12,7 @@ from library.util.module import Modules
 saya = Saya.current()
 
 
-def unload(module: Module):
+def unload(module: Module, *, unload_state: bool = True):
     assert (
         chn := saya.channels.get(module.pack, None)
     ), f"模块 {module.name} ({module.pack}) 未加载"
@@ -21,8 +21,9 @@ def unload(module: Module):
         f"插件状态固定为 {module.advanced.allow_disable}"
     )
     module.loaded = False
-    state: ModuleState = create(ModuleState)
-    state.unload(module.pack)
+    if unload_state:
+        state: ModuleState = create(ModuleState)
+        state.unload(module.pack)
     saya.uninstall_channel(chn)
     logger.info(f"[Manager] 卸载模块 {module.name} ({module.pack})")
 

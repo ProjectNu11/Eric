@@ -74,7 +74,7 @@ async def _post_install(install_dir: Path):
         with suppress(Exception):
             # Unload the module if it is already loaded
             # Suppress any exception because the module may not be loaded
-            unload(module)
+            unload(module, unload_state=False)
         it(Modules).add(module)
         await asyncio.to_thread(require, module, debug=False, suppress=False)
     except Exception as e:
