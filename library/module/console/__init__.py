@@ -3,18 +3,14 @@ import sys
 from graia.ariadne import Ariadne
 from graia.ariadne.console import Console
 from graia.ariadne.console.saya import ConsoleSchema
-from graia.ariadne.message.parser.twilight import (
-    FullMatch,
-    SpacePolicy,
-    Twilight,
-    UnionMatch,
-)
+from graia.ariadne.message.parser.twilight import Twilight, UnionMatch
 from graia.saya import Channel
 from loguru import logger
 from prompt_toolkit.styles import Style
 
 from library.model.exception import SkipRequiring
 from library.module.console.text import wrap
+from library.module.manager import UPDATE_EN, lock
 from library.module.manager.util.remote.update import update_gen_msg
 from library.util.dispatcher import PrefixMatch
 
@@ -37,17 +33,12 @@ async def console_stop(app: Ariadne, console: Console):
         console.stop()
 
 
-@channel.use(
-    ConsoleSchema(
-        [
-            Twilight(
-                PrefixMatch(optional=True),
-                FullMatch("manager").space(SpacePolicy.FORCE),
-                FullMatch("update"),
-            )
-        ]
-    )
-)
+@channel.use(ConsoleSchema([Twilight(PrefixMatch(optional=True), UPDATE_EN)]))
 async def console_update():
-    logger.info(wrap("正在拉取仓库更新中..."))
-    logger.info(wrap(await update_gen_msg()))
+    try:
+        assert not lock.locked(), "未能取得管理器锁，请检查是否正在其他操作"
+        async with lock:
+            logger.info(wrap("正在拉取仓库更新中..."))
+            logger.info(wrap(await update_gen_msg()))
+    except AssertionError as e:
+        logger.error(wrap(e.args[0]))
