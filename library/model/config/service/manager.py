@@ -18,8 +18,14 @@ class ManagerConfig:
         Http:   `http$<url>`
     """
 
-    auto_update: bool = True
+    self_auto_update: bool = True
     """ 自动更新，是否在启动时自动更新本体 """
+
+    plugin_auto_update: bool = True
+    """ 自动更新，是否自动拉取模块更新 """
+
+    plugin_auto_upgrade: bool = False
+    """ 自动更新，是否自动升级模块 """
 
     def register_repo(self, repo_type: str, *data: str):
         if repo_type.lower() == "github" and len(data) in {3, 2}:

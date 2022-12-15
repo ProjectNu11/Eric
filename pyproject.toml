@@ -28,6 +28,7 @@ aiofiles = "^22.1.0"
 prompt-toolkit = "^3.0.36"
 lxml = "^4.9.2"
 graiax-text2img-playwright = "^0.3.0"
+graiax-shortcut = "^0.2.1"
 
 [tool.poetry.group.dev.dependencies]
 black = "^22.10.0"

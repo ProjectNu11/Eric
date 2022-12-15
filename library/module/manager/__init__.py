@@ -16,9 +16,12 @@ from graia.ariadne.util.saya import decorate, dispatch, listen
 from graia.broadcast.interrupt import InterruptControl
 from graia.saya import Channel
 from graia.saya.builtins.broadcast import ListenerSchema
+from graiax.shortcut.saya import every
+from kayaku import create
 from loguru import logger
 
 from library.decorator import Distribution, MentionMeOptional, Permission
+from library.model.config.service.manager import ManagerConfig
 from library.model.core import EricCore
 from library.model.permission import UserPerm
 from library.module.manager.match import (
@@ -252,3 +255,17 @@ async def manager_unload(app: Ariadne, event: MessageEvent, content: RegexResult
     assert not lock.locked(), "未能取得管理器锁，请检查是否正在其他操作"
     async with lock:
         await send_message(event, perform_unload(content), app.account)
+
+
+@every(1, mode="hour")
+async def auto_update():
+    mgr_cfg: ManagerConfig = create(ManagerConfig, flush=True)
+    if not mgr_cfg.plugin_auto_update:
+        return
+    try:
+        assert not lock.locked()
+        async with lock:
+            logger.info("[Manager] 正在拉取仓库更新中...")
+            # logger.info(await update_gen_msg())
+    except AssertionError:
+        logger.warning("[Manager] 未能取得管理器锁，跳过自动更新")
