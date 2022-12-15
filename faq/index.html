@@ -722,6 +722,20 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#librarymodelexceptionrequirementresolvefailed" class="md-nav__link">
+    启动时提示 library.model.exception.RequirementResolveFailed
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#channel" class="md-nav__link">
+    模块获取了错误的 channel
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -778,6 +792,20 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#librarymodelexceptionrequirementresolvefailed" class="md-nav__link">
+    启动时提示 library.model.exception.RequirementResolveFailed
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#channel" class="md-nav__link">
+    模块获取了错误的 channel
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -806,13 +834,24 @@
 </code></pre>
 </li>
 </ul>
+<h2 id="librarymodelexceptionrequirementresolvefailed">启动时提示 <code>library.model.exception.RequirementResolveFailed</code></h2>
+<p>出现此报错说明你安装的模块依赖了其他未被安装的模块，可通过对比 <code>metadata.json</code> 
+与实际安装的模块列表来解决。</p>
+<div class="admonition note">
+<p class="admonition-title">一般情况下更加推荐使用内置的模块管理器来安装模块，而不是手动安装。</p>
+<p>使用内置的模块管理器安装模块时，会自动解决依赖关系。当然你也可以自行通过模块文件夹下的 
+ <code>metadata.json</code> 来查看并解决模块的依赖关系。</p>
+</div>
+<h2 id="channel">模块获取了错误的 <code>channel</code></h2>
+<p>检查该模块是否被其他模块依赖，如果是的话，检查依赖该模块的模块是否被正确安装或 <code>metadata.json</code> 
+是否未填写 <code>required</code> 字段。</p>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       最后更新:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">December 11, 2022</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">December 15, 2022</span>
       
         <br>
         创建日期:
