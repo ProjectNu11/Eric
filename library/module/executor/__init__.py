@@ -20,10 +20,7 @@ from graia.saya.builtins.broadcast import ListenerSchema
 from kayaku import create
 from loguru import logger
 
-from library.decorator.blacklist import Blacklist
-from library.decorator.function_call import FunctionCall
-from library.decorator.permission import Permission
-from library.decorator.timer import timer
+from library.decorator import Blacklist, FunctionCall, Permission, timer
 from library.model.config.eric import EricConfig
 from library.model.permission import UserPerm
 from library.util.image import render_md

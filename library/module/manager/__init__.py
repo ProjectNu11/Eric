@@ -12,9 +12,7 @@ from graia.saya import Channel
 from graia.saya.builtins.broadcast import ListenerSchema
 from loguru import logger
 
-from library.decorator.distribute import Distribution
-from library.decorator.mention import MentionMeOptional
-from library.decorator.permission import Permission
+from library.decorator import Distribution, MentionMeOptional, Permission
 from library.model.core import EricCore
 from library.model.permission import UserPerm
 from library.module.manager.model.module import RemoteModule

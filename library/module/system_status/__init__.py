@@ -11,8 +11,7 @@ from graia.saya import Channel
 from graia.saya.builtins.broadcast import ListenerSchema
 from kayaku import create
 
-from library.decorator.distribute import Distribution
-from library.decorator.permission import Permission
+from library.decorator import Distribution, Permission
 from library.model.config.eric import EricConfig
 from library.model.core import EricCore
 from library.model.permission import UserPerm

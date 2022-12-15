@@ -13,8 +13,7 @@ from graia.ariadne.util.saya import decorate, dispatch, listen
 from graia.broadcast.builtin.event import ExceptionThrowed
 from kayaku import create
 
-from library.decorator.distribute import Distribution
-from library.decorator.permission import Permission
+from library.decorator import Distribution, Permission
 from library.model.config.eric import EricConfig
 from library.model.permission import UserPerm
 from library.util.image import render_md
