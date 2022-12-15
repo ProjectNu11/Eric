@@ -22,12 +22,12 @@ fastapi_config: FastAPIConfig = create(FastAPIConfig)
 
 def portal_page() -> Page:
     eric_config: EricConfig = create(EricConfig)
-    modules = it(Modules)
+    modules = list(it(Modules).__all__.values())
     page = Page(title=f"{eric_config.name} 帮助中心")
     page.add(
         Title(f"{eric_config.name} 帮助中心", f"共 {len(modules)} 个模块"),
     )
-    for module in modules:
+    for module in sorted(modules, key=lambda _mod: _mod.pack):
         page.add(
             Button(
                 module.name,
@@ -123,7 +123,7 @@ def _search(keyword: str, name: str, *criterion) -> Page:
         return page
     page = Page(title=f"{name}搜索 {keyword}")
     page.add(Title(f"{name}搜索 {keyword}", f"共 {len(modules)} 个结果"))
-    for module in modules:
+    for module in sorted(modules, key=lambda _mod: _mod.pack):
         page.add(
             Button(
                 module.name,
