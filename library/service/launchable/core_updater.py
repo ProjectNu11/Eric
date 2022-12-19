@@ -41,7 +41,7 @@ class EricCoreUpdater(Launchable):
             f"<yellow>[EricService] 发现新版本</yellow>\n{history}"
         )
         config: ManagerConfig = create(ManagerConfig)
-        if not config.auto_update:
+        if not config.self_auto_update:
             return
         logger.opt(colors=True).info("<cyan>[EricService] 正在自动更新</cyan>")
         await asyncio.to_thread(perform_update)
