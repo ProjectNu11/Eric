@@ -3,7 +3,12 @@ import sys
 from graia.ariadne import Ariadne
 from graia.ariadne.console import Console
 from graia.ariadne.console.saya import ConsoleSchema
-from graia.ariadne.message.parser.twilight import Twilight, UnionMatch
+from graia.ariadne.message.parser.twilight import (
+    ArgResult,
+    RegexResult,
+    Twilight,
+    UnionMatch,
+)
 from graia.saya import Channel
 from loguru import logger
 from prompt_toolkit.styles import Style
@@ -11,6 +16,8 @@ from prompt_toolkit.styles import Style
 from library.model.exception import SkipRequiring
 from library.module.console.text import wrap
 from library.module.manager import UPDATE_EN, lock
+from library.module.manager.match import GET_CONFIG_SUPERUSER_EN
+from library.module.manager.util.config.get import mgr_get_module_config
 from library.module.manager.util.remote.update import update_gen_msg
 from library.util.dispatcher import PrefixMatch
 
@@ -42,3 +49,13 @@ async def console_update():
             logger.info(wrap(await update_gen_msg()))
     except AssertionError as e:
         logger.error(wrap(e.args[0]))
+
+
+@channel.use(
+    ConsoleSchema([Twilight(PrefixMatch(optional=True), GET_CONFIG_SUPERUSER_EN)])
+)
+async def console_get_group_config(group: ArgResult, content: RegexResult):
+    group = group.result
+    content = content.result.display
+    result = mgr_get_module_config(group, content)
+    logger.info(wrap(result))

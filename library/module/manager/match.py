@@ -45,3 +45,18 @@ UNLOAD_EN = [
     FullMatch("unload"),
     WildcardMatch() @ "content",
 ]
+
+GET_CONFIG_EN = [
+    FullMatch("manager").space(SpacePolicy.FORCE),
+    FullMatch("config").space(SpacePolicy.FORCE),
+    FullMatch("get"),
+    WildcardMatch() @ "content",
+]
+
+GET_CONFIG_SUPERUSER_EN = [
+    FullMatch("manager").space(SpacePolicy.FORCE),
+    FullMatch("config").space(SpacePolicy.FORCE),
+    FullMatch("get"),
+    ArgumentMatch("-g", "--group", type=int, default=0) @ "group",
+    WildcardMatch() @ "content",
+]

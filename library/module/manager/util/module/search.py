@@ -9,6 +9,7 @@ def search_module(name: str) -> Module | None:
         lambda module: any(
             [
                 name.lower() == module.name.lower(),
+                name.lower() == module.pack.lower(),
                 name.lower() == module.pack.lower().split(".")[-1],
                 name.lower() == module.name.lower().replace(" ", "").split(".")[-1],
             ]
