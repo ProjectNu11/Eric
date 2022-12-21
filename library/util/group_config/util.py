@@ -53,6 +53,17 @@ def _from_file(module: str, field: int) -> ModuleGroupConfig:
 
 
 def module_create(cls: type[_T], field: int | Group, flush: bool = False) -> _T:
+    """
+    创建模块配置
+
+    Args:
+        cls: 模块配置类
+        field: 群号
+        flush: 是否强制刷新
+
+    Raises:
+        TypeError: 如果 cls 未注册
+    """
     if not (issubclass(cls, ModuleGroupConfig)) or cls not in _store.mapping:
         raise TypeError(f"{cls!r} is not a registered ConfigModel class!")
     module = _store.mapping[cls]
@@ -64,13 +75,42 @@ def module_create(cls: type[_T], field: int | Group, flush: bool = False) -> _T:
     return cast(_T, config)
 
 
+def _module_save_single(module: str, field: int, data: dict):
+    with (CONFIG_PATH / str(field) / f"{module}.json").open("w", encoding="utf-8") as f:
+        f.write(json.dumps(data, ensure_ascii=False, indent=4))
+
+
+def module_save(model: type[_T], *, field: int = None):
+    """
+    保存模块配置
+
+    Args:
+        model: 模块配置类
+        field: 群号，如果为 None 则保存所有群的配置
+
+    Raises:
+        TypeError: 如果 model 未注册
+    """
+    if model not in _store.mapping:
+        raise TypeError(f"{model!r} is not a registered ConfigModel class!")
+    module = _store.mapping[model]
+    if field is not None:
+        assert (
+            field in _store.instances[module]
+        ), f"Model {model!r} is not initialized for {field}!"
+        _module_save_single(module, field, _store.instances[module][field].__dict__)
+        return
+    for field, config in _store.instances[module].items():
+        _module_save_single(module, field, config.__dict__)
+
+
 def module_save_all():
+    """
+    保存所有模块配置
+    """
     for module, instances in _store.instances.items():
         for field, config in instances.items():
-            with (CONFIG_PATH / str(field) / f"{module}.json").open(
-                "w", encoding="utf-8"
-            ) as f:
-                f.write(json.dumps(config.__dict__, ensure_ascii=False, indent=4))
+            _module_save_single(module, field, config.__dict__)
 
 
 module_config = _cfg_stub if TYPE_CHECKING else _cfg_impl
