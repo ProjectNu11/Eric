@@ -7,9 +7,9 @@ from graia.ariadne.event.message import FriendMessage, GroupMessage, MessageEven
 from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.message.element import At, Image
 from graia.ariadne.message.parser.twilight import ElementMatch, Twilight, UnionMatch
-from graia.ariadne.util.saya import decorate, dispatch, listen
 from graia.saya import Channel
 from graiax.fastapi.saya import route
+from graiax.shortcut import decorate, dispatch, listen
 from kayaku import create
 from starlette import status
 from starlette.responses import HTMLResponse

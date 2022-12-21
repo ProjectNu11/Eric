@@ -8,9 +8,9 @@ from graia.ariadne.message.parser.twilight import (
     FullMatch,
     Twilight,
 )
-from graia.ariadne.util.saya import decorate, dispatch, listen
 from graia.saya import Channel
 from graiax.fastapi.saya import route
+from graiax.shortcut import decorate, dispatch, listen
 from loguru import logger
 
 from library.decorator import Distribution, Switch, timer

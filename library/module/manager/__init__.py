@@ -12,10 +12,10 @@ from graia.ariadne.message.parser.twilight import (
     RegexResult,
     Twilight,
 )
-from graia.ariadne.util.saya import decorate, dispatch, listen
 from graia.broadcast.interrupt import InterruptControl
 from graia.saya import Channel
 from graia.saya.builtins.broadcast import ListenerSchema
+from graiax.shortcut import decorate, dispatch, listen
 from graiax.shortcut.saya import every
 from kayaku import create
 from loguru import logger

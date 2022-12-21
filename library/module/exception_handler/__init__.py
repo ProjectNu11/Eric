@@ -9,8 +9,8 @@ from graia.ariadne.event.message import FriendMessage, GroupMessage
 from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.message.element import Image
 from graia.ariadne.message.parser.twilight import FullMatch, Twilight
-from graia.ariadne.util.saya import decorate, dispatch, listen
 from graia.broadcast.builtin.event import ExceptionThrowed
+from graiax.shortcut import decorate, dispatch, listen
 from kayaku import create
 
 from library.decorator import Distribution, Permission
