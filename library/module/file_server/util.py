@@ -15,6 +15,7 @@ from sqlalchemy import select
 from library.model.config.service.fastapi import FastAPIConfig
 from library.module.file_server.table import FileServer
 from library.module.file_server.vars import FILE_ENTRYPOINT
+from library.ui import Page
 from library.util.module import Modules
 from library.util.orm import orm
 
@@ -164,6 +165,11 @@ async def serve_file(
         await delete_file(file_id)
         logger.debug(f"[FileServer] 已回滚文件 -> {file_id}")
         return
+
+
+async def serve_page(page: Page, lifespan: int = DEFAULT_LIFESPAN) -> str | None:
+    data = page.to_html().encode("utf-8")
+    return await serve_file(data, f"{page.title}.html", lifespan, keep_original=False)
 
 
 def file_exist(file_id: str) -> bool:

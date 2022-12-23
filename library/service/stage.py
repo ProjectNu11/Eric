@@ -28,6 +28,7 @@ from library.model.config.service.fastapi import FastAPIConfig
 from library.service.launchable.core_bot_list import EricCoreBotList
 from library.service.launchable.core_data import EricCoreData
 from library.service.launchable.core_updater import EricCoreUpdater
+from library.service.launchable.util_session import EricUtilSession
 from library.util.log import setup_logger
 from library.util.module.launch import launch_require
 
@@ -74,6 +75,7 @@ def initialize(*, with_console: bool):
     Ariadne.launch_manager.add_service(EricCoreUpdater())
     Ariadne.launch_manager.add_service(EricCoreData())
     Ariadne.launch_manager.add_service(EricCoreBotList())
+    Ariadne.launch_manager.add_service(EricUtilSession())
 
     it(GraiaScheduler)
 
