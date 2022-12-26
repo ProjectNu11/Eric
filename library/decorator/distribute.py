@@ -10,7 +10,7 @@ from graia.broadcast.builtin.decorators import Depend
 from kayaku import create
 from loguru import logger
 
-from library.model.config.eric import EricConfig
+from library.model.config import EricConfig
 from library.util.multi_account.public_group import PublicGroup
 
 

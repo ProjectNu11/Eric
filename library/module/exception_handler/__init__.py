@@ -14,7 +14,7 @@ from graiax.shortcut import decorate, dispatch, listen
 from kayaku import create
 
 from library.decorator import Distribution, Permission
-from library.model.config.eric import EricConfig
+from library.model.config import EricConfig
 from library.model.permission import UserPerm
 from library.util.image import render_md
 from library.util.message import send_message

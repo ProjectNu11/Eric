@@ -3,7 +3,7 @@ from creart import it
 from launart import Launart, Launchable
 from loguru import logger
 
-from library.model.config.group_config import GroupConfig
+from library.model.config import GroupConfig
 from library.util.group_config import module_save_all
 from library.util.orm import db_init
 

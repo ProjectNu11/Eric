@@ -7,7 +7,7 @@ from kayaku import create
 from loguru import logger
 from pydantic import BaseModel
 
-from library.model.config.eric import EricConfig
+from library.model.config import EricConfig
 
 
 class GenericPluginRepo(BaseModel):

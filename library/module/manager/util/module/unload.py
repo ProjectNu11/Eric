@@ -4,7 +4,7 @@ from graia.saya import Saya
 from kayaku import create
 from loguru import logger
 
-from library.model.config.state import ModuleState
+from library.model.config import ModuleState
 from library.model.module import Module
 from library.util.misc import QUOTE_PATTERN
 from library.util.module import Modules

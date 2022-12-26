@@ -4,9 +4,7 @@ from creart import it
 from kayaku import create
 from loguru import logger
 
-from library.model.config.eric import EricConfig
-from library.model.config.path import PathConfig
-from library.model.config.state import ModuleState
+from library.model.config import EricConfig, ModuleState, PathConfig
 from library.util.module import Modules
 from library.util.module.get import list_module
 from library.util.module.require import require

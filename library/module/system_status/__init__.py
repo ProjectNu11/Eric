@@ -12,7 +12,7 @@ from graia.saya.builtins.broadcast import ListenerSchema
 from kayaku import create
 
 from library.decorator import Distribution, Permission
-from library.model.config.eric import EricConfig
+from library.model.config import EricConfig
 from library.model.core import EricCore
 from library.model.permission import UserPerm
 from library.ui import Page

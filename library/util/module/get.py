@@ -4,7 +4,7 @@ from typing import Generator
 from kayaku import create
 from loguru import logger
 
-from library.model.config.state import ModuleState
+from library.model.config import ModuleState
 from library.model.module import Module, ModuleMetadata
 from library.util.module.metadata import parse_metadata, update_metadata
 from library.util.module.standardize import standardize_structure

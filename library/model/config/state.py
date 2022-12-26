@@ -16,7 +16,7 @@ class ModuleState:
         self.loaded[module] = False
 
     def initialize(self):
-        from library.model.config.path import PathConfig
+        from library.model.config import PathConfig
         from library.util.module.get import iter_metadata
 
         _path_config: PathConfig = create(PathConfig)

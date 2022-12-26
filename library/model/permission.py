@@ -4,7 +4,7 @@ from graia.ariadne.model import Friend, Member, MemberPerm
 from kayaku import create
 from typing_extensions import Self
 
-from library.model.config.eric import EricConfig
+from library.model.config import EricConfig
 
 
 class UserPerm(Enum):

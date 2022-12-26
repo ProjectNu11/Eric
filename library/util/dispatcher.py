@@ -1,7 +1,7 @@
 from graia.ariadne.message.parser.twilight import UnionMatch
 from kayaku import create
 
-from library.model.config.function import FunctionConfig
+from library.model.config import FunctionConfig
 
 
 class PrefixMatch(UnionMatch):

@@ -5,7 +5,7 @@ from graia.ariadne.message.chain import MessageChain
 from graia.broadcast.interrupt import InterruptControl
 from kayaku import create
 
-from library.model.config.service.manager import ManagerConfig
+from library.model.config import ManagerConfig
 from library.module.manager.model.repository import ParsedRepository
 from library.util.message import send_message
 from library.util.waiter.friend import FriendMessageWaiter, FriendSelectWaiter

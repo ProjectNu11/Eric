@@ -6,8 +6,7 @@ from kayaku import create
 from pydantic import BaseModel, ValidationError
 from typing_extensions import Self
 
-from library.model.config.function import FunctionConfig
-from library.model.config.path import PathConfig
+from library.model.config import FunctionConfig, PathConfig
 from library.model.module import ModuleMetadata
 from library.util.module import Modules
 

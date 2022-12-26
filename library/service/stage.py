@@ -23,8 +23,7 @@ from loguru import logger
 from playwright.async_api import ProxySettings
 
 from library.config.initialize import initialize_config
-from library.model.config.eric import EricConfig
-from library.model.config.service.fastapi import FastAPIConfig
+from library.model.config import EricConfig, FastAPIConfig, PlaywrightConfig
 from library.service.launchable.core_bot_list import EricCoreBotList
 from library.service.launchable.core_data import EricCoreData
 from library.service.launchable.core_updater import EricCoreUpdater
@@ -58,9 +57,11 @@ def initialize(*, with_console: bool):
     else:
         Ariadne.config(default_account=eric_config.accounts.copy().pop())
 
+    pw_cfg: PlaywrightConfig = create(PlaywrightConfig)
     Ariadne.launch_manager.add_service(
         PlaywrightService(
-            "chromium",
+            pw_cfg.browser,
+            auto_download_browser=pw_cfg.auto_download_browser,
             proxy=ProxySettings({"server": eric_config.proxy})
             if eric_config.proxy
             else None,

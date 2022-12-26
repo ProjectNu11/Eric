@@ -21,7 +21,7 @@ from kayaku import create
 from loguru import logger
 
 from library.decorator import Distribution, MentionMeOptional, Permission
-from library.model.config.service.manager import ManagerConfig
+from library.model.config import ManagerConfig
 from library.model.core import EricCore
 from library.model.permission import UserPerm
 from library.module.manager.match import (

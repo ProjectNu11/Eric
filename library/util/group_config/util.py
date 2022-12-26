@@ -7,7 +7,7 @@ import kayaku
 from graia.ariadne.model import Group
 from typing_extensions import dataclass_transform
 
-from library.model.config.path import PathConfig
+from library.model.config import PathConfig
 from library.util.group_config.model import ModuleGroupConfig
 from library.util.group_config.store import _store
 

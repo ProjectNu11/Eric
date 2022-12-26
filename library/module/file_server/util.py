@@ -12,7 +12,7 @@ from kayaku import create
 from loguru import logger
 from sqlalchemy import select
 
-from library.model.config.service.fastapi import FastAPIConfig
+from library.model.config import FastAPIConfig
 from library.module.file_server.table import FileServer
 from library.module.file_server.vars import FILE_ENTRYPOINT
 from library.ui import Page

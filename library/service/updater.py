@@ -5,7 +5,7 @@ from aiohttp import ClientSession
 from git import Commit, Head, Repo
 from kayaku import create
 
-from library.model.config.eric import EricConfig
+from library.model.config import EricConfig
 
 
 def get_current_repo() -> Repo | None:

@@ -3,7 +3,7 @@ from typing import Type
 
 from creart import AbstractCreator, CreateTargetInfo, exists_module
 
-from library.model.config.group_config import GroupConfig
+from library.model.config import GroupConfig
 
 
 class GroupConfigCreator(AbstractCreator, ABC):

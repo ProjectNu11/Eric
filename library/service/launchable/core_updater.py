@@ -4,7 +4,7 @@ from kayaku import create
 from launart import Launart, Launchable
 from loguru import logger
 
-from library.model.config.service.manager import ManagerConfig
+from library.model.config import ManagerConfig
 from library.service.updater import check_update, perform_update
 
 

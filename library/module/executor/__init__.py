@@ -21,7 +21,7 @@ from kayaku import create
 from loguru import logger
 
 from library.decorator import Blacklist, FunctionCall, Permission, timer
-from library.model.config.eric import EricConfig
+from library.model.config import EricConfig
 from library.model.permission import UserPerm
 from library.util.image import render_md
 from library.util.message import send_message

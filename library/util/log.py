@@ -4,8 +4,7 @@ from pathlib import Path
 from kayaku import create
 from loguru import logger
 
-from library.model.config.eric import EricConfig
-from library.model.config.path import PathConfig
+from library.model.config import EricConfig, PathConfig
 
 
 def setup_logger():

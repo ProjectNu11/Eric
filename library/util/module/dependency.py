@@ -5,7 +5,7 @@ from typing import NoReturn
 from kayaku import create
 from loguru import logger
 
-from library.model.config.eric import EricConfig
+from library.model.config import EricConfig
 from library.model.module import ModuleMetadata
 
 

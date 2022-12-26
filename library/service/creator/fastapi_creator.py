@@ -6,7 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from kayaku import create
 
-from library.model.config.service.fastapi import FastAPIConfig
+from library.model.config import FastAPIConfig
 
 
 class FastAPICreator(AbstractCreator, ABC):

@@ -6,7 +6,7 @@ from creart import AbstractCreator, CreateTargetInfo, exists_module
 from graia.ariadne.model import Friend, Group, Member
 from kayaku import create
 
-from library.model.config.function import FrequencyLimitConfig
+from library.model.config import FrequencyLimitConfig
 from library.util.orm import orm
 from library.util.orm.table import TempBlacklistTable
 

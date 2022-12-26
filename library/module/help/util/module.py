@@ -4,8 +4,7 @@ from creart import it
 from graiax.text2img.playwright import convert_md
 from kayaku import create
 
-from library.model.config.eric import EricConfig
-from library.model.config.service.fastapi import FastAPIConfig
+from library.model.config import EricConfig, FastAPIConfig
 from library.model.module import Module
 from library.module.help.vars import (
     CATEGORY_SEARCH_PAGE,

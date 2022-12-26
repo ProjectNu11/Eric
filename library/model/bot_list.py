@@ -6,7 +6,7 @@ from kayaku import create
 from loguru import logger
 from pydantic import BaseModel
 
-from library.model.config.path import DataPathConfig
+from library.model.config import DataPathConfig
 
 
 class BotType(BaseModel):

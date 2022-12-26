@@ -10,7 +10,7 @@ from graia.ariadne.model import Group
 from kayaku import create
 from loguru import logger
 
-from library.model.config.eric import EricConfig
+from library.model.config import EricConfig
 
 
 class PublicGroup:

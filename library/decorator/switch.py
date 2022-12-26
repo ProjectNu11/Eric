@@ -6,7 +6,7 @@ from graia.broadcast import ExecutionStop
 from graia.broadcast.builtin.decorators import Depend
 from loguru import logger
 
-from library.model.config.group_config import GroupConfig
+from library.model.config import GroupConfig
 
 
 class Switch:

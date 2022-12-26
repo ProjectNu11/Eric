@@ -1,7 +1,7 @@
 from creart import it
 from graia.ariadne.message.chain import MessageChain
 
-from library.model.config.group_config import GroupConfig
+from library.model.config import GroupConfig
 from library.model.module import Module
 from library.module.manager.util.module.search import bulk_search_module
 from library.util.misc import QUOTE_PATTERN

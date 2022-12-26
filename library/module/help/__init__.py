@@ -15,7 +15,7 @@ from starlette import status
 from starlette.responses import HTMLResponse
 
 from library.decorator import Distribution, MentionMeOptional, Switch
-from library.model.config.service.fastapi import FastAPIConfig
+from library.model.config import FastAPIConfig
 from library.module.help.util.module import (
     get_module_markdown,
     get_module_page,

@@ -10,7 +10,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import NullPool
 
-from library.model.config.database import DatabaseConfig, MySQLConfig
+from library.model.config import DatabaseConfig, MySQLConfig
 
 config: DatabaseConfig = create(DatabaseConfig)
 mysql_config: MySQLConfig = create(MySQLConfig)

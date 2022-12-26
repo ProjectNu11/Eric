@@ -6,8 +6,7 @@ from creart import it
 from kayaku import create
 from loguru import logger
 
-from library.model.config.path import PathConfig
-from library.model.config.state import ModuleState
+from library.model.config import ModuleState, PathConfig
 from library.model.module import Module
 from library.module.manager.model.module import RemoteModule
 from library.module.manager.util.module.unload import unload

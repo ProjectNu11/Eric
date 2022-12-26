@@ -6,7 +6,7 @@ from lxml.html import builder, tostring
 from lxml.html.builder import CLASS
 from typing_extensions import Self
 
-from library.model.config.service.fastapi import FastAPIConfig
+from library.model.config import FastAPIConfig
 from library.ui.color import ColorSchema, is_dark
 from library.ui.element.base import Element, Style
 from library.ui.element.blank import Blank

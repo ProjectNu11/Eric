@@ -8,7 +8,7 @@ from kayaku import create
 from pydantic import ValidationError
 
 from library.model.bot_list import BotList
-from library.model.config.path import DataPathConfig
+from library.model.config import DataPathConfig
 
 
 class BotListCreator(AbstractCreator, ABC):
