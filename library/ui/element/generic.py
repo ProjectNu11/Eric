@@ -146,7 +146,7 @@ class GenericBox(Element):
         return {
             Style({"color-line": f"background-color: {schema.LINE.rgb(dark)}"})
         }.union(
-            inflate(
+            inflate(  # type: ignore
                 [
                     item.style(schema, dark)
                     for item in self.items

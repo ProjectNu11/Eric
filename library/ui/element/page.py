@@ -12,7 +12,7 @@ from library.ui.element.base import Element, Style
 from library.ui.element.blank import Blank
 from library.util.misc import inflate
 
-_HARMONY_FONT_URL = (
+HARMONY_FONT_URL = (
     f"{create(FastAPIConfig).link}/assets/library/fonts/HarmonyOSHans.ttf"
 )
 
@@ -76,13 +76,13 @@ class Page(Element):
             " ".join(
                 f".{key} {{ {value.get(key, '')} }}"
                 for value in self.style().union(
-                    inflate(element.style(schema, dark) for element in self.elements)
+                    inflate(element.style(schema, dark) for element in self.elements)  # type: ignore
                 )
                 for key in value
             )
             # Add font
             + " @font-face {font-family: homo; "
-            f"src: url('{_HARMONY_FONT_URL}') format('truetype')}}"  # noqa
+            f"src: url('{HARMONY_FONT_URL}') format('truetype')}}"  # noqa
             # Apply font to body
             + " body {font-family: 'homo'}"
             # Apply color to a
