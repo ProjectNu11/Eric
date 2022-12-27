@@ -295,7 +295,7 @@ uvicorn = ["uvicorn (>=0.17.6,<1.0.0)"]
 
 [[package]]
 name = "graia-ariadne"
-version = "0.10.0"
+version = "0.10.2"
 description = "Another elegant Python QQ Bot framework for mirai and mirai-api-http v2."
 category = "main"
 optional = false
@@ -312,9 +312,9 @@ typing-extensions = ">=4.4,<5.0"
 
 [package.extras]
 fastapi = ["fastapi (>=0.74.1,<1.0.0)", "uvicorn[standard] (>=0.17.5,<1.0.0)"]
-full = ["graia-saya (>=0.0,<1.0)", "graia-scheduler (>=0.0,<1.0)", "richuru (>=0.1,<1.0)"]
-graia = ["graia-saya (>=0.0,<1.0)", "graia-scheduler (>=0.0,<1.0)"]
-standard = ["graia-saya (>=0.0,<1.0)", "graia-scheduler (>=0.0,<1.0)", "richuru (>=0.1,<1.0)"]
+full = ["graia-saya (>=0.0,<1.0)", "graia-scheduler (>=0.1.1,<0.2.0)", "richuru (>=0.1,<1.0)"]
+graia = ["graia-saya (>=0.0,<1.0)", "graia-scheduler (>=0.1.1,<0.2.0)"]
+standard = ["graia-saya (>=0.0,<1.0)", "graia-scheduler (>=0.1.1,<0.2.0)", "richuru (>=0.1,<1.0)"]
 
 [[package]]
 name = "graia-broadcast"
@@ -1041,7 +1041,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "36b4b71867cd2906b5cb77168ee31495239ef88b942df0026df881f771797210"
+content-hash = "c876d69b2de375bacf5bf09ba8ca1e792b49841ad304295c1dc3d2d7dbab43c4"
 
 [metadata.files]
 aiofiles = [
@@ -1308,8 +1308,8 @@ graia-amnesia = [
     {file = "graia_amnesia-0.7.1-py3-none-any.whl", hash = "sha256:7292c43d3caa9884bf60e827d1fd2190b076b00210a4881a907d63ba2e5bfa6d"},
 ]
 graia-ariadne = [
-    {file = "graia-ariadne-0.10.0.tar.gz", hash = "sha256:70d690a9251b25bbc749d8790de2cf82cd3e8e42de003144a75582f60a61a6dc"},
-    {file = "graia_ariadne-0.10.0-py3-none-any.whl", hash = "sha256:9c71233ae55dd8c2ef110432ff0b493eb4daa8d976304da22723dc8d19f978d4"},
+    {file = "graia-ariadne-0.10.2.tar.gz", hash = "sha256:6de3fd9397e11128e5982a4c421191b4e8d46d3d7b4f1b9b60562248fbbb4e0e"},
+    {file = "graia_ariadne-0.10.2-py3-none-any.whl", hash = "sha256:c2b677145eee27cc0a758992cbb87acf0961975aa0ec039b6313bb8e1efd7d21"},
 ]
 graia-broadcast = [
     {file = "graia-broadcast-0.19.1.tar.gz", hash = "sha256:bd0d3b9891e6ff3b86948d94fbac52ff187056389556aecc0251c261a7806ba0"},
