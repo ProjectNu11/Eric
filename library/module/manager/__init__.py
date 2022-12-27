@@ -27,6 +27,7 @@ from library.model.permission import UserPerm
 from library.module.manager.match import (
     CHANGE_GROUP_MODULE_STATE_CH,
     CHANGE_GROUP_MODULE_STATE_EN,
+    GET_CONFIG_EN,
     INSTALL_EN,
     REGISTER_REPOSITORY_EN,
     UNLOAD_EN,
@@ -34,6 +35,7 @@ from library.module.manager.match import (
     UPGRADE_EN,
 )
 from library.module.manager.model.module import RemoteModule
+from library.module.manager.util.config.get import mgr_get_module_config
 from library.module.manager.util.lock import lock
 from library.module.manager.util.module.install import install
 from library.module.manager.util.module.state import change_state
@@ -269,3 +271,22 @@ async def auto_update():
             # logger.info(await update_gen_msg())
     except AssertionError:
         logger.warning("[Manager] 未能取得管理器锁，跳过自动更新")
+
+
+@listen(GroupMessage, FriendMessage)
+@dispatch(Twilight(PrefixMatch(), GET_CONFIG_EN))
+@decorate(Distribution.distribute(), Permission.require(UserPerm.ADMINISTRATOR))
+async def manager_get_config(
+    app: Ariadne, event: MessageEvent, group: ArgResult, content: RegexResult
+):
+    if group.matched:
+        if not await Permission.check(event.sender, UserPerm.BOT_ADMIN):
+            return await send_message(
+                event, MessageChain("Permission denied."), app.account
+            )
+        group = group.result
+    else:
+        group = event.sender.group.id if isinstance(event, GroupMessage) else 0
+    content = content.result.display
+    result = mgr_get_module_config(group, content)
+    await send_message(event, MessageChain(result), app.account)
