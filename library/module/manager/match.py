@@ -65,3 +65,9 @@ UPDATE_CONFIG_EN = [
     FullMatch("="),
     RegexMatch(r"""(".+?"|'.+?'|[^ "']+)""") @ "value",
 ]
+
+LIST_CONFIG_EN = [
+    FullMatch("manager").space(SpacePolicy.FORCE),
+    FullMatch("config").space(SpacePolicy.FORCE),
+    FullMatch("list"),
+]

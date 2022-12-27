@@ -29,6 +29,7 @@ from library.module.manager.match import (
     CHANGE_GROUP_MODULE_STATE_EN,
     GET_CONFIG_EN,
     INSTALL_EN,
+    LIST_CONFIG_EN,
     REGISTER_REPOSITORY_EN,
     UNLOAD_EN,
     UPDATE_CONFIG_EN,
@@ -37,6 +38,7 @@ from library.module.manager.match import (
 )
 from library.module.manager.model.module import RemoteModule
 from library.module.manager.util.config.get import mgr_get_module_config
+from library.module.manager.util.config.list import mgr_list_module_configs
 from library.module.manager.util.config.set import mgr_set_module_config
 from library.module.manager.util.lock import lock
 from library.module.manager.util.module.install import install
@@ -317,4 +319,12 @@ async def manager_set_config(
     key = key.result.display
     value = value.result.display
     result = mgr_set_module_config(group, mod, **{key: value})
+    await send_message(event, MessageChain(result), app.account)
+
+
+@listen(GroupMessage, FriendMessage)
+@dispatch(Twilight(PrefixMatch(), LIST_CONFIG_EN))
+@decorate(Distribution.distribute(), Permission.require(UserPerm.ADMINISTRATOR))
+async def manager_list_config(app: Ariadne, event: MessageEvent):
+    result = mgr_list_module_configs()
     await send_message(event, MessageChain(result), app.account)
