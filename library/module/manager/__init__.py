@@ -31,11 +31,13 @@ from library.module.manager.match import (
     INSTALL_EN,
     REGISTER_REPOSITORY_EN,
     UNLOAD_EN,
+    UPDATE_CONFIG_EN,
     UPDATE_EN,
     UPGRADE_EN,
 )
 from library.module.manager.model.module import RemoteModule
 from library.module.manager.util.config.get import mgr_get_module_config
+from library.module.manager.util.config.set import mgr_set_module_config
 from library.module.manager.util.lock import lock
 from library.module.manager.util.module.install import install
 from library.module.manager.util.module.state import change_state
@@ -289,4 +291,30 @@ async def manager_get_config(
         group = event.sender.group.id if isinstance(event, GroupMessage) else 0
     content = content.result.display
     result = mgr_get_module_config(group, content)
+    await send_message(event, MessageChain(result), app.account)
+
+
+@listen(GroupMessage, FriendMessage)
+@dispatch(Twilight(PrefixMatch(), UPDATE_CONFIG_EN))
+@decorate(Distribution.distribute(), Permission.require(UserPerm.ADMINISTRATOR))
+async def manager_set_config(
+    app: Ariadne,
+    event: MessageEvent,
+    group: ArgResult,
+    mod: RegexResult,
+    key: RegexResult,
+    value: RegexResult,
+):
+    if group.matched:
+        if not await Permission.check(event.sender, UserPerm.BOT_ADMIN):
+            return await send_message(
+                event, MessageChain("Permission denied."), app.account
+            )
+        group = group.result
+    else:
+        group = event.sender.group.id if isinstance(event, GroupMessage) else 0
+    mod = mod.result.display
+    key = key.result.display
+    value = value.result.display
+    result = mgr_set_module_config(group, mod, **{key: value})
     await send_message(event, MessageChain(result), app.account)

@@ -34,3 +34,10 @@ class Permission:
     @staticmethod
     async def check(supplicant: int | Member | Friend, level: UserPerm) -> bool:
         return await UserPerm.get(supplicant) >= level
+
+    @classmethod
+    async def check_and_raise(
+        cls, supplicant: int | Member | Friend, level: UserPerm
+    ) -> NoReturn:
+        if not await cls.check(supplicant, level):
+            raise ExecutionStop()

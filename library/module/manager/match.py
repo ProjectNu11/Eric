@@ -1,6 +1,7 @@
 from graia.ariadne.message.parser.twilight import (
     ArgumentMatch,
     FullMatch,
+    RegexMatch,
     SpacePolicy,
     UnionMatch,
     WildcardMatch,
@@ -52,4 +53,15 @@ GET_CONFIG_EN = [
     FullMatch("get"),
     ArgumentMatch("-g", "--group", type=int, optional=True) @ "group",
     WildcardMatch() @ "content",
+]
+
+UPDATE_CONFIG_EN = [
+    FullMatch("manager").space(SpacePolicy.FORCE),
+    FullMatch("config").space(SpacePolicy.FORCE),
+    FullMatch("set"),
+    ArgumentMatch("-g", "--group", type=int, optional=True) @ "group",
+    RegexMatch(r"""(".+?"|'.+?'|[^ "']+)""").space(SpacePolicy.FORCE) @ "mod",
+    RegexMatch(r"[a-zAZ_0-9]+") @ "key",
+    FullMatch("="),
+    RegexMatch(r"""(".+?"|'.+?'|[^ "']+)""") @ "value",
 ]
