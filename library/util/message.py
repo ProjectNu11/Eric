@@ -39,6 +39,21 @@ async def _send_friend_message(
     return await ariadne.send_friend_message(target, message_chain, quote=quote)
 
 
+def _determine_target(
+    target: Group | Friend | int | MessageEvent, is_group: bool
+) -> Group | Friend | int:
+    if isinstance(target, MessageEvent):
+        if isinstance(target, GroupMessage):
+            target = target.sender.group
+        elif isinstance(target, FriendMessage):
+            target = target.sender
+        else:
+            raise NotImplementedError(f"不支持的消息类型：{type(target)}")
+    if isinstance(target, int) and is_group is None:
+        raise ValueError(f"无法判断 {target} 为群聊或好友")
+    return target
+
+
 async def send_message(
     target: Group | Friend | int | MessageEvent,
     message_chain: MessageChain,
@@ -72,28 +87,28 @@ async def send_message(
         RemoteException: 远程异常
         Exception: 其他异常
     """
+    excluded_account = excluded_account or set()
+    target = _determine_target(target, is_group)
+
     try:
-        if isinstance(target, MessageEvent):
-            if isinstance(target, GroupMessage):
-                target = target.sender.group
-            elif isinstance(target, FriendMessage):
-                target = target.sender
-            else:
-                raise NotImplementedError(f"不支持的消息类型：{type(target)}")
-        if isinstance(target, int) and is_group is None:
-            raise ValueError(f"无法判断 {target} 为群聊或好友")
         if isinstance(target, Group) if is_group is None else is_group:
-            return await _send_group_message(
-                target, message_chain, account, quote=quote
-            )
-        return await _send_friend_message(target, message_chain, account, quote=quote)
+            _action = _send_group_message
+        else:
+            _action = _send_friend_message
+        msg = await _action(target, message_chain, account, quote=quote)
+        assert msg.id != -1, "消息发送失败"
+        return msg
+
     except Exception as e:
         if isinstance(e, AccountMuted):
             logger.error(f"账号 {account} 在聊天区域 {target} 被禁言")
         elif isinstance(e, UnknownTarget):
             logger.error(f"无法找到对象 {target}")
+        elif isinstance(e, AssertionError):
+            logger.error(f"消息发送失败：{e.args[0]}")
         elif isinstance(e, RemoteException):
             if "resultType=46" in str(e):
+                # 广播事件 AccountMessageBanned 供其他插件处理
                 logger.error(f"账号 {account} 发送消息功能被禁用")
                 Ariadne.current(account).broadcast.postEvent(
                     AccountMessageBanned(
@@ -102,6 +117,8 @@ async def send_message(
                 )
             else:
                 logger.error(f"账号 {account} 发送消息时出现异常: {e}")
+
+        # 错误重发部分，遍历所有账号，直到发送成功
         if resend and is_group:
             if (
                 available_account := it(PublicGroup).get_accounts(group=target)
@@ -118,6 +135,7 @@ async def send_message(
                     excluded_account=excluded_account | {account},
                 )
             logger.error("无可用账号发送消息")
+
         if suppress:
             return None
         raise e
