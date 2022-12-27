@@ -3,6 +3,7 @@ from typing import NoReturn
 from graia.ariadne import Ariadne
 from graia.ariadne.event.message import GroupMessage, MessageEvent
 from graia.ariadne.message.chain import MessageChain
+from graia.ariadne.model import Friend, Member
 from graia.broadcast import ExecutionStop
 from graia.broadcast.builtin.decorators import Depend
 
@@ -29,3 +30,7 @@ class Permission:
             return
 
         return Depend(check)
+
+    @staticmethod
+    async def check(supplicant: int | Member | Friend, level: UserPerm) -> bool:
+        return await UserPerm.get(supplicant) >= level
