@@ -1,4 +1,5 @@
 import asyncio
+from difflib import get_close_matches
 
 from creart import it
 from graia.ariadne import Ariadne
@@ -9,14 +10,18 @@ from graia.ariadne.message.element import At
 from graia.ariadne.message.parser.twilight import (
     ArgResult,
     ElementMatch,
+    FullMatch,
+    RegexMatch,
     RegexResult,
+    SpacePolicy,
     Twilight,
 )
+from graia.broadcast import PropagationCancelled
 from graia.broadcast.interrupt import InterruptControl
 from graia.saya import Channel
 from graia.saya.builtins.broadcast import ListenerSchema
 from graiax.shortcut import decorate, dispatch, listen
-from graiax.shortcut.saya import every
+from graiax.shortcut.saya import every, priority
 from kayaku import create
 from loguru import logger
 
@@ -73,6 +78,7 @@ inc = it(InterruptControl)
             Distribution.distribute(),
             Permission.require(UserPerm.ADMINISTRATOR),
         ],
+        priority=0,
     )
 )
 @channel.use(
@@ -90,6 +96,7 @@ inc = it(InterruptControl)
             Distribution.distribute(),
             Permission.require(UserPerm.ADMINISTRATOR),
         ],
+        priority=0,
     )
 )
 @channel.use(
@@ -102,6 +109,7 @@ inc = it(InterruptControl)
             )
         ],
         decorators=[Permission.require(UserPerm.BOT_OWNER)],
+        priority=0,
     )
 )
 @channel.use(
@@ -109,6 +117,7 @@ inc = it(InterruptControl)
         listening_events=[FriendMessage],
         inline_dispatchers=[Twilight(PrefixMatch(), CHANGE_GROUP_MODULE_STATE_EN)],
         decorators=[Permission.require(UserPerm.BOT_OWNER)],
+        priority=0,
     )
 )
 async def manager_change_group_module_state(
@@ -119,6 +128,7 @@ async def manager_change_group_module_state(
     field: int = int(event.sender.group) if isinstance(event, GroupMessage) else 0
     msg: MessageChain = change_state(content, field, action in {"打开", "enable"})
     await send_message(event, msg, app.account)
+    raise PropagationCancelled()
 
 
 @listen(AccountLaunch)
@@ -139,6 +149,7 @@ async def manager_account_launch(event: AccountLaunch):
     Distribution.distribute(),
     Permission.require(UserPerm.BOT_OWNER),
 )
+@priority(0)
 async def manager_register_repository(app: Ariadne, event: MessageEvent):
     try:
         assert not lock.locked(), "未能取得管理器锁，请检查是否正在其他操作"
@@ -152,6 +163,8 @@ async def manager_register_repository(app: Ariadne, event: MessageEvent):
         await send_message(event, MessageChain(e.args[0]), app.account)
     else:
         await send_message(event, MessageChain(msg), app.account)
+    finally:
+        raise PropagationCancelled()
 
 
 @listen(GroupMessage, FriendMessage)
@@ -161,6 +174,7 @@ async def manager_register_repository(app: Ariadne, event: MessageEvent):
     Distribution.distribute(),
     Permission.require(UserPerm.BOT_OWNER),
 )
+@priority(0)
 async def manager_update(app: Ariadne, event: MessageEvent):
     try:
         assert not lock.locked(), "未能取得管理器锁，请检查是否正在其他操作"
@@ -169,6 +183,8 @@ async def manager_update(app: Ariadne, event: MessageEvent):
             await send_message(event, MessageChain(await update_gen_msg()), app.account)
     except AssertionError as e:
         await send_message(event, MessageChain(e.args[0]), app.account)
+    finally:
+        raise PropagationCancelled()
 
 
 @listen(GroupMessage, FriendMessage)
@@ -178,10 +194,12 @@ async def manager_update(app: Ariadne, event: MessageEvent):
     Distribution.distribute(),
     Permission.require(UserPerm.BOT_OWNER),
 )
+@priority(0)
 async def manager_upgrade(app: Ariadne, event: MessageEvent, yes: ArgResult):
     yes: bool = yes.result
     if not (updates := check_update()):
-        return await send_message(event, MessageChain("无可用更新"), app.account)
+        await send_message(event, MessageChain("无可用更新"), app.account)
+        raise PropagationCancelled()
     if not yes:
         msg = f"将更新 {len(updates)} 个模块 (y/n)"
         for local, remote in updates:
@@ -195,9 +213,11 @@ async def manager_upgrade(app: Ariadne, event: MessageEvent, yes: ArgResult):
                 else FriendConfirmWaiter(event.sender, "y"),
                 timeout=60,
             ):
-                return await send_message(event, MessageChain("已取消更新"), app.account)
-        except TimeoutError:
-            return await send_message(event, MessageChain("等待超时"), app.account)
+                await send_message(event, MessageChain("已取消更新"), app.account)
+                raise PropagationCancelled()
+        except TimeoutError as e:
+            await send_message(event, MessageChain("等待超时"), app.account)
+            raise PropagationCancelled() from e
     success: list[RemoteModule] = []
     for _, remote in updates:
         try:
@@ -209,19 +229,21 @@ async def manager_upgrade(app: Ariadne, event: MessageEvent, yes: ArgResult):
             for _suc in success:
                 msg += f"\n - {_suc.name} ({_suc.clean_name}) {_suc.version}"
             msg += f"更新 {remote.name} ({remote.clean_name}) 时出现错误，已中止更新\n{e}"
-            return await send_message(
+            await send_message(
                 event,
                 MessageChain(msg),
                 app.account,
             )
+            raise PropagationCancelled() from e
     msg = f"已更新 {len(success)} 个模块"
     for _suc in success:
         msg += f"\n - {_suc.name} ({_suc.clean_name}) {_suc.version}"
-    return await send_message(
+    await send_message(
         event,
         MessageChain(msg),
         app.account,
     )
+    raise PropagationCancelled()
 
 
 @listen(GroupMessage, FriendMessage)
@@ -231,6 +253,7 @@ async def manager_upgrade(app: Ariadne, event: MessageEvent, yes: ArgResult):
     Distribution.distribute(),
     Permission.require(UserPerm.BOT_OWNER),
 )
+@priority(0)
 async def manager_install(
     app: Ariadne, event: MessageEvent, yes: ArgResult, content: RegexResult
 ):
@@ -247,6 +270,8 @@ async def manager_install(
         await send_message(event, MessageChain("等待超时"), app.account)
     except AssertionError as e:
         await send_message(event, MessageChain(e.args[0]), app.account)
+    finally:
+        raise PropagationCancelled()
 
 
 @listen(GroupMessage, FriendMessage)
@@ -256,11 +281,17 @@ async def manager_install(
     Distribution.distribute(),
     Permission.require(UserPerm.BOT_OWNER),
 )
+@priority(0)
 async def manager_unload(app: Ariadne, event: MessageEvent, content: RegexResult):
     content: str = content.result.display
-    assert not lock.locked(), "未能取得管理器锁，请检查是否正在其他操作"
-    async with lock:
-        await send_message(event, perform_unload(content), app.account)
+    try:
+        assert not lock.locked(), "未能取得管理器锁，请检查是否正在其他操作"
+        async with lock:
+            await send_message(event, perform_unload(content), app.account)
+    except AssertionError as e:
+        await send_message(event, MessageChain(e.args[0]), app.account)
+    finally:
+        raise PropagationCancelled()
 
 
 @every(1, mode="hour")
@@ -280,25 +311,27 @@ async def auto_update():
 @listen(GroupMessage, FriendMessage)
 @dispatch(Twilight(PrefixMatch(), GET_CONFIG_EN))
 @decorate(Distribution.distribute(), Permission.require(UserPerm.ADMINISTRATOR))
+@priority(0)
 async def manager_get_config(
     app: Ariadne, event: MessageEvent, group: ArgResult, content: RegexResult
 ):
     if group.matched:
         if not await Permission.check(event.sender, UserPerm.BOT_ADMIN):
-            return await send_message(
-                event, MessageChain("Permission denied."), app.account
-            )
+            await send_message(event, MessageChain("Permission denied."), app.account)
+            raise PropagationCancelled()
         group = group.result
     else:
         group = event.sender.group.id if isinstance(event, GroupMessage) else 0
     content = content.result.display
     result = mgr_get_module_config(group, content)
     await send_message(event, MessageChain(result), app.account)
+    raise PropagationCancelled()
 
 
 @listen(GroupMessage, FriendMessage)
 @dispatch(Twilight(PrefixMatch(), UPDATE_CONFIG_EN))
 @decorate(Distribution.distribute(), Permission.require(UserPerm.ADMINISTRATOR))
+@priority(0)
 async def manager_set_config(
     app: Ariadne,
     event: MessageEvent,
@@ -309,9 +342,8 @@ async def manager_set_config(
 ):
     if group.matched:
         if not await Permission.check(event.sender, UserPerm.BOT_ADMIN):
-            return await send_message(
-                event, MessageChain("Permission denied."), app.account
-            )
+            await send_message(event, MessageChain("Permission denied."), app.account)
+            raise PropagationCancelled()
         group = group.result
     else:
         group = event.sender.group.id if isinstance(event, GroupMessage) else 0
@@ -320,11 +352,42 @@ async def manager_set_config(
     value = value.result.display
     result = mgr_set_module_config(group, mod, **{key: value})
     await send_message(event, MessageChain(result), app.account)
+    raise PropagationCancelled()
 
 
 @listen(GroupMessage, FriendMessage)
 @dispatch(Twilight(PrefixMatch(), LIST_CONFIG_EN))
 @decorate(Distribution.distribute(), Permission.require(UserPerm.ADMINISTRATOR))
+@priority(0)
 async def manager_list_config(app: Ariadne, event: MessageEvent):
     result = mgr_list_module_configs()
     await send_message(event, MessageChain(result), app.account)
+    raise PropagationCancelled()
+
+
+@listen(GroupMessage, FriendMessage)
+@priority(1)
+@dispatch(
+    Twilight(
+        PrefixMatch(),
+        FullMatch("manager").space(SpacePolicy.FORCE),
+        RegexMatch(r".+") @ "content",
+    )
+)
+async def test(app: Ariadne, event: MessageEvent, content: RegexResult):
+    word: str = content.result.display
+    possibilities: list[str] = [
+        "enable",
+        "disable",
+        "register",
+        "update",
+        "upgrade",
+        "install",
+        "unload",
+        "config",
+    ]
+    if matches := get_close_matches(word, possibilities):
+        await send_message(
+            event, MessageChain(f"未找到指令 {word}，您是不是想输入 {matches[0]}?"), app.account
+        )
+    raise PropagationCancelled()

@@ -14,7 +14,7 @@ CHANGE_GROUP_MODULE_STATE_CH = [
 ]
 CHANGE_GROUP_MODULE_STATE_EN = [
     FullMatch("manager").space(SpacePolicy.FORCE),
-    UnionMatch("enable", "disable") @ "action",
+    UnionMatch("enable", "disable").space(SpacePolicy.FORCE) @ "action",
     WildcardMatch() @ "content",
 ]
 
@@ -36,21 +36,21 @@ UPGRADE_EN = [
 
 INSTALL_EN = [
     FullMatch("manager").space(SpacePolicy.FORCE),
-    FullMatch("install"),
+    FullMatch("install").space(SpacePolicy.FORCE),
     ArgumentMatch("-y", action="store_true") @ "yes",
     WildcardMatch() @ "content",
 ]
 
 UNLOAD_EN = [
     FullMatch("manager").space(SpacePolicy.FORCE),
-    FullMatch("unload"),
+    FullMatch("unload").space(SpacePolicy.FORCE),
     WildcardMatch() @ "content",
 ]
 
 GET_CONFIG_EN = [
     FullMatch("manager").space(SpacePolicy.FORCE),
     FullMatch("config").space(SpacePolicy.FORCE),
-    FullMatch("get"),
+    FullMatch("get").space(SpacePolicy.FORCE),
     ArgumentMatch("-g", "--group", type=int, optional=True) @ "group",
     WildcardMatch() @ "content",
 ]
@@ -58,7 +58,7 @@ GET_CONFIG_EN = [
 UPDATE_CONFIG_EN = [
     FullMatch("manager").space(SpacePolicy.FORCE),
     FullMatch("config").space(SpacePolicy.FORCE),
-    FullMatch("set"),
+    FullMatch("set").space(SpacePolicy.FORCE),
     ArgumentMatch("-g", "--group", type=int, optional=True) @ "group",
     RegexMatch(r"""(".+?"|'.+?'|[^ "']+)""").space(SpacePolicy.FORCE) @ "mod",
     RegexMatch(r"[a-zAZ_0-9]+") @ "key",
