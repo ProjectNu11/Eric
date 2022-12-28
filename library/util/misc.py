@@ -1,6 +1,10 @@
 import re
 from typing import Generator, Iterable, TypeVar
 
+from graia.ariadne.model import MemberPerm
+
+from library.model.permission import UserPerm
+
 _T = TypeVar("_T")
 
 
@@ -73,3 +77,31 @@ def inflate(*obj: Iterable[_T]) -> list[_T]:
 
 
 QUOTE_PATTERN = re.compile(r"""(".+?"|'.+?'|[^ "']+)""")
+
+
+def camel_to_snake(name: str) -> str:
+    """
+    将驼峰命名法转换为下划线命名法
+
+    Args:
+        name: 驼峰命名法字符串
+
+    Returns:
+        下划线命名法字符串
+    """
+    return "_".join(re.sub(r"([A-Z])", r"_\1", name).lower().split("_")).strip("_")
+
+
+PERMISSION_MAPPING: dict[UserPerm | MemberPerm, str] = {
+    UserPerm.BLOCKED: UserPerm.BLOCKED.value[-1],
+    UserPerm.BOT: UserPerm.BOT.value[-1],
+    UserPerm.MEMBER: UserPerm.MEMBER.value[-1],
+    UserPerm.ADMINISTRATOR: UserPerm.ADMINISTRATOR.value[-1],
+    UserPerm.OWNER: UserPerm.OWNER.value[-1],
+    UserPerm.BOT_ADMIN: UserPerm.BOT_ADMIN.value[-1],
+    UserPerm.BOT_OWNER: UserPerm.BOT_OWNER.value[-1],
+    UserPerm.INFINITE: UserPerm.INFINITE.value[-1],
+    MemberPerm.Member: "普通成员",
+    MemberPerm.Administrator: "管理员",
+    MemberPerm.Owner: "群主",
+}

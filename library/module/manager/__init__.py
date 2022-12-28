@@ -374,6 +374,7 @@ async def manager_list_config(app: Ariadne, event: MessageEvent):
         RegexMatch(r".+") @ "content",
     )
 )
+@decorate(Distribution.distribute())
 @priority(1)
 async def manager_fuzzy_fallback(
     app: Ariadne, event: MessageEvent, content: RegexResult
@@ -388,6 +389,7 @@ async def manager_fuzzy_fallback(
 
 @listen(GroupMessage, FriendMessage)
 @dispatch(Twilight(PrefixMatch(), FullMatch("manager")))
+@decorate(Distribution.distribute())
 @priority(1)
 async def manager_greetings(app: Ariadne, event: MessageEvent):
     text = "欢迎使用 Eric Manager，您可以使用以下指令进行管理："
