@@ -7,6 +7,17 @@ from graia.ariadne.message.parser.twilight import (
     WildcardMatch,
 )
 
+SUBCOMMANDS: dict[str, str] = {
+    "enable": "打开模块",
+    "disable": "关闭模块",
+    "register": "注册模块仓库",
+    "update": "更新模块仓库",
+    "upgrade": "更新模块",
+    "install": "安装模块",
+    "unload": "卸载模块",
+    "config": "配置模块",
+}
+
 CHANGE_GROUP_MODULE_STATE_CH = [
     UnionMatch("打开", "关闭") @ "action",
     FullMatch("模块"),

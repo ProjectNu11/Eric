@@ -36,6 +36,7 @@ from library.module.manager.match import (
     INSTALL_EN,
     LIST_CONFIG_EN,
     REGISTER_REPOSITORY_EN,
+    SUBCOMMANDS,
     UNLOAD_EN,
     UPDATE_CONFIG_EN,
     UPDATE_EN,
@@ -366,7 +367,6 @@ async def manager_list_config(app: Ariadne, event: MessageEvent):
 
 
 @listen(GroupMessage, FriendMessage)
-@priority(1)
 @dispatch(
     Twilight(
         PrefixMatch(),
@@ -374,20 +374,24 @@ async def manager_list_config(app: Ariadne, event: MessageEvent):
         RegexMatch(r".+") @ "content",
     )
 )
-async def test(app: Ariadne, event: MessageEvent, content: RegexResult):
+@priority(1)
+async def manager_fuzzy_fallback(
+    app: Ariadne, event: MessageEvent, content: RegexResult
+):
     word: str = content.result.display
-    possibilities: list[str] = [
-        "enable",
-        "disable",
-        "register",
-        "update",
-        "upgrade",
-        "install",
-        "unload",
-        "config",
-    ]
-    if matches := get_close_matches(word, possibilities):
+    if matches := get_close_matches(word, SUBCOMMANDS.keys()):
         await send_message(
             event, MessageChain(f"未找到指令 {word}，您是不是想输入 {matches[0]}?"), app.account
         )
+    raise PropagationCancelled()
+
+
+@listen(GroupMessage, FriendMessage)
+@dispatch(Twilight(PrefixMatch(), FullMatch("manager")))
+@priority(1)
+async def manager_greetings(app: Ariadne, event: MessageEvent):
+    text = "欢迎使用 Eric Manager，您可以使用以下指令进行管理："
+    for subcommand, description in SUBCOMMANDS.items():
+        text += f"\n - {subcommand}: {description}"
+    await send_message(event, MessageChain(text), app.account)
     raise PropagationCancelled()
