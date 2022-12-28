@@ -15,8 +15,13 @@ from prompt_toolkit.styles import Style
 
 from library.model.exception import SkipRequiring
 from library.module.console.text import wrap
-from library.module.manager import UPDATE_EN, lock
-from library.module.manager.match import GET_CONFIG_EN
+from library.module.manager import (
+    UPDATE_EN,
+    lock,
+    mgr_list_module_configs,
+    mgr_set_module_config,
+)
+from library.module.manager.match import GET_CONFIG_EN, LIST_CONFIG_EN, UPDATE_CONFIG_EN
 from library.module.manager.util.config.get import mgr_get_module_config
 from library.module.manager.util.remote.update import update_gen_msg
 from library.util.dispatcher import PrefixMatch
@@ -56,4 +61,22 @@ async def console_get_group_config(group: ArgResult, content: RegexResult):
     group = group.result
     content = content.result.display
     result = mgr_get_module_config(group, content)
+    logger.info(wrap(result))
+
+
+@channel.use(ConsoleSchema([Twilight(PrefixMatch(optional=True), UPDATE_CONFIG_EN)]))
+async def console_set_group_config(
+    group: ArgResult, mod: RegexResult, key: RegexResult, value: RegexResult
+):
+    group = group.result
+    mod = mod.result.display
+    key = key.result.display
+    value = value.result.display
+    result = mgr_set_module_config(group, mod, **{key: value})
+    logger.info(wrap(result))
+
+
+@channel.use(ConsoleSchema([Twilight(PrefixMatch(optional=True), LIST_CONFIG_EN)]))
+async def console_list_group_config():
+    result = mgr_list_module_configs()
     logger.info(wrap(result))
