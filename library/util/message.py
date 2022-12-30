@@ -1,3 +1,5 @@
+import contextlib
+
 from creart import it
 from graia.ariadne import Ariadne
 from graia.ariadne.event.message import (
@@ -11,8 +13,10 @@ from graia.ariadne.exception import AccountMuted, RemoteException, UnknownTarget
 from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.message.element import Source
 from graia.ariadne.model import Friend, Group
+from kayaku import create
 from loguru import logger
 
+from library.model.config import EricConfig
 from library.model.event.message import AccountMessageBanned
 from library.util.multi_account.public_group import PublicGroup
 
@@ -139,3 +143,11 @@ async def send_message(
         if suppress:
             return None
         raise e
+
+
+async def broadcast_to_owners(message: MessageChain | str, account: int):
+    message = MessageChain(message) if isinstance(message, str) else message
+    cfg: EricConfig = create(EricConfig)
+    for owner in cfg.owners:
+        with contextlib.suppress(Exception):
+            await send_message(owner, message, account, is_group=False)
