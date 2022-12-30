@@ -632,6 +632,33 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    获取一个聊天区域内的模块配置
+  </a>
+  
+    <nav class="md-nav" aria-label="获取一个聊天区域内的模块配置">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    仅获取当前聊天区域
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    获取任意聊天区域
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -878,6 +905,33 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    获取一个聊天区域内的模块配置
+  </a>
+  
+    <nav class="md-nav" aria-label="获取一个聊天区域内的模块配置">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    仅获取当前聊天区域
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    获取任意聊天区域
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -944,6 +998,16 @@
 <td align="left"><code>.manager unload &lt;name&gt; &lt;name&gt; ...</code></td>
 <td align="left">卸载一个或多个模块</td>
 <td align="left">机器人所有人</td>
+</tr>
+<tr>
+<td align="left"><code>.manager config get &lt;name&gt;</code></td>
+<td align="left">获取一个聊天区域内的模块配置</td>
+<td align="left">群管理员</td>
+</tr>
+<tr>
+<td align="left"><code>.manager config set &lt;name&gt; &lt;key&gt; &lt;value&gt;</code></td>
+<td align="left">设置一个聊天区域内的模块的配置</td>
+<td align="left">群管理员</td>
 </tr>
 <tr>
 <td align="left"><code>打开模块 &lt;name&gt; &lt;name&gt; ...</code></td>
@@ -1064,13 +1128,66 @@
 <p class="admonition-title">卸载插件并非删除插件</p>
 <p>卸载插件只是从已注册的监听器中移除插件，而不会删除插件。</p>
 </div>
+<h2 id="_9">获取一个聊天区域内的模块配置</h2>
+<h3 id="_10">仅获取当前聊天区域</h3>
+<p>你可以在群里或私聊中输入 <code>.manager config get &lt;name&gt;</code> 获取当前聊天区域内的模块配置。</p>
+<table>
+<thead>
+<tr>
+<th align="left">参数</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>&lt;name&gt;</code></td>
+<td align="left">模块名称或包名</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th align="left">聊天区域</th>
+<th align="left">需求权限</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">0</td>
+<td align="left">机器人所有人</td>
+</tr>
+<tr>
+<td align="left">其他</td>
+<td align="left">群组管理员</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_11">获取任意聊天区域</h3>
+<p>你可以在群里或私聊中输入 <code>.manager config get \[-g|--group {group_id}] &lt;name&gt;</code> 获取任意聊天区域内的模块配置。</p>
+<table>
+<thead>
+<tr>
+<th align="left">参数</th>
+<th align="left">说明</th>
+<th align="left">默认值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>-g</code> <code>--group</code></td>
+<td align="left">指定群组 ID</td>
+<td align="left">0</td>
+</tr>
+</tbody>
+</table>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       最后更新:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">December 11, 2022</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">December 30, 2022</span>
       
         <br>
         创建日期:
