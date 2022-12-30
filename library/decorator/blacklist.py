@@ -52,4 +52,19 @@ class Blacklist:
     async def check_by_condition(*conditions, table) -> bool:
         return bool(await orm.all(select(table).where(*conditions)))
 
-    # TODO Implement TempBlacklistTable
+    @classmethod
+    async def check_temporary(
+        cls, supplicant: int | Member | Friend, field: int | Group
+    ) -> bool:
+        # TODO Implement TempBlacklist
+        pass
+
+    @classmethod
+    async def check_bot(cls, supplicant: int | Member | Friend) -> bool:
+        # TODO Implement BotBlacklist
+        pass
+
+    @staticmethod
+    async def check_anonymous(supplicant: int | Member | Friend) -> bool:
+        # TODO Implement AnonymousBlacklist
+        pass
