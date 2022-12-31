@@ -1,0 +1,20 @@
+{
+    "name": "事件监听器",
+    "version": "0.0.1",
+    "pack": "library.module.event_listener",
+    "authors": [
+        "nullqwertyuiop"
+    ],
+    "required": [],
+    "description": "为聊天群聊提供事件监听服务",
+    "category": [
+        "basic:基础",
+        "utility:实用工具"
+    ],
+    "advanced": {
+        "enable_by_default": false,
+        "allow_disable": false,
+        "allow_unload": false,
+        "hidden": false
+    }
+}
