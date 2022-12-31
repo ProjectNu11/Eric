@@ -6,7 +6,7 @@ from graia.ariadne import Ariadne
 from graia.ariadne.event.lifecycle import AccountLaunch
 from graia.ariadne.event.message import FriendMessage, GroupMessage, MessageEvent
 from graia.ariadne.message.chain import MessageChain
-from graia.ariadne.message.element import At
+from graia.ariadne.message.element import At, Image
 from graia.ariadne.message.parser.twilight import (
     ArgResult,
     ElementMatch,
@@ -51,7 +51,7 @@ from library.module.manager.util.module.install import install
 from library.module.manager.util.module.state import change_state
 from library.module.manager.util.module.unload import perform_unload
 from library.module.manager.util.remote.install import install as remote_install
-from library.module.manager.util.remote.update import update_gen_msg
+from library.module.manager.util.remote.update import update_gen_img, update_gen_msg
 from library.module.manager.util.remote.version import check_update
 from library.module.manager.util.repository.register import wait_and_register
 from library.util.dispatcher import PrefixMatch
@@ -181,7 +181,11 @@ async def manager_update(app: Ariadne, event: MessageEvent):
         assert not lock.locked(), "未能取得管理器锁，请检查是否正在其他操作"
         async with lock:
             await send_message(event, MessageChain("正在拉取仓库更新中..."), app.account)
-            await send_message(event, MessageChain(await update_gen_msg()), app.account)
+            await send_message(
+                event,
+                MessageChain(Image(data_bytes=await update_gen_img())),
+                app.account,
+            )
     except AssertionError as e:
         await send_message(event, MessageChain(e.args[0]), app.account)
     finally:
@@ -304,7 +308,7 @@ async def auto_update():
         assert not lock.locked()
         async with lock:
             logger.info("[Manager] 正在拉取仓库更新中...")
-            # logger.info(await update_gen_msg())
+            logger.info(await update_gen_msg())
     except AssertionError:
         logger.warning("[Manager] 未能取得管理器锁，跳过自动更新")
 
