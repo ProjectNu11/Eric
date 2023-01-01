@@ -42,20 +42,20 @@ class Button(Element):
         }
 
     def to_e(self, *args, schema: ColorSchema, dark: bool, **kwargs):
-        return builder.A(
-            builder.DIV(
+        return builder.DIV(
+            builder.A(
                 *wrap_text(self.text, hyperlink=False),
                 CLASS(
                     " ".join(
                         self.style_keys(schema, dark) | {"round-corner", "color-text"}
                     )
                 ),
+                href=self.link or "#",
                 style=f"font-size: {self.text_size}px; "
                 "word-wrap: break-word; "
                 "padding: 10px 40px 10px 40px; "
                 f"text-align: center; "
                 f"cursor: pointer" + (f"; width: {self.width}px" if self.width else ""),
             ),
-            href=self.link or "#",
             style="display: flex; align-items: center; justify-content: center",
         )

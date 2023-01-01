@@ -42,13 +42,13 @@ UPDATE_EN = [
 UPGRADE_EN = [
     FullMatch("manager").space(SpacePolicy.FORCE),
     FullMatch("upgrade"),
-    ArgumentMatch("-y", action="store_true") @ "yes",
+    ArgumentMatch("-y", "--yes", action="store_true") @ "yes",
 ]
 
 INSTALL_EN = [
     FullMatch("manager").space(SpacePolicy.FORCE),
     FullMatch("install").space(SpacePolicy.FORCE),
-    ArgumentMatch("-y", action="store_true") @ "yes",
+    ArgumentMatch("-y", "--yes", action="store_true") @ "yes",
     WildcardMatch() @ "content",
 ]
 

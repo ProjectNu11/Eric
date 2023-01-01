@@ -1,10 +1,12 @@
+from contextlib import suppress
 from pathlib import Path
 
 from creart import it
 from graiax.text2img.playwright import convert_md
+from graiax.text2img.playwright.renderer import BuiltinCSS
 from kayaku import create
 
-from library.model.config import EricConfig, FastAPIConfig
+from library.model.config import EricConfig, FunctionConfig
 from library.model.module import Module
 from library.module.help.vars import (
     CATEGORY_SEARCH_PAGE,
@@ -16,7 +18,15 @@ from library.ui.element import Button, GenericBox, GenericBoxItem, Title
 from library.util.misc import inflate
 from library.util.module import Modules
 
-fastapi_config: FastAPIConfig = create(FastAPIConfig)
+_MARKDOWN_STYLE: str = "\n".join(
+    _css.value  # type: ignore
+    for _css in (
+        BuiltinCSS.reset,
+        BuiltinCSS.github,
+        BuiltinCSS.one_dark,
+        BuiltinCSS.container,
+    )
+)
 
 
 def portal_page() -> Page:
@@ -26,7 +36,13 @@ def portal_page() -> Page:
     page.add(
         Title(f"{eric_config.name} 帮助中心", f"共 {len(modules)} 个模块"),
     )
-    for module in sorted(modules, key=lambda _mod: _mod.pack):
+    lib_modules = {module for module in modules if module.pack.startswith("library.")}
+    user_modules = set(modules) - lib_modules
+    for module in sorted(user_modules, key=lambda _mod: _mod.pack) + sorted(
+        lib_modules, key=lambda _mod: _mod.pack
+    ):
+        if module.advanced.hidden:
+            continue
         page.add(
             Button(
                 module.name,
@@ -107,7 +123,15 @@ def get_module_page(module: Module) -> Page:
 
 
 def get_module_markdown(module: Module, file: str) -> str:
-    return convert_md(Path(*module.pack.split("."), file).read_text())
+    eric_config: EricConfig = create(EricConfig)
+    function_config: FunctionConfig = create(FunctionConfig)
+    md = convert_md(Path(*module.pack.split("."), file).read_text())
+    with suppress(Exception):
+        md = md.format(name=eric_config.name, prefix=function_config.prefix[0])
+    return (
+        f'<html><meta name="viewport" content="width=device-width,initial-scale=1.0">'
+        f"<head><style>{_MARKDOWN_STYLE}</style></head><body>{md}</body></html>"
+    )
 
 
 def _search(keyword: str, name: str, *criterion) -> Page:

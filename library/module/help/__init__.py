@@ -16,6 +16,7 @@ from starlette.responses import HTMLResponse
 
 from library.decorator import Distribution, MentionMeOptional, Switch
 from library.model.config import FastAPIConfig
+from library.module.help.util.about import about_page
 from library.module.help.util.module import (
     get_module_markdown,
     get_module_page,
@@ -101,10 +102,10 @@ async def category_search(category: str):
 )
 async def help_handler(app: Ariadne, event: MessageEvent):
     fastapi_config: FastAPIConfig = create(FastAPIConfig)
-    page = await portal_page().render()
+    page = await about_page().render()
     await send_message(event, MessageChain(Image(data_bytes=page)), app.account)
     await send_message(
         event,
-        MessageChain(f"您也可以在这里查看详细帮助: {fastapi_config.link}{PORTAL_PAGE}"),
+        MessageChain(f"您可以在这里查看详细帮助: {fastapi_config.link}{PORTAL_PAGE}"),
         app.account,
     )
