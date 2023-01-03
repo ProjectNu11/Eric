@@ -1,11 +1,15 @@
 import re
+from typing import TypeVar
 
 from lxml.builder import E
 
 HYPERLINK_PATTERN = re.compile(r"https?://\S+")
+_T = TypeVar("_T")
 
 
-def wrap_text(text: str | list, newline: bool = True, hyperlink: bool = True):
+def wrap_text(
+    text: str | list, newline: bool = True, hyperlink: bool = True
+) -> list[str | E]:
     wrapped = [text] if isinstance(text, str) else text
     if hyperlink:
         wrapped = _add_hyperlink(wrapped)
@@ -14,7 +18,7 @@ def wrap_text(text: str | list, newline: bool = True, hyperlink: bool = True):
     return wrapped
 
 
-def _newline_to_br(text: list):
+def _newline_to_br(text: list[_T]) -> list[_T | E]:
     wrapped = []
     for part in text:
         if not isinstance(part, str):
@@ -27,24 +31,28 @@ def _newline_to_br(text: list):
     return wrapped
 
 
-def _replace_with_hyperlink(text: str, link: str):
+def _replace_with_hyperlink(text: str, link: str) -> list[str | E]:
     wrapped = []
     for piece in text.split(link):
         wrapped.extend((piece, E.a(link, href=link)))
     return wrapped[:-1]
 
 
-def _add_hyperlink(text: list):
-    wrapped = []
-    for part in text:
-        if not isinstance(part, str):
-            wrapped.append(part)
-            continue
-        if not (urls := HYPERLINK_PATTERN.findall(part)):
-            wrapped.append(part)
-            continue
-        parts = []
-        for url in urls:
-            parts.extend(_replace_with_hyperlink(part, url))
-        wrapped.extend(parts)
-    return wrapped
+def _add_hyperlink(text: list[_T]) -> list[_T | E]:
+    # wrapped = []
+    # for part in text:
+    #     if not isinstance(part, str):
+    #         wrapped.append(part)
+    #         continue
+    #     if not (urls := HYPERLINK_PATTERN.findall(part)):
+    #         wrapped.append(part)
+    #         continue
+    #     parts = []
+    #     for url in urls:
+    #         parts.extend(_replace_with_hyperlink(part, url))
+    #     wrapped.extend(parts)
+    # return wrapped
+
+    # Temporarily commented out the above code
+    # TODO Re-implement hyperlink functionality
+    return text
