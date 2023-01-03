@@ -1,3 +1,4 @@
+from creart import it
 from graia.ariadne import Ariadne
 from graia.ariadne.event.mirai import (
     BotGroupPermissionChangeEvent,
@@ -13,11 +14,17 @@ from graia.ariadne.event.mirai import (
     BotReloginEvent,
     BotUnmuteEvent,
 )
+from kayaku import create
 from loguru import logger
 
+from library.model.config import EricConfig
 from library.module.event_listener.util import _get_cfg, _send_message
 from library.util.message import broadcast_to_owners
 from library.util.misc import PERMISSION_MAPPING, seconds_to_string
+from library.util.multi_account.public_group import PublicGroup
+
+_eric_cfg: EricConfig = create(EricConfig)
+_p_group = it(PublicGroup)
 
 
 # bot_group_permission_change_event
@@ -110,6 +117,7 @@ async def bot_mute_event(app: Ariadne, event: BotMuteEvent):
 async def bot_offline_event_active(app: Ariadne, event: BotOfflineEventActive):
     qq = event.qq
     logger.info(f"[EventListener] Bot {qq} 主动离线")
+    await _p_group.remove_account(qq)
     msg, owner_msg = _get_cfg(0, event, qq=qq)
     await broadcast_to_owners(owner_msg, app.account)
 
@@ -118,6 +126,7 @@ async def bot_offline_event_active(app: Ariadne, event: BotOfflineEventActive):
 async def bot_offline_event_dropped(app: Ariadne, event: BotOfflineEventDropped):
     qq = event.qq
     logger.info(f"[EventListener] Bot {qq} 断开服务器连接")
+    await _p_group.remove_account(qq)
     msg, owner_msg = _get_cfg(0, event, qq=qq)
     await broadcast_to_owners(owner_msg, app.account)
 
@@ -126,6 +135,7 @@ async def bot_offline_event_dropped(app: Ariadne, event: BotOfflineEventDropped)
 async def bot_offline_event_force(app: Ariadne, event: BotOfflineEventForce):
     qq = event.qq
     logger.info(f"[EventListener] Bot {qq} 被服务器强制下线")
+    await _p_group.remove_account(qq)
     msg, owner_msg = _get_cfg(0, event, qq=qq)
     await broadcast_to_owners(owner_msg, app.account)
 
@@ -134,6 +144,9 @@ async def bot_offline_event_force(app: Ariadne, event: BotOfflineEventForce):
 async def bot_online_event(app: Ariadne, event: BotOnlineEvent):
     qq = event.qq
     logger.info(f"[EventListener] Bot {qq} 上线")
+    if qq not in _eric_cfg.accounts:
+        return
+    await _p_group.init_account(qq)
     msg, owner_msg = _get_cfg(0, event, qq=qq)
     await broadcast_to_owners(owner_msg, app.account)
 
@@ -142,6 +155,9 @@ async def bot_online_event(app: Ariadne, event: BotOnlineEvent):
 async def bot_relogin_event(app: Ariadne, event: BotReloginEvent):
     qq = event.qq
     logger.info(f"[EventListener] Bot {qq} 重新登录")
+    if qq not in _eric_cfg.accounts:
+        return
+    await _p_group.init_account(qq)
     msg, owner_msg = _get_cfg(0, event, qq=qq)
     await broadcast_to_owners(owner_msg, app.account)
 

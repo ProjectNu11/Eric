@@ -1,6 +1,7 @@
 import contextlib
 import time
 from abc import ABC
+from asyncio import Lock
 from typing import Type
 
 from creart import AbstractCreator, CreateTargetInfo, add_creator, exists_module
@@ -22,21 +23,25 @@ class PublicGroup:
     data: dict[int, set[int]]
     """ 群组数据 """
 
+    _lock: Lock
+
     def __init__(self):
         self.accounts = set()
         self.data = {}
+        self._lock = Lock()
 
     async def init_account(self, account: int):
-        with contextlib.suppress(Exception):
-            app = Ariadne.current(account)
-            for group in await app.get_group_list():
-                group = int(group)
-                if group in self.data:
-                    self.data[group].add(app.account)
-                else:
-                    self.data[group] = {app.account}
-        self.accounts.add(app.account)
-        logger.success(f"[PublicGroup] {account}: 公共群数据初始化完成")
+        async with self._lock:
+            with contextlib.suppress(Exception):
+                app = Ariadne.current(account)
+                for group in await app.get_group_list():
+                    group = int(group)
+                    if group in self.data:
+                        self.data[group].add(app.account)
+                    else:
+                        self.data[group] = {app.account}
+            self.accounts.add(app.account)
+            logger.success(f"[PublicGroup] {account}: 公共群数据初始化完成")
 
     async def init_all(self):
         """初始化数据"""
@@ -102,16 +107,19 @@ class PublicGroup:
         group = int(group)
         return self.data[group] if group in self.data else set()
 
-    def remove_account(self, account: int):
+    async def remove_account(self, account: int):
         """
         移除账号
 
         Args:
             account (int): 账号
         """
-        for group in self.data:
-            if account in self.data[group]:
-                self.data[group].remove(account)
+        async with self._lock:
+            for group in self.data:
+                if account in self.data[group]:
+                    self.data[group].remove(account)
+            self.accounts.remove(account)
+            logger.success(f"[PublicGroup] {account}: 公共群数据移除完成")
 
     def need_distribute(self, group: Group | int, account: int) -> bool:
         """
