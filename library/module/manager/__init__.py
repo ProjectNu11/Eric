@@ -77,7 +77,7 @@ inc = it(InterruptControl)
         decorators=[
             MentionMeOptional.check(),
             Distribution.distribute(),
-            Permission.require(UserPerm.ADMINISTRATOR),
+            Permission.require(UserPerm.ADMINISTRATOR, cancel_propagation=True),
         ],
         priority=0,
     )
@@ -95,7 +95,7 @@ inc = it(InterruptControl)
         decorators=[
             MentionMeOptional.check(),
             Distribution.distribute(),
-            Permission.require(UserPerm.ADMINISTRATOR),
+            Permission.require(UserPerm.ADMINISTRATOR, cancel_propagation=True),
         ],
         priority=0,
     )
@@ -109,7 +109,7 @@ inc = it(InterruptControl)
                 CHANGE_GROUP_MODULE_STATE_CH,
             )
         ],
-        decorators=[Permission.require(UserPerm.BOT_OWNER)],
+        decorators=[Permission.require(UserPerm.BOT_OWNER, cancel_propagation=True)],
         priority=0,
     )
 )
@@ -117,7 +117,7 @@ inc = it(InterruptControl)
     ListenerSchema(
         listening_events=[FriendMessage],
         inline_dispatchers=[Twilight(PrefixMatch(), CHANGE_GROUP_MODULE_STATE_EN)],
-        decorators=[Permission.require(UserPerm.BOT_OWNER)],
+        decorators=[Permission.require(UserPerm.BOT_OWNER, cancel_propagation=True)],
         priority=0,
     )
 )
@@ -148,7 +148,7 @@ async def manager_account_launch(event: AccountLaunch):
 @decorate(
     MentionMeOptional.check(),
     Distribution.distribute(),
-    Permission.require(UserPerm.BOT_OWNER),
+    Permission.require(UserPerm.BOT_OWNER, cancel_propagation=True),
 )
 @priority(0)
 async def manager_register_repository(app: Ariadne, event: MessageEvent):
@@ -173,7 +173,7 @@ async def manager_register_repository(app: Ariadne, event: MessageEvent):
 @decorate(
     MentionMeOptional.check(),
     Distribution.distribute(),
-    Permission.require(UserPerm.BOT_OWNER),
+    Permission.require(UserPerm.BOT_OWNER, cancel_propagation=True),
 )
 @priority(0)
 async def manager_update(app: Ariadne, event: MessageEvent):
@@ -197,7 +197,7 @@ async def manager_update(app: Ariadne, event: MessageEvent):
 @decorate(
     MentionMeOptional.check(),
     Distribution.distribute(),
-    Permission.require(UserPerm.BOT_OWNER),
+    Permission.require(UserPerm.BOT_OWNER, cancel_propagation=True),
 )
 @priority(0)
 async def manager_upgrade(app: Ariadne, event: MessageEvent, yes: ArgResult):
@@ -256,7 +256,7 @@ async def manager_upgrade(app: Ariadne, event: MessageEvent, yes: ArgResult):
 @decorate(
     MentionMeOptional.check(),
     Distribution.distribute(),
-    Permission.require(UserPerm.BOT_OWNER),
+    Permission.require(UserPerm.BOT_OWNER, cancel_propagation=True),
 )
 @priority(0)
 async def manager_install(
@@ -284,7 +284,7 @@ async def manager_install(
 @decorate(
     MentionMeOptional.check(),
     Distribution.distribute(),
-    Permission.require(UserPerm.BOT_OWNER),
+    Permission.require(UserPerm.BOT_OWNER, cancel_propagation=True),
 )
 @priority(0)
 async def manager_unload(app: Ariadne, event: MessageEvent, content: RegexResult):
@@ -315,7 +315,10 @@ async def auto_update():
 
 @listen(GroupMessage, FriendMessage)
 @dispatch(Twilight(PrefixMatch(), GET_CONFIG_EN))
-@decorate(Distribution.distribute(), Permission.require(UserPerm.ADMINISTRATOR))
+@decorate(
+    Distribution.distribute(),
+    Permission.require(UserPerm.ADMINISTRATOR, cancel_propagation=True),
+)
 @priority(0)
 async def manager_get_config(
     app: Ariadne, event: MessageEvent, group: ArgResult, content: RegexResult
@@ -335,7 +338,10 @@ async def manager_get_config(
 
 @listen(GroupMessage, FriendMessage)
 @dispatch(Twilight(PrefixMatch(), UPDATE_CONFIG_EN))
-@decorate(Distribution.distribute(), Permission.require(UserPerm.ADMINISTRATOR))
+@decorate(
+    Distribution.distribute(),
+    Permission.require(UserPerm.ADMINISTRATOR, cancel_propagation=True),
+)
 @priority(0)
 async def manager_set_config(
     app: Ariadne,
@@ -362,7 +368,10 @@ async def manager_set_config(
 
 @listen(GroupMessage, FriendMessage)
 @dispatch(Twilight(PrefixMatch(), LIST_CONFIG_EN))
-@decorate(Distribution.distribute(), Permission.require(UserPerm.ADMINISTRATOR))
+@decorate(
+    Distribution.distribute(),
+    Permission.require(UserPerm.ADMINISTRATOR, cancel_propagation=True),
+)
 @priority(0)
 async def manager_list_config(app: Ariadne, event: MessageEvent):
     result = mgr_list_module_configs()
