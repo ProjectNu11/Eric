@@ -295,7 +295,7 @@ uvicorn = ["uvicorn (>=0.17.6,<1.0.0)"]
 
 [[package]]
 name = "graia-ariadne"
-version = "0.10.2"
+version = "0.10.3"
 description = "Another elegant Python QQ Bot framework for mirai and mirai-api-http v2."
 category = "main"
 optional = false
@@ -306,7 +306,7 @@ aiohttp = ">=3.8,<4.0"
 creart-graia = ">=0.1.5,<1.0.0"
 graia-amnesia = ">=0.7.0,<0.8.0"
 graia-broadcast = ">=0.19,<1.0"
-launart = ">=0.6,<1.0"
+launart = ">=0.6.2,<1.0.0"
 pydantic = ">=1.9,<2.0"
 typing-extensions = ">=4.4,<5.0"
 
@@ -519,7 +519,7 @@ regex = ["regex"]
 
 [[package]]
 name = "launart"
-version = "0.6.1"
+version = "0.6.2"
 description = "Component lifetime manager for runtime."
 category = "main"
 optional = false
@@ -1049,7 +1049,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "a37a20ab2d9e7418ffb87a2ffc48d64c4fcfa702fea6c22bfca40bbc7d01b96d"
+content-hash = "26a993d74c48c6276a0fb3c75638252ed3dc509372030f8731c240a1f5591945"
 
 [metadata.files]
 aiofiles = [
@@ -1316,8 +1316,8 @@ graia-amnesia = [
     {file = "graia_amnesia-0.7.1-py3-none-any.whl", hash = "sha256:7292c43d3caa9884bf60e827d1fd2190b076b00210a4881a907d63ba2e5bfa6d"},
 ]
 graia-ariadne = [
-    {file = "graia-ariadne-0.10.2.tar.gz", hash = "sha256:6de3fd9397e11128e5982a4c421191b4e8d46d3d7b4f1b9b60562248fbbb4e0e"},
-    {file = "graia_ariadne-0.10.2-py3-none-any.whl", hash = "sha256:c2b677145eee27cc0a758992cbb87acf0961975aa0ec039b6313bb8e1efd7d21"},
+    {file = "graia-ariadne-0.10.3.tar.gz", hash = "sha256:390bd81f901f4d6cba37167160a318c9bed04863f926bf14ef54bbbfac53198c"},
+    {file = "graia_ariadne-0.10.3-py3-none-any.whl", hash = "sha256:474e7ee774f19a85904f9aabb439bef01c8a09509e23cd28626eb6ababc882de"},
 ]
 graia-broadcast = [
     {file = "graia-broadcast-0.19.1.tar.gz", hash = "sha256:bd0d3b9891e6ff3b86948d94fbac52ff187056389556aecc0251c261a7806ba0"},
@@ -1438,8 +1438,8 @@ lark = [
     {file = "lark-1.1.5.tar.gz", hash = "sha256:4b534eae1f9af5b4ea000bea95776350befe1981658eea3820a01c37e504bb4d"},
 ]
 launart = [
-    {file = "launart-0.6.1-py3-none-any.whl", hash = "sha256:515ccadb1aa2c0ff5647bad10bd4dab53913edbe63eb0f550a80bbe723b31658"},
-    {file = "launart-0.6.1.tar.gz", hash = "sha256:630d5582c3f5e7b68df0b2bde46f5bdfef69557fdade2af8414172e4c862dd15"},
+    {file = "launart-0.6.2-py3-none-any.whl", hash = "sha256:db7d1441d6e8bb22c714644c7a9c2bcd3614ff7f79f204cb3060ee7df4e47c2f"},
+    {file = "launart-0.6.2.tar.gz", hash = "sha256:a729e3475de87580d9ed6e257a9020709e1ce0f213ff670047b488ca4d4c874d"},
 ]
 linkify-it-py = [
     {file = "linkify-it-py-1.0.3.tar.gz", hash = "sha256:2b3f168d5ce75e3a425e34b341a6b73e116b5d9ed8dbbbf5dc7456843b7ce2ee"},
