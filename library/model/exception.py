@@ -10,3 +10,7 @@ class RequirementResolveFailed(ModuleNotFoundError):
 
     def __init__(self, *modules):
         self.modules = inflate(modules)
+
+
+class MessageEmpty(Exception):
+    """消息为空"""

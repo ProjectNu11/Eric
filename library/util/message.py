@@ -18,6 +18,7 @@ from loguru import logger
 
 from library.model.config import EricConfig
 from library.model.event.message import AccountMessageBanned
+from library.model.exception import MessageEmpty
 from library.util.multi_account.public_group import PublicGroup
 
 
@@ -58,9 +59,17 @@ def _determine_target(
     return target
 
 
+def _process_message_chain(message: MessageChain | str) -> MessageChain:
+    if isinstance(message, str):
+        message = MessageChain(message)
+    if not message.display:
+        raise MessageEmpty("消息为空")
+    return message
+
+
 async def send_message(
     target: Group | Friend | int | MessageEvent,
-    message_chain: MessageChain,
+    message_chain: MessageChain | str,
     account: int,
     *,
     is_group: bool = None,
@@ -95,6 +104,7 @@ async def send_message(
     target = _determine_target(target, is_group)
 
     try:
+        message_chain = _process_message_chain(message_chain)
         if isinstance(target, Group) if is_group is None else is_group:
             _action = _send_group_message
         else:
@@ -109,7 +119,10 @@ async def send_message(
         elif isinstance(e, UnknownTarget):
             logger.error(f"无法找到对象 {target}")
         elif isinstance(e, AssertionError):
-            logger.error(f"消息发送失败：{e.args[0]}")
+            logger.error(e.args[0])
+        elif isinstance(e, MessageEmpty):
+            logger.error(e.args[0])
+            return
         elif isinstance(e, RemoteException):
             if "resultType=46" in str(e):
                 # 广播事件 AccountMessageBanned 供其他插件处理
