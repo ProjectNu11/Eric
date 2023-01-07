@@ -14,6 +14,6 @@ class MentionMeOptional:
             msg_copy = event.message_chain.copy().exclude(Source, Quote)
             if isinstance((at := msg_copy[0]), At):
                 if at.target != app.account:
-                    raise ExecutionStop()
+                    raise ExecutionStop
 
         return Depend(judge)

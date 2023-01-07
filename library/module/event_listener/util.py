@@ -65,7 +65,7 @@ def _get_cfg(field: int, event: MiraiEvent, /, **kwargs) -> tuple[str, str]:
     cls: str = camel_to_snake(event.__class__.__name__)
     cfg: _EventListenerConfig = create(_EventListenerConfig, flush=True)
     if not getattr(cfg, f"{cls}_switch", False):
-        raise ExecutionStop()
+        raise ExecutionStop
     msg: str = getattr(cfg, cls, "")
 
     # Group config
@@ -74,7 +74,7 @@ def _get_cfg(field: int, event: MiraiEvent, /, **kwargs) -> tuple[str, str]:
     )
     group_msg: str = getattr(group_cfg, cls, "")
     if getattr(group_cfg, f"{cls}_switch", None) is False:
-        raise ExecutionStop()
+        raise ExecutionStop
     return (group_msg or msg).format(**kwargs), msg.format(**kwargs)
 
 

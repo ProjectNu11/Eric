@@ -58,6 +58,6 @@ class Frequency:
                     else event.sender,
                     MessageChain(Plain(f"请求频率过高，临时封禁{target} 1 小时")),
                 )
-                raise ExecutionStop()
+                raise ExecutionStop
 
         return Depend(check)

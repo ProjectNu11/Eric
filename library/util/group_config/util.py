@@ -80,7 +80,7 @@ def _module_save_single(module: str, field: int, data: dict):
         f.write(json.dumps(data, ensure_ascii=False, indent=4))
 
 
-def module_save(model: type[_T], *, field: int = None):
+def module_save(model: type[_T], *, field: int | Group = None):
     """
     保存模块配置
 
@@ -91,6 +91,7 @@ def module_save(model: type[_T], *, field: int = None):
     Raises:
         TypeError: 如果 model 未注册
     """
+    field = int(field) if field is not None else None
     if model not in _store.mapping:
         raise TypeError(f"{model!r} is not a registered ConfigModel class!")
     module = _store.mapping[model]

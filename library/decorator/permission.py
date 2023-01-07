@@ -43,4 +43,4 @@ class Permission:
         cls, supplicant: int | Member | Friend, level: UserPerm
     ) -> NoReturn:
         if not await cls.check(supplicant, level):
-            raise ExecutionStop()
+            raise ExecutionStop

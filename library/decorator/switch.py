@@ -17,7 +17,7 @@ class Switch:
             if not cls.get(module, field):
                 if show_log:
                     logger.warning(f"[Switch] {field}: {module} 未开启")
-                raise ExecutionStop()
+                raise ExecutionStop
 
         return Depend(judge)
 

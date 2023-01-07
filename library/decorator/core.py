@@ -11,4 +11,4 @@ class CoreInitCheck(Decorator):
     async def target(_: DecoratorInterface):
         core: EricCore = it(EricCore)
         if not core.initialized:
-            raise ExecutionStop()
+            raise ExecutionStop

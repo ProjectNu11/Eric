@@ -99,6 +99,7 @@ class BotList(BaseModel):
         self.bots = set(filter(lambda b: int(b) != bot, self.bots))
 
     async def fetch_all(self):
+        """从所有源获取 Bot 列表，通常情况下无需手动调用"""
         logger.info("[BotList] 正在更新 Bot 列表...")
         for source in self.sources:
             try:
@@ -110,6 +111,7 @@ class BotList(BaseModel):
         logger.success(f"[BotList] 当前列表共有 {len(self.bots)} 个 Bot 实例")
 
     def save(self):
+        """保存 Bot 列表，通常情况下无需手动调用"""
         path_cfg: DataPathConfig = create(DataPathConfig)
         with (Path(path_cfg.library) / "bot_list.json").open(
             "w", encoding="utf-8"
@@ -120,3 +122,16 @@ class BotList(BaseModel):
             file.write(self.json(indent=4, ensure_ascii=False))
             self.sources = set(self.sources)
             self.bots = set(self.bots)
+
+    def check(self, supplicant: int | Member | Friend) -> bool:
+        """
+        检查发信人是否为机器人
+
+        Args:
+            supplicant: 发信人
+
+        Returns:
+            是否为机器人，True 为是
+        """
+        supplicant = int(supplicant)
+        return bool(next(filter(lambda b: int(b) == supplicant, self.bots), False))
