@@ -1,9 +1,11 @@
 import re
 from typing import Generator, Iterable, TypeVar
 
+from graia.ariadne.event.message import GroupMessage, MessageEvent
 from graia.ariadne.model import MemberPerm
 
 from library.model.permission import UserPerm
+from library.util.type import FieldWide
 
 _T = TypeVar("_T")
 
@@ -105,3 +107,7 @@ PERMISSION_MAPPING: dict[UserPerm | MemberPerm, str] = {
     MemberPerm.Administrator: "管理员",
     MemberPerm.Owner: "群主",
 }
+
+
+def extract_field(event: MessageEvent) -> FieldWide:
+    return event.sender.group if isinstance(event, GroupMessage) else 0

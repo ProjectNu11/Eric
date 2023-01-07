@@ -1,5 +1,4 @@
 from abc import ABC
-from typing import Type
 
 from creart import AbstractCreator, CreateTargetInfo, add_creator, exists_module
 from kayaku import create
@@ -29,7 +28,7 @@ class ParsedRepositoryCreator(AbstractCreator, ABC):
         return exists_module("library.module.manager.model.repository")
 
     @staticmethod
-    def create(_create_type: Type[ParsedRepository]) -> ParsedRepository:
+    def create(_create_type: type[ParsedRepository]) -> ParsedRepository:
         return ParsedRepository()
 
 

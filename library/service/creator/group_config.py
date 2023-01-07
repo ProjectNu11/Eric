@@ -1,5 +1,4 @@
 from abc import ABC
-from typing import Type
 
 from creart import AbstractCreator, CreateTargetInfo, exists_module
 
@@ -14,7 +13,7 @@ class GroupConfigCreator(AbstractCreator, ABC):
         return exists_module("library.model.config.group_config")
 
     @staticmethod
-    def create(_create_type: Type[GroupConfig]) -> GroupConfig:
+    def create(_create_type: type[GroupConfig]) -> GroupConfig:
         cfg = GroupConfig()
         cfg.load()
         return cfg

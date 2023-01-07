@@ -1,224 +1,104 @@
-from abc import ABC
-from datetime import datetime, timedelta
-from typing import Type
+from datetime import timedelta
+from heapq import heappush
+from time import time
 
-from creart import AbstractCreator, CreateTargetInfo, exists_module
-from graia.ariadne.model import Friend, Group, Member
+from graia.amnesia.transport.common.storage import CacheStorage
 from kayaku import create
 
 from library.model.config import FrequencyLimitConfig
-from library.util.orm import orm
-from library.util.orm.table import TempBlacklistTable
+from library.model.exception import (
+    FrequencyLimitFieldHit,
+    FrequencyLimitGlobalHit,
+    FrequencyLimitUserHit,
+)
+from library.util.type import FieldWide, SenderWide
 
 
-class FrequencyLimit:
-    """频率限制"""
+class FrequencyLimitCache(CacheStorage[int]):
+    cache: dict[int, list[tuple[float, int, int]]]
+    """{field: [(expire_time, count, user), ...]}"""
+    expire: list[tuple[float, int]]
+    """[(expire_time, field), ...]"""
 
-    @property
-    def flush_time(self) -> int:
-        """刷新间隔（秒）"""
-        return create(FrequencyLimitConfig).flush
-
-    @property
-    def user_max(self) -> int:
-        """单用户最大请求权重，为 0 时不限制"""
-        return create(FrequencyLimitConfig).user_max
-
-    @property
-    def field_max(self) -> int:
-        """单区域最大请求权重，为 0 时不限制"""
-        return create(FrequencyLimitConfig).field_max
-
-    @property
-    def global_max(self) -> int:
-        return create(FrequencyLimitConfig).global_max
-
-    field: dict[int, list[tuple[int, datetime]]] = {}
-    """ 聊天区域请求权重 """
-
-    supplicant: dict[int, list[tuple[int, datetime]]] = {}
-    """ 用户请求权重 """
-
-    flagged: dict[int, bool] = {}
-    """ 被标记的用户 """
-
-    def add_weight(
+    def __init__(
         self,
-        field: int | Group | Friend,
-        supplicant: int | Member | Friend,
-        weight: int,
+        cache: dict[int, list[tuple[float, int, int]]],
+        expire: list[tuple[float, int]],
     ):
-        """
-        添加权重
+        self.cache = cache
+        self.expire = expire
 
-        Args:
-            field: 聊天区域，为 0 时为私聊
-            supplicant: 用户
-            weight: 权重
-        """
-
-        field = 0 if isinstance(field, Friend) else int(field)
-        supplicant = int(supplicant)
-        log = weight, datetime.now()
-
-        if field not in self.field:
-            self.field[field] = [log]
-        else:
-            self.field[field].append(log)
-
-        if supplicant not in self.supplicant:
-            self.supplicant[supplicant] = [log]
-        else:
-            self.supplicant[supplicant].append(log)
-
-    def cleanup(self):
-        """清理过期权重"""
-
-        for field in self.field:
-            self.field[field] = [
-                (weight, time)
-                for weight, time in self.field[field].copy()
-                if time + timedelta(seconds=self.flush_time) > datetime.now()
-            ]
-
-        for supplicant in self.supplicant:
-            self.supplicant[supplicant] = [
-                (weight, time)
-                for weight, time in self.supplicant[supplicant].copy()
-                if time + timedelta(seconds=self.flush_time) > datetime.now()
-            ]
-
-    def flush_weight(self):
-        """刷新权重"""
-
-        self.field.clear()
-        self.supplicant.clear()
-
-    def get_field_weight(self, target: int | Group) -> int:
-        """
-        获取区域权重
-
-        Args:
-            target: 聊天区域，为 0 时为私聊
-        """
-        return sum(weight for weight, _ in self.field.get(int(target), []))
-
-    def get_supplicant_weight(self, target: int | Member | Friend) -> int:
-        """
-        获取用户权重
-
-        Args:
-            target: 用户
-        """
-        return sum(weight for weight, _ in self.supplicant.get(int(target), []))
-
-    def get_global_weight(self) -> int:
-        """获取全局权重"""
-        return sum(
-            sum(weight for weight, _ in self.field[field]) for field in self.field
+    async def get(self, key: str, default: int = 0) -> int:
+        """Not implemented"""
+        raise NotImplementedError(
+            "Use `user_check`, `field_check` or `global_check` instead."
         )
 
-    def check_field(self, target: int | Group) -> bool:
-        """
-        检查区域权重是否未超出限制
-
-        Args:
-            target: 聊天区域，为 0 时为私聊
-
-        Returns:
-            是否未超出限制
-        """
-
-        return self.field_max == 0 or self.get_field_weight(target) <= self.field_max
-
-    def check_supplicant(self, target: int | Member | Friend) -> bool:
-        """
-        检查用户权重是否未超出限制
-
-        Args:
-            target: 用户
-
-        Returns:
-            是否未超出限制
-        """
-
-        return self.user_max == 0 or self.get_supplicant_weight(target) <= self.user_max
-
-    def check_global(self) -> bool:
-        """检查全局权重是否未超出限制"""
-        return self.global_max == 0 or self.get_global_weight() <= self.global_max
-
-    def notified(self, target: int | Member | Friend):
-        """
-        通知用户
-
-        Args:
-            target: 用户
-        """
-
-        self.flagged[int(target)] = True
-
-    def is_notified(self, target: int | Member | Friend) -> bool:
-        """
-        检查用户是否已被通知
-
-        Args:
-            target: 用户
-
-        Returns:
-            是否已被通知
-        """
-
-        return self.flagged[int(target)] if int(target) in self.flagged else False
-
-    async def blacklist_user(self, target: int | Member | Friend):
-        """
-        将用户加入黑名单
-
-        Args:
-            target: 用户
-        """
-
-        self.flagged[int(target)] = False
-        await orm.insert_or_update(
-            TempBlacklistTable,
-            [TempBlacklistTable.target == int(target)],
-            field=-1,
-            target=int(target),
-            time=datetime.now(),
-            reason="频率限制",
-            supplicant=0,
-            duration=60 * 60,
+    def user_check(self, user: int, *, suppress: bool = False) -> int:
+        cap = create(FrequencyLimitConfig).user_max
+        total = sum(
+            sum(
+                map(
+                    lambda x: x[1],
+                    filter(lambda x: x[2] == user, self.cache.get(field, [])),
+                )
+            )
+            for field in self.cache
         )
+        if not suppress and cap and total >= cap:
+            raise FrequencyLimitUserHit(user=user, weight=total)
+        return total
 
-    async def blacklist_field(self, target: int | Group):
-        """
-        将聊天区域加入黑名单
+    def field_check(self, field: int, *, suppress: bool = False) -> int:
+        cap = create(FrequencyLimitConfig).field_max
+        total = sum(map(lambda x: x[1], self.cache.get(field, [])))
+        if not suppress and cap and total >= cap:
+            raise FrequencyLimitFieldHit(field=field, weight=total)
+        return total
 
-        Args:
-            target: 聊天区域
-        """
-
-        self.flagged[int(target)] = False
-        await orm.insert_or_update(
-            TempBlacklistTable,
-            [TempBlacklistTable.field == int(target)],
-            field=int(target),
-            target=-1,
-            time=datetime.now(),
-            reason="频率限制",
-            supplicant=0,
-            duration=60 * 60,
+    def global_check(self, *, suppress: bool = False) -> int:
+        cap = create(FrequencyLimitConfig).global_max
+        total = sum(
+            sum(map(lambda x: x[1], self.cache.get(field, []))) for field in self.cache
         )
+        if not suppress and cap and total >= cap:
+            raise FrequencyLimitGlobalHit(weight=total)
+        return total
 
+    async def set(
+        self,
+        key: str,
+        value: int,
+        expire: timedelta = None,
+    ) -> None:
+        field, user = key.split(":")
+        field = int(field)
+        user = int(user)
+        self.user_check(user)
+        self.field_check(field)
+        self.global_check()
+        if expire is None:
+            expire = timedelta(seconds=create(FrequencyLimitConfig, flush=True).flush)
+        expire_time = time() + expire.total_seconds()
+        self.cache.setdefault(field, [])
+        heappush(self.cache[field], (expire_time, value, user))
+        heappush(self.expire, (expire_time, field))
 
-class FrequencyLimitCreator(AbstractCreator, ABC):
-    targets = (CreateTargetInfo("library.util.frequency_limit", "FrequencyLimit"),)
+    async def add(self, field: FieldWide, user: SenderWide, weight: int) -> None:
+        field = int(field)
+        user = int(user)
+        await self.set(f"{field}:{user}", weight)
 
-    @staticmethod
-    def available() -> bool:
-        return exists_module("library.util.frequency_limit")
+    async def delete(self, key: int, strict: bool = False) -> None:
+        if strict or key in self.cache:
+            del self.cache[key]
 
-    @staticmethod
-    def create(_create_type: Type[FrequencyLimit]) -> FrequencyLimit:
-        return FrequencyLimit()
+    async def clear(self) -> None:
+        self.cache.clear()
+        self.expire.clear()
+
+    async def has(self, key: int) -> bool:
+        return key in self.cache
+
+    async def keys(self) -> list[int]:
+        return list(self.cache.keys())

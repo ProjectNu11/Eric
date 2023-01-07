@@ -2,12 +2,13 @@ import contextlib
 
 from creart import it
 from graia.ariadne.event.message import MessageEvent
-from graia.broadcast import Decorator
 from graia.saya import Saya
 from graia.saya.builtins.broadcast import ListenerSchema
 
+from library.decorator.base import EricDecorator
 
-def _process(_decorator: Decorator, _inject: bool):
+
+def _process(_decorator: EricDecorator, _inject: bool):
     saya: Saya = it(Saya)
     for _, channel in saya.channels.items():
         for cube in channel.content:
@@ -38,9 +39,9 @@ def _process(_decorator: Decorator, _inject: bool):
                         saya.broadcast.getListener(cube.content).decorators.remove(deco)
 
 
-def inject(decorator: Decorator):
+def inject(decorator: EricDecorator):
     _process(decorator, True)
 
 
-def uninject(decorator: Decorator):
+def uninject(decorator: EricDecorator):
     _process(decorator, False)

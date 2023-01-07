@@ -1,6 +1,5 @@
 from abc import ABC
 from datetime import datetime
-from typing import Type
 
 from creart import AbstractCreator, CreateTargetInfo, exists_module
 from pydantic import BaseModel
@@ -75,7 +74,7 @@ class ColorCreator(AbstractCreator, ABC):
         return exists_module("library.ui.color")
 
     @staticmethod
-    def create(_create_type: Type[Color]) -> Color:
+    def create(_create_type: type[Color]) -> Color:
         return Color().initialize()
 
 

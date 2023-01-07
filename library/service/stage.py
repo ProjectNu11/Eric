@@ -24,10 +24,13 @@ from playwright.async_api import ProxySettings
 
 from library.config.initialize import initialize_config
 from library.model.config import EricConfig, FastAPIConfig, PlaywrightConfig
-from library.service.launchable.core_bot_list import EricCoreBotList
-from library.service.launchable.core_data import EricCoreData
-from library.service.launchable.core_updater import EricCoreUpdater
-from library.service.launchable.util_session import EricUtilSession
+from library.service.launchable import (
+    EricCoreBotList,
+    EricCoreData,
+    EricCoreUpdater,
+    EricUtilSession,
+    FrequencyLimitService,
+)
 from library.util.log import setup_logger
 from library.util.module.launch import launch_require
 
@@ -73,10 +76,12 @@ def initialize(*, with_console: bool):
     Ariadne.launch_manager.add_service(
         UvicornService(host=fastapi_config.host, port=fastapi_config.port)
     )
+
     Ariadne.launch_manager.add_service(EricCoreUpdater())
     Ariadne.launch_manager.add_service(EricCoreData())
     Ariadne.launch_manager.add_service(EricCoreBotList())
     Ariadne.launch_manager.add_service(EricUtilSession())
+    Ariadne.launch_manager.add_service(FrequencyLimitService())
 
     it(GraiaScheduler)
 

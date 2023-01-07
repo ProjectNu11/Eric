@@ -5,26 +5,25 @@ from creart import it
 from graia.amnesia.builtins.memcache import Memcache
 from graia.ariadne import Ariadne
 from graia.ariadne.event import MiraiEvent
-from graia.ariadne.model import Friend, Group, Member
-from graia.broadcast import (
-    Decorator,
-    DecoratorInterface,
-    ExecutionStop,
-    RequirementCrashed,
-)
+from graia.broadcast import DecoratorInterface, ExecutionStop, RequirementCrashed
 from loguru import logger
 from sqlalchemy import select
 
+from library.decorator.base import EricDecorator
 from library.model.bot_list import BotList
 from library.util.orm import orm
 from library.util.orm.table import BlacklistTable
-from library.util.type import Sender
+from library.util.type import FieldWide, Sender, SenderWide
 
 
-class Blacklist(Decorator):
+class Blacklist(EricDecorator):
     """黑名单检查装饰器"""
 
     pre = True
+
+    @property
+    def supported_events(self) -> set[type[MiraiEvent]]:
+        return set()
 
     _show_log: bool
     _check_field: bool
@@ -65,11 +64,11 @@ class Blacklist(Decorator):
 
     async def target(self, interface: DecoratorInterface):
         try:
-            sender: Sender | int = await interface.dispatcher_interface.lookup_param(
+            sender: Sender = await interface.dispatcher_interface.lookup_param(
                 "__decorator_parameter__", Sender, None
             )
-            field: Group | int = await interface.dispatcher_interface.lookup_param(
-                "__decorator_parameter_group__", Group | int, None
+            field: FieldWide = await interface.dispatcher_interface.lookup_param(
+                "__decorator_parameter_group__", FieldWide, None
             )
             event: MiraiEvent = await interface.dispatcher_interface.lookup_param(
                 "__decorator_parameter_event__", MiraiEvent, None
@@ -87,8 +86,8 @@ class Blacklist(Decorator):
     async def _run_check(
         self,
         event: MiraiEvent,
-        sender: Sender | int | None,
-        field: Group | int,
+        sender: SenderWide | None,
+        field: FieldWide,
     ):
         key = f"{__package__}.{self.__class__.__name__}.{hash(repr(event))}"
         results: dict[str, bool]
@@ -123,7 +122,7 @@ class Blacklist(Decorator):
         return cls(show_log=show_log)
 
     @classmethod
-    async def check_field(cls, field: int | Group) -> bool:
+    async def check_field(cls, field: FieldWide) -> bool:
         """
         检查聊天区域是否在黑名单中
 
@@ -140,9 +139,7 @@ class Blacklist(Decorator):
         )
 
     @classmethod
-    async def check_supplicant(
-        cls, supplicant: int | Member | Friend, field: int | Group
-    ) -> bool:
+    async def check_supplicant(cls, supplicant: SenderWide, field: FieldWide) -> bool:
         """
         检查发信人是否在黑名单中
 
@@ -174,9 +171,7 @@ class Blacklist(Decorator):
         return bool(await orm.all(select(table).where(*conditions)))
 
     @classmethod
-    async def check_temporary(
-        cls, supplicant: int | Member | Friend, field: int | Group
-    ) -> bool:
+    async def check_temporary(cls, supplicant: SenderWide, field: FieldWide) -> bool:
         """
         检查发信人是否在临时黑名单中
 
@@ -191,7 +186,7 @@ class Blacklist(Decorator):
         pass
 
     @classmethod
-    async def check_bot(cls, supplicant: int | Member | Friend) -> bool:
+    async def check_bot(cls, supplicant: SenderWide) -> bool:
         """
         检查发信人是否为机器人
 
@@ -204,7 +199,7 @@ class Blacklist(Decorator):
         return it(BotList).check(supplicant)
 
     @staticmethod
-    async def check_anonymous(supplicant: int | Member | Friend) -> bool:
+    async def check_anonymous(supplicant: SenderWide) -> bool:
         """
         检查发信人是否为匿名
 

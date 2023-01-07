@@ -83,7 +83,6 @@ async def module_search(keyword: str):
 
 @route.get(CATEGORY_SEARCH_PAGE)
 async def category_search(category: str):
-    print(category)
     return HTMLResponse(
         search_category(category).to_html(), status_code=status.HTTP_200_OK
     )

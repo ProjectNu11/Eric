@@ -1,5 +1,4 @@
 from abc import ABC
-from typing import Type
 
 from creart import AbstractCreator, CreateTargetInfo, exists_module
 from fastapi import FastAPI
@@ -17,7 +16,7 @@ class FastAPICreator(AbstractCreator, ABC):
         return exists_module("fastapi.applications")
 
     @staticmethod
-    def create(_create_type: Type[FastAPI]) -> FastAPI:
+    def create(_create_type: type[FastAPI]) -> FastAPI:
         config: FastAPIConfig = create(FastAPIConfig)
         app = FastAPI(**config.params)
         app.add_middleware(

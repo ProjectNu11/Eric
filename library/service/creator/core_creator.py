@@ -1,5 +1,4 @@
 from abc import ABC
-from typing import Type
 
 from creart import AbstractCreator, CreateTargetInfo, exists_module
 
@@ -14,5 +13,5 @@ class EricCoreCreator(AbstractCreator, ABC):
         return exists_module("library.model.core")
 
     @staticmethod
-    def create(_create_type: Type[EricCore]) -> EricCore:
+    def create(_create_type: type[EricCore]) -> EricCore:
         return EricCore()

@@ -2,7 +2,6 @@ import contextlib
 import time
 from abc import ABC
 from asyncio import Lock
-from typing import Type
 
 from creart import AbstractCreator, CreateTargetInfo, add_creator, exists_module
 from graia.ariadne import Ariadne
@@ -171,7 +170,7 @@ class PublicGroupClassCreator(AbstractCreator, ABC):
         return exists_module("library.util.multi_account.public_group")
 
     @staticmethod
-    def create(_create_type: Type[PublicGroup]) -> PublicGroup:
+    def create(_create_type: type[PublicGroup]) -> PublicGroup:
         return PublicGroup()
 
 

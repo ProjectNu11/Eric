@@ -1,6 +1,6 @@
 import contextlib
 from abc import ABC
-from typing import Callable, Type
+from typing import Callable
 
 from creart import AbstractCreator, CreateTargetInfo, exists_module
 from loguru import logger
@@ -88,5 +88,5 @@ class ModulesCreator(AbstractCreator, ABC):
         return exists_module("library.util.module")
 
     @staticmethod
-    def create(_create_type: Type[Modules]) -> Modules:
+    def create(_create_type: type[Modules]) -> Modules:
         return Modules()

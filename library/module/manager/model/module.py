@@ -1,7 +1,6 @@
 from abc import ABC
 from datetime import datetime
 from json import JSONDecodeError
-from typing import Type
 
 from creart import AbstractCreator, CreateTargetInfo, add_creator, exists_module, it
 from graia.saya import Channel
@@ -58,7 +57,7 @@ class RemoteCacheCreator(AbstractCreator, ABC):
         return exists_module("library.module.manager.model.module")
 
     @staticmethod
-    def create(_create_type: Type[RemoteModuleCache]) -> RemoteModuleCache:
+    def create(_create_type: type[RemoteModuleCache]) -> RemoteModuleCache:
         cache = it(Modules).get(channel.module).data_path / "repo_cache.json"
         try:
             _cache = RemoteModuleCache.parse_file(cache)

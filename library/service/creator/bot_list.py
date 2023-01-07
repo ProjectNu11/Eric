@@ -1,7 +1,6 @@
 from abc import ABC
 from json import JSONDecodeError
 from pathlib import Path
-from typing import Type
 
 from creart import AbstractCreator, CreateTargetInfo, exists_module
 from kayaku import create
@@ -19,7 +18,7 @@ class BotListCreator(AbstractCreator, ABC):
         return exists_module("library.model.bot_list")
 
     @staticmethod
-    def create(_create_type: Type[BotList]) -> BotList:
+    def create(_create_type: type[BotList]) -> BotList:
         path_cfg: DataPathConfig = create(DataPathConfig)
         try:
             return BotList.parse_file(Path(path_cfg.library) / "bot_list.json")

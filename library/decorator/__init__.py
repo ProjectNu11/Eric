@@ -1,7 +1,7 @@
 from library.decorator.blacklist import Blacklist
 from library.decorator.core import CoreInitCheck
 from library.decorator.distribute import Distribution
-from library.decorator.frequency_limit import FrequencyLimit
+from library.decorator.frequency_limit import Frequency
 from library.decorator.function_call import FunctionCall
 from library.decorator.group_config import module_config
 from library.decorator.mention import MentionMeOptional
@@ -13,7 +13,7 @@ __all__ = [
     "Blacklist",
     "CoreInitCheck",
     "Distribution",
-    "FrequencyLimit",
+    "Frequency",
     "FunctionCall",
     "module_config",
     "MentionMeOptional",
