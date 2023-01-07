@@ -97,6 +97,9 @@ async def send_message(
     Raises:
         AccountMuted: 账号被禁言
         UnknownTarget: 目标不存在
+        NotImplementedError: 不支持的消息类型
+        ValueError: 无法判断目标为群聊或好友
+        MessageEmpty: 消息为空
         RemoteException: 远程异常
         Exception: 其他异常
     """

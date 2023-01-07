@@ -7,8 +7,10 @@ from loguru import logger
 class SessionContainer:
     session: dict[str, ClientSession] = {}
 
-    async def get(self, name: str = "universal", **kwargs) -> ClientSession:
-        if name not in self.session or self.session[name].closed:
+    async def get(
+        self, name: str = "universal", flush: bool = False, **kwargs
+    ) -> ClientSession:
+        if flush or name not in self.session or self.session[name].closed:
             self.session[name] = ClientSession(**kwargs)
             logger.success(f"[SessionContainer] Created session {name!r}")
         return self.session[name]

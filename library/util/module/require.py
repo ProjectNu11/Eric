@@ -27,7 +27,7 @@ def _require_install_deps(
             logger.error(f"模块 {module.pack} 的依赖安装失败，请检查依赖列表")
     except Exception as e:
         if isinstance(e, SkipRequiring):
-            logger.warning(e)
+            logger.warning(f"skipping {module.pack}: {e}")
             return
         if debug:
             logger.exception(e.with_traceback(e.__traceback__))
