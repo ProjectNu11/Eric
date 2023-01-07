@@ -5,6 +5,8 @@ from library.model.core import EricCore
 
 
 class CoreInitCheck(Decorator):
+    """核心初始化检查装饰器"""
+
     pre = True
 
     @staticmethod
