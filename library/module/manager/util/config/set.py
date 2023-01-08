@@ -91,6 +91,6 @@ def _get_msg(
 def mgr_set_module_config(field: Group | int, mod: str, **kwargs) -> str:
     module = _pre_check(mod)
     config = get_module_config(field, module)
-    module_save(type(config), field=field)
     success, not_found, failed = _set(config, **kwargs)
+    module_save(type(config), field=field)
     return _get_msg(module, field, success, not_found, failed)
