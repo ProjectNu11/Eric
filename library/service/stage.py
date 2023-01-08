@@ -27,6 +27,7 @@ from library.model.config import EricConfig, FastAPIConfig, PlaywrightConfig
 from library.service.launchable import (
     EricCoreBotList,
     EricCoreData,
+    EricCoreMisc,
     EricCoreUpdater,
     EricUtilSession,
     FrequencyLimitService,
@@ -79,6 +80,7 @@ def initialize(*, with_console: bool):
 
     Ariadne.launch_manager.add_service(EricCoreUpdater())
     Ariadne.launch_manager.add_service(EricCoreData())
+    Ariadne.launch_manager.add_service(EricCoreMisc())
     Ariadne.launch_manager.add_service(EricCoreBotList())
     Ariadne.launch_manager.add_service(EricUtilSession())
     Ariadne.launch_manager.add_service(FrequencyLimitService())
