@@ -47,8 +47,8 @@ channel = Channel.current()
         decorators=[
             MentionMe(),
             Permission.require(UserPerm.BOT_OWNER),
-            Blacklist.check(),
-            FunctionCall.record(channel.module),
+            Blacklist(),
+            FunctionCall(channel.module),
         ],
     )
 )

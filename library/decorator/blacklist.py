@@ -35,7 +35,7 @@ class Blacklist(EricDecorator):
 
     def __init__(
         self,
-        show_log: bool = False,
+        show_log: bool = True,
         check_field: bool = True,
         check_supplicant: bool = True,
         check_temporary: bool = True,
@@ -115,7 +115,7 @@ class Blacklist(EricDecorator):
         return any(results.values())
 
     @classmethod
-    def check(cls, show_log: bool = False) -> Self:
+    def check(cls, show_log: bool = True) -> Self:
         """
         DeprecationWarning: 请使用 `Blacklist` 装饰器
         """

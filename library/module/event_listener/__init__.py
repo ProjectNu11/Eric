@@ -87,8 +87,8 @@ async def invalidate_outdated_pickle():
     )
 )
 @decorate(
-    Blacklist.check(),
-    FunctionCall.record(channel.module),
+    Blacklist(),
+    FunctionCall(channel.module),
 )
 async def request_handler(
     app: Ariadne, event: MessageEvent, action: RegexResult, request_id: RegexResult

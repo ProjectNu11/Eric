@@ -8,14 +8,11 @@ from graia.ariadne import Ariadne
 from graia.ariadne.event.message import FriendMessage, GroupMessage
 from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.message.element import Image
-from graia.ariadne.message.parser.twilight import FullMatch, Twilight
 from graia.broadcast.builtin.event import ExceptionThrowed
-from graiax.shortcut import decorate, dispatch, listen
+from graiax.shortcut import listen
 from kayaku import create
 
-from library.decorator import Distribution, Permission
 from library.model.config import EricConfig
-from library.model.permission import UserPerm
 from library.util.image import render_md
 from library.util.message import send_message
 from library.util.multi_account.public_group import PublicGroup
@@ -61,13 +58,6 @@ async def except_handle(app: Ariadne, event: ExceptionThrowed):
                 app.account,
                 is_group=True,
             )
-
-
-@listen(GroupMessage, FriendMessage)
-@dispatch(Twilight(FullMatch(".raise")))
-@decorate(Distribution.distribute(), Permission.require(UserPerm.BOT_ADMIN))
-async def raise_runtime_error():
-    raise RuntimeError("Manually raised error for testing purpose")
 
 
 def _generate_msg(event: ExceptionThrowed, tb: str) -> str:
