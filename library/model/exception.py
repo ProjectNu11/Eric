@@ -50,3 +50,7 @@ class FrequencyLimitGlobalHit(FrequencyLimitHit):
 
     def __str__(self):
         return f"全局频率限制已达到 {self.weight}"
+
+
+class InvalidConfig(Exception):
+    """无效配置"""
