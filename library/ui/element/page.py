@@ -1,3 +1,4 @@
+from creart import it
 from graia.ariadne import Ariadne
 from graiax.playwright import PlaywrightBrowser
 from kayaku import create
@@ -7,7 +8,7 @@ from lxml.html.builder import CLASS
 from typing_extensions import Self
 
 from library.model.config import FastAPIConfig
-from library.ui.color import ColorSchema, is_dark
+from library.ui.color import Color, ColorSchema, is_dark
 from library.ui.element.base import Element, Style
 from library.ui.element.blank import Blank
 from library.util.misc import inflate
@@ -39,7 +40,7 @@ class Page(Element):
         if dark is None:
             dark = is_dark()
         if schema is None:
-            schema = ColorSchema()
+            schema = it(Color).current()
         self.schema = schema
         self.dark = dark
         self.max_width = max_width

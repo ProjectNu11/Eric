@@ -34,6 +34,9 @@ class ColorSingle(BaseModel):
         return cls(color=(int(value[:2], 16), int(value[2:4], 16), int(value[4:6], 16)))
 
 
+ColorType = ColorSingle | tuple[int, int, int] | tuple[int, int, int, float]
+
+
 class ColorPair(BaseModel):
     light: ColorSingle
     dark: ColorSingle
