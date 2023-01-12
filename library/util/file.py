@@ -29,3 +29,8 @@ def walk(path: Path, include_dir: bool = True):
 
 def get_size(path: Path):
     return sum(file.stat().st_size for file in walk(path, include_dir=False))
+
+
+def invalidate_pycache(path: Path):
+    for cache_path in path.rglob("__pycache__"):
+        remove_recursive(cache_path)
