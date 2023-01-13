@@ -21,6 +21,8 @@ class BotListCreator(AbstractCreator, ABC):
     def create(_create_type: type[BotList]) -> BotList:
         path_cfg: DataPathConfig = create(DataPathConfig)
         try:
-            return BotList.parse_file(Path(path_cfg.library) / "bot_list.json")
+            bot_list = BotList.parse_file(Path(path_cfg.library) / "bot_list.json")
+            bot_list.sources.clear()
+            return bot_list
         except (FileNotFoundError, ValidationError, JSONDecodeError):
             return BotList()

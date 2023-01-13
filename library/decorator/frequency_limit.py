@@ -1,9 +1,8 @@
-from typing import Self
-
 from graia.ariadne import Ariadne
 from graia.ariadne.event import MiraiEvent
 from graia.broadcast import DecoratorInterface, ExecutionStop, RequirementCrashed
 from loguru import logger
+from typing_extensions import Self
 
 from library.decorator.base import EricDecorator
 from library.model.exception import FrequencyLimitHit

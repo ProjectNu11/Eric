@@ -1,5 +1,4 @@
 from datetime import timedelta
-from typing import Self
 
 from creart import it
 from graia.amnesia.builtins.memcache import Memcache
@@ -8,6 +7,7 @@ from graia.ariadne.event import MiraiEvent
 from graia.broadcast import DecoratorInterface, ExecutionStop, RequirementCrashed
 from loguru import logger
 from sqlalchemy import select
+from typing_extensions import Self
 
 from library.decorator.base import EricDecorator
 from library.model.bot_list import BotList

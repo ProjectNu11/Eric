@@ -1,8 +1,9 @@
 from datetime import datetime
-from typing import NoReturn, Self
+from typing import NoReturn
 
 from graia.ariadne.event import MiraiEvent
 from graia.broadcast import DecoratorInterface, ExecutionStop, RequirementCrashed
+from typing_extensions import Self
 
 from library.decorator.base import EricDecorator
 from library.util.orm import orm
