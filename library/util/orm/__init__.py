@@ -192,7 +192,7 @@ class AsyncORM(AsyncEngine):
             return await self.execute(update(table).where(*condition).values(**dt))
         return await self.execute(insert(table).values(**dt))
 
-    async def insert_or_ignore(self, table, condition, dt):
+    async def insert_or_ignore(self, table, condition, **dt):
         """
         如不存在的数据果插入或忽略。
 
