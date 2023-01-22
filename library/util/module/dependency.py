@@ -2,10 +2,8 @@ import subprocess
 from pathlib import Path
 from typing import NoReturn
 
-from kayaku import create
 from loguru import logger
 
-from library.model.config import EricConfig
 from library.model.module import ModuleMetadata
 
 
@@ -27,12 +25,8 @@ def install_dependency(
         raise ValueError("模块或依赖列表必须填写")
     if module:
         requirements = _get_requirements_by_module(module)
-    config: EricConfig = create(EricConfig)
-    command = (
-        ["pip", "install"]
-        if config.environment == "pip"
-        else ["poetry", "run", "python", "-m", "pip", "install"]
-    )
+
+    command = ["pdm", "run", "pip", "install"]
     process = subprocess.Popen(
         [*command, *requirements],
         stdout=subprocess.PIPE,

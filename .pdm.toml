@@ -1,0 +1,5 @@
+[venv]
+with_pip = true
+
+[python]
+path = "C:\\Users\\nullq\\Desktop\\Projects\\Eric\\.venv\\Scripts\\python.exe"

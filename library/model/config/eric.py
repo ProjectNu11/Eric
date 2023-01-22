@@ -19,9 +19,6 @@ class EricConfig:
     description: str = ""
     """ 机器人描述 """
 
-    environment: str = ""
-    """ 包管理器，可选 pip 或 poetry """
-
     host: str = ""
     """ mirai-api-http 服务器地址 """
 
