@@ -1,0 +1,94 @@
+site_name: Eric Docs
+
+repo_url: https://github.com/ProjectNu11/Eric
+repo_name: ProjectNu11/Eric
+dev_addr: '127.0.0.1:6789'
+edit_uri: edit/docs/docs/
+
+theme:
+  name: material
+  language: zh
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.top
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - search.share
+  icon:
+    repo: fontawesome/brands/git-alt
+    admonition:
+      note: octicons/tag-16
+      abstract: octicons/checklist-16
+      info: octicons/info-16
+      tip: octicons/squirrel-16
+      success: octicons/check-16
+      question: octicons/question-16
+      warning: octicons/alert-16
+      failure: octicons/x-circle-16
+      danger: octicons/zap-16
+      bug: octicons/bug-16
+      example: octicons/beaker-16
+      quote: octicons/quote-16
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: blue grey
+      accent: indigo
+      toggle:
+        icon: material/lightbulb
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: blue grey
+      accent: indigo
+      toggle:
+        icon: material/lightbulb-outline
+        name: Switch to dark mode
+
+plugins:
+  - search
+  - git-revision-date-localized:
+      enable_creation_date: true
+      fallback_to_build_date: true
+
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - pymdownx.caret
+  - pymdownx.critic
+  - pymdownx.details
+  - pymdownx.keys
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - pymdownx.mark
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.tilde
+
+nav:
+  - 前言: index.md
+  - 项目部署:
+    - Linux: deploy/linux.md
+    - Windows: deploy/windows.md
+  - 配置文件:
+    - 主配置: configure/main.md
+    - 数据库:
+        - 通用: configure/database/generic.md
+        - MySQL: configure/database/mysql.md
+    - 高级:
+        - FastAPI: configure/advanced/fastapi.md
+  - 内置模块:
+    - 管理器: module/manager.md
+    - 文件服务器: module/file_server.md
+    - 实用工具: module/utility.md
+    - 帮助菜单: module/help.md
+  - 特性:
+    - FastAPI 支持: feature/fastapi.md
+    - 控制台支持: feature/console.md
+  - 项目结构: tree.md
+  - 常见问题: faq.md
+  - 鸣谢: credits.md
