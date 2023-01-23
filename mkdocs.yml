@@ -3,7 +3,7 @@ site_name: Eric Docs
 repo_url: https://github.com/ProjectNu11/Eric
 repo_name: ProjectNu11/Eric
 dev_addr: '127.0.0.1:6789'
-edit_uri: edit/docs/docs/
+edit_uri: edit/pdm/docs/
 
 theme:
   name: material
