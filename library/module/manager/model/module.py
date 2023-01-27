@@ -8,7 +8,7 @@ from loguru import logger
 from pydantic import BaseModel, ValidationError
 
 from library.model.module import ModuleMetadata
-from library.model.repo import GithubPluginRepo, HTTPPluginRepo
+from library.model.repo import GitHubPluginRepo, GitLabPluginRepo, HTTPPluginRepo
 from library.util.module import Modules
 
 channel = Channel.current()
@@ -21,7 +21,7 @@ class RemoteModule(ModuleMetadata):
     files: list[str] = []
     """模块文件列表"""
 
-    repo: GithubPluginRepo | HTTPPluginRepo
+    repo: GitHubPluginRepo | GitLabPluginRepo | HTTPPluginRepo
     """模块仓库"""
 
 

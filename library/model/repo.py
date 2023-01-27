@@ -49,7 +49,7 @@ class GenericPluginRepo(BaseModel):
         return failed
 
 
-class GithubPluginRepo(GenericPluginRepo):
+class GitHubPluginRepo(GenericPluginRepo):
     owner: str
     repo: str
     branch: str
@@ -60,11 +60,35 @@ class GithubPluginRepo(GenericPluginRepo):
 
     @property
     def __name__(self) -> str:
-        return f"GithubPluginRepo:{self.owner}/{self.repo}@{self.branch}"
+        return f"GitHubPluginRepo:{self.owner}/{self.repo}@{self.branch}"
 
     def get_file_url(self, path: str) -> str:
         return self.raw_url.format(
             owner=self.owner, repo=self.repo, branch=self.branch, path=path
+        )
+
+
+class GitLabPluginRepo(GenericPluginRepo):
+    base: str
+    owner: str
+    repo: str
+    branch: str
+
+    @property
+    def raw_url(self) -> str:
+        return "https://{base}/{owner}/{repo}/-/raw/{branch}/{path}"
+
+    @property
+    def __name__(self) -> str:
+        return f"GitLabPluginRepo:{self.base}/{self.owner}/{self.repo}@{self.branch}"
+
+    def get_file_url(self, path: str) -> str:
+        return self.raw_url.format(
+            base=self.base,
+            owner=self.owner,
+            repo=self.repo,
+            branch=self.branch,
+            path=path,
         )
 
 

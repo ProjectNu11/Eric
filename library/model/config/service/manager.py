@@ -2,7 +2,12 @@ from dataclasses import field
 
 from kayaku import config
 
-from library.model.repo import GenericPluginRepo, GithubPluginRepo, HTTPPluginRepo
+from library.model.repo import (
+    GenericPluginRepo,
+    GitHubPluginRepo,
+    GitLabPluginRepo,
+    HTTPPluginRepo,
+)
 
 
 @config("library.service.manager")
@@ -15,6 +20,7 @@ class ManagerConfig:
 
     格式：
         Github: `github$<owner>/<repo>$<branch>`
+        GitLab: `gitlab$<base>/<owner>/<repo>$<branch>`
         Http:   `http$<url>`
     """
 
@@ -49,10 +55,17 @@ class ManagerConfig:
         return repos
 
     @staticmethod
-    def _parse_github_repo(data: str) -> GithubPluginRepo:
+    def _parse_github_repo(data: str) -> GitHubPluginRepo:
         _, _repo, branch = data.split("$", maxsplit=2)
         owner, repo = _repo.split("/", maxsplit=1)
-        return GithubPluginRepo(owner=owner, repo=repo, branch=branch)
+        return GitHubPluginRepo(owner=owner, repo=repo, branch=branch)
+
+    @staticmethod
+    def _parse_gitlab_repo(data: str) -> GitLabPluginRepo:
+        _, _repo, branch = data.split("$", maxsplit=2)
+        base, _repo = _repo.split("/", maxsplit=1)
+        owner, repo = _repo.split("/", maxsplit=1)
+        return GitLabPluginRepo(base=base, owner=owner, repo=repo, branch=branch)
 
     @staticmethod
     def _parse_http_repo(data: str) -> HTTPPluginRepo:
