@@ -30,6 +30,7 @@ dependencies = [
     "graiax-shortcut<1.0.0,>=0.2.1",
     "websockets<11.0,>=10.4",
     "packaging<24.0,>=23.0",
+    "textual>=0.10.1",
 ]
 requires-python = ">=3.10,<4.0"
 license = { text = "AGPL-3.0 license" }
