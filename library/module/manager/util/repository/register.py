@@ -53,9 +53,10 @@ def _parse_http_reply(reply: str) -> str:
 
 async def wait_and_register(app: Ariadne, event: MessageEvent):
     await send_message(
-        event, MessageChain("请在一分钟内发送需要注册的仓库类型 (github/http)"), app.account
+        event, MessageChain("请在一分钟内发送需要注册的仓库类型 (github/gitlab/http)"), app.account
     )
     repo_type = await _wait_for_repo_type(event)
+    # TODO implement GitLab
     reply = await _wait_for_reply(
         "请在一分钟内发送需要注册的仓库地址\n"
         "示例：owner/repo\n"

@@ -10,6 +10,8 @@ from graia.ariadne.event.message import (
     MessageEvent,
     SyncMessage,
 )
+from graia.ariadne.message.chain import MessageChain
+from graia.ariadne.message.element import MultimediaElement
 from graiax.shortcut import listen, priority
 from loguru import logger
 
@@ -17,9 +19,18 @@ from library.module.recorder.table import MessageRecord
 from library.util.orm import orm
 
 
+def _remove_binary(chain: MessageChain) -> MessageChain:
+    chain = chain.copy()
+    for element in chain.content:
+        if isinstance(element, MultimediaElement):
+            element.base64 = None
+    return chain
+
+
 @listen(ActiveGroupMessage, ActiveFriendMessage, GroupSyncMessage, FriendSyncMessage)
 @priority(0)
 async def active_msg_recorder(app: Ariadne, event: ActiveMessage | SyncMessage):
+    message_chain = _remove_binary(event.message_chain)
     if isinstance(event, (ActiveGroupMessage, GroupSyncMessage)):
         target = event.subject.id
         target_name = event.subject.name
@@ -39,8 +50,8 @@ async def active_msg_recorder(app: Ariadne, event: ActiveMessage | SyncMessage):
             target_name=target_name,
             sender=app.account,
             sender_name=str(app.account),
-            content=event.message_chain.display,
-            message_chain=event.message_chain.json(ensure_ascii=False),
+            content=message_chain.display,
+            message_chain=message_chain.json(ensure_ascii=False),
         )
     except Exception as e:
         logger.error(f"[Recorder] Failed to record message: {e}")
@@ -49,6 +60,7 @@ async def active_msg_recorder(app: Ariadne, event: ActiveMessage | SyncMessage):
 @listen(GroupMessage, FriendMessage)
 @priority(0)
 async def msg_recorder(event: MessageEvent):
+    message_chain = _remove_binary(event.message_chain)
     if isinstance(event, GroupMessage):
         target = event.sender.group.id
         target_name = event.sender.group.name
@@ -66,8 +78,8 @@ async def msg_recorder(event: MessageEvent):
             sender=event.sender.id,
             sender_name=getattr(event.sender, "name", "")
             or getattr(event.sender, "nickname", "未知"),
-            content=event.message_chain.display,
-            message_chain=event.message_chain.json(ensure_ascii=False),
+            content=message_chain.display,
+            message_chain=message_chain.json(ensure_ascii=False),
         )
     except Exception as e:
         logger.error(f"[Recorder] Failed to record message: {e}")
