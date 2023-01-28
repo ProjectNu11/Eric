@@ -11,7 +11,7 @@ dependencies = [
     "graia-scheduler<1.0.0,>=0.1.4",
     "graiax-playwright<1.0.0,>=0.2.1",
     "typing-extensions<5.0.0,>=4.4.0",
-    "SQLAlchemy<2.0.0,>=1.4.46",
+    "sqlalchemy>=2.0.0",
     "aiomysql<1.0.0,>=0.1.1",
     "aiosqlite<1.0.0,>=0.18.0",
     "aiohttp<4.0.0,>=3.8.3",
@@ -29,7 +29,7 @@ dependencies = [
     "graiax-text2img-playwright<1.0.0,>=0.3.0",
     "graiax-shortcut<1.0.0,>=0.2.1",
     "websockets<11.0,>=10.4",
-    "packaging<24.0,>=23.0"
+    "packaging<24.0,>=23.0",
 ]
 requires-python = ">=3.10,<4.0"
 license = { text = "AGPL-3.0 license" }

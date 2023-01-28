@@ -2,12 +2,11 @@ from asyncio import Lock
 from typing import NoReturn
 
 from kayaku import create
-from sqlalchemy import delete, insert, inspect, select, update
+from sqlalchemy import Executable, delete, insert, inspect, select, update
 from sqlalchemy.engine import Result
 from sqlalchemy.exc import InternalError, ProgrammingError
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.orm import declarative_base
 from sqlalchemy.pool import NullPool
 
 from library.model.config import DatabaseConfig, MySQLConfig
@@ -33,12 +32,12 @@ class AsyncEngine:
     def __init__(self, db_link):
         self.engine = create_async_engine(db_link, **adapter, echo=False)
 
-    async def execute(self, sql, **kwargs) -> Result:
+    async def execute(self, sql: Executable, **kwargs) -> Result:
         """
         执行 SQL 语句
 
         Args:
-            sql (str): SQL 语句
+            sql: SQL 语句
             **kwargs: 传递给 `execute` 的参数
 
         Returns:
@@ -67,7 +66,7 @@ class AsyncEngine:
         取得所有结果
 
         Args:
-            sql (str): SQL 语句
+            sql: SQL 语句
 
         Returns:
             list: 所有结果
@@ -80,7 +79,7 @@ class AsyncEngine:
         取得第一个结果
 
         Args:
-            sql (str): SQL 语句
+            sql: SQL 语句
 
         Returns:
             Any: 第一个结果，如果没有结果则返回 None
@@ -94,7 +93,7 @@ class AsyncEngine:
         取得第一个结果
 
         Args:
-            sql (str): SQL 语句
+            sql: SQL 语句
 
         Returns:
             Any: 第一个结果，如果没有结果则返回 None
@@ -108,7 +107,7 @@ class AsyncEngine:
         以字典生成器的方式取得结果
 
         Args:
-            sql (str): SQL 语句
+            sql: SQL 语句
             n (int, optional): 最大取得结果数，默认为 999999
 
         Returns:
@@ -116,7 +115,7 @@ class AsyncEngine:
         """
 
         result = await self.execute(sql)
-        columns = result.keys()
+        columns = list(result.keys())
         length = len(columns)
         for _ in range(n):
             if one := result.fetchone():
@@ -129,8 +128,8 @@ class AsyncORM(AsyncEngine):
     def __init__(self, conn):
         super().__init__(conn)
         self.session = AsyncSession(bind=self.engine)
-        self.Base = declarative_base(self.engine)
-        self.async_session = sessionmaker(
+        self.Base = declarative_base()
+        self.async_session = async_sessionmaker(
             self.engine, expire_on_commit=False, class_=AsyncSession
         )
 
@@ -197,7 +196,7 @@ class AsyncORM(AsyncEngine):
         如不存在的数据果插入或忽略。
 
         Args:
-            table (str): 表名。
+            table: 表名。
             condition (Iterable): 条件。
             dt (dict): 数据。
 
@@ -213,7 +212,7 @@ class AsyncORM(AsyncEngine):
         删除数据。
 
         Args:
-            table (str): 表名。
+            table: 表名。
             condition (list): 条件。
 
         Returns:
