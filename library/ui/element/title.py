@@ -39,7 +39,7 @@ class Title(Element):
         return {
             Style(
                 {
-                    "color-text": f"color: {schema.TEXT.rgb(dark)}",
+                    "color-colored-text": f"color: {schema.COLORED_TEXT.rgb(dark)}",
                     "color-description": f"color: {schema.DESCRIPTION.rgb(dark)}",
                 }
             )
@@ -59,7 +59,7 @@ class Title(Element):
             Blank(self.blank_height).to_e(),
             builder.DIV(
                 *wrap_text(self.title),
-                CLASS("color-text"),
+                CLASS("color-colored-text"),
                 style=f"font-size: {self.title_size}px; word-wrap: break-word",
             ),
             self._description(),

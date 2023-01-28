@@ -150,7 +150,7 @@ async def manager_account_launch(event: AccountLaunch):
     Distribution.distribute(),
     Permission.require(UserPerm.BOT_OWNER, cancel_propagation=True),
 )
-@priority(0)
+@priority(1)
 async def manager_register_repository(app: Ariadne, event: MessageEvent):
     try:
         assert not lock.locked(), "未能取得管理器锁，请检查是否正在其他操作"
@@ -175,7 +175,7 @@ async def manager_register_repository(app: Ariadne, event: MessageEvent):
     Distribution.distribute(),
     Permission.require(UserPerm.BOT_OWNER, cancel_propagation=True),
 )
-@priority(0)
+@priority(1)
 async def manager_update(app: Ariadne, event: MessageEvent):
     try:
         assert not lock.locked(), "未能取得管理器锁，请检查是否正在其他操作"
@@ -199,7 +199,7 @@ async def manager_update(app: Ariadne, event: MessageEvent):
     Distribution.distribute(),
     Permission.require(UserPerm.BOT_OWNER, cancel_propagation=True),
 )
-@priority(0)
+@priority(1)
 async def manager_upgrade(app: Ariadne, event: MessageEvent, yes: ArgResult):
     yes: bool = yes.result
     if not (updates := check_update()):
@@ -258,7 +258,7 @@ async def manager_upgrade(app: Ariadne, event: MessageEvent, yes: ArgResult):
     Distribution.distribute(),
     Permission.require(UserPerm.BOT_OWNER, cancel_propagation=True),
 )
-@priority(0)
+@priority(1)
 async def manager_install(
     app: Ariadne, event: MessageEvent, yes: ArgResult, content: RegexResult
 ):
@@ -286,7 +286,7 @@ async def manager_install(
     Distribution.distribute(),
     Permission.require(UserPerm.BOT_OWNER, cancel_propagation=True),
 )
-@priority(0)
+@priority(1)
 async def manager_unload(app: Ariadne, event: MessageEvent, content: RegexResult):
     content: str = content.result.display
     try:
@@ -319,7 +319,7 @@ async def auto_update():
     Distribution.distribute(),
     Permission.require(UserPerm.ADMINISTRATOR, cancel_propagation=True),
 )
-@priority(0)
+@priority(1)
 async def manager_get_config(
     app: Ariadne, event: MessageEvent, group: ArgResult, content: RegexResult
 ):
@@ -342,7 +342,7 @@ async def manager_get_config(
     Distribution.distribute(),
     Permission.require(UserPerm.ADMINISTRATOR, cancel_propagation=True),
 )
-@priority(0)
+@priority(1)
 async def manager_set_config(
     app: Ariadne,
     event: MessageEvent,
@@ -372,7 +372,7 @@ async def manager_set_config(
     Distribution.distribute(),
     Permission.require(UserPerm.ADMINISTRATOR, cancel_propagation=True),
 )
-@priority(0)
+@priority(1)
 async def manager_list_config(app: Ariadne, event: MessageEvent):
     result = mgr_list_module_configs()
     await send_message(event, MessageChain(result), app.account)
@@ -388,7 +388,7 @@ async def manager_list_config(app: Ariadne, event: MessageEvent):
     )
 )
 @decorate(Distribution.distribute())
-@priority(1)
+@priority(2)
 async def manager_fuzzy_fallback(
     app: Ariadne, event: MessageEvent, content: RegexResult
 ):
@@ -403,7 +403,7 @@ async def manager_fuzzy_fallback(
 @listen(GroupMessage, FriendMessage)
 @dispatch(Twilight(PrefixMatch(), FullMatch("manager")))
 @decorate(Distribution.distribute())
-@priority(1)
+@priority(2)
 async def manager_greetings(app: Ariadne, event: MessageEvent):
     text = "欢迎使用 Eric Manager，您可以使用以下指令进行管理："
     for subcommand, description in SUBCOMMANDS.items():

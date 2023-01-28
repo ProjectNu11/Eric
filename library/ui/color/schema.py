@@ -11,6 +11,10 @@ class ColorSingle(BaseModel):
     def has_alpha(self) -> bool:
         return len(self.color) == 4
 
+    @property
+    def alpha(self):
+        return self.color[3] if self.has_alpha else 1.0
+
     def hex(self) -> str:
         if self.has_alpha:
             return (
@@ -21,7 +25,7 @@ class ColorSingle(BaseModel):
     def rgb(self) -> str:
         return f"{'rgba' if self.has_alpha else 'rgb'}{self.color}"
 
-    def add_alpha(self, alpha: float) -> Self:
+    def with_alpha(self, alpha: float) -> Self:
         return ColorSingle(color=self.color[:3] + (alpha,))
 
     def remove_alpha(self) -> Self:
@@ -44,7 +48,7 @@ class ColorPair(BaseModel):
     def get(self, dark: bool, alpha: float = 1.0) -> ColorSingle:
         assert 0.0 <= alpha <= 1.0, "Invalid value for alpha"
         color = self.dark if dark else self.light
-        return color if float == 1.0 else color.add_alpha(alpha)
+        return color if float == 1.0 else color.with_alpha(alpha)
 
     def hex(self, dark: bool, alpha: float = 1.0) -> str:
         return self.get(dark, alpha).hex()
@@ -67,6 +71,14 @@ class ColorSchema(BaseModel):
         alias="text",
     )
     """ 文本颜色 """
+
+    COLORED_TEXT: ColorPair = Field(
+        default=ColorPair(
+            light=(ColorSingle(color=(37, 37, 37))),
+            dark=(ColorSingle(color=(250, 250, 250))),
+        ),
+        alias="colored_text",
+    )
 
     DESCRIPTION: ColorPair = Field(
         default=ColorPair(

@@ -44,7 +44,9 @@ class Banner(Element):
         return Icon.from_file(icon) if isinstance(icon, Path) else Icon(svg=icon)
 
     def style(self, schema: ColorSchema, dark: bool) -> set[Style[str, str]]:
-        return {Style({"color-text": f"color: {schema.TEXT.rgb(dark)}"})}
+        return {
+            Style({"color-colored-text": f"color: {schema.COLORED_TEXT.rgb(dark)}"})
+        }
 
     def to_e(self, *_args, schema: ColorSchema, dark: bool, **_kwargs):
         return builder.DIV(
