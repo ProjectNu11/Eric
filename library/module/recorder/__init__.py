@@ -1,3 +1,4 @@
+from creart import it
 from graia.ariadne import Ariadne
 from graia.ariadne.event.message import (
     ActiveFriendMessage,
@@ -12,11 +13,16 @@ from graia.ariadne.event.message import (
 )
 from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.message.element import MultimediaElement
+from graia.saya import Channel
 from graiax.shortcut import listen, priority
 from loguru import logger
 
 from library.module.recorder.table import MessageRecord
+from library.util.locksmith import LockSmith
 from library.util.orm import orm
+
+channel = Channel.current()
+smith = it(LockSmith)
 
 
 def _remove_binary(chain: MessageChain) -> MessageChain:
@@ -38,21 +44,22 @@ async def active_msg_recorder(app: Ariadne, event: ActiveMessage | SyncMessage):
         target = -event.subject.id
         target_name = "私聊"
     try:
-        await orm.insert_or_ignore(
-            MessageRecord,
-            [
-                MessageRecord.msg_id == event.source.id,
-                MessageRecord.target == target,
-            ],
-            time=event.source.time,
-            msg_id=event.source.id,
-            target=target,
-            target_name=target_name,
-            sender=app.account,
-            sender_name=str(app.account),
-            content=message_chain.display,
-            message_chain=message_chain.json(ensure_ascii=False),
-        )
+        async with (await smith.get(channel.module)):
+            await orm.insert_or_ignore(
+                MessageRecord,
+                [
+                    MessageRecord.msg_id == event.source.id,
+                    MessageRecord.target == target,
+                ],
+                time=event.source.time,
+                msg_id=event.source.id,
+                target=target,
+                target_name=target_name,
+                sender=app.account,
+                sender_name=str(app.account),
+                content=message_chain.display,
+                message_chain=message_chain.json(ensure_ascii=False),
+            )
     except Exception as e:
         logger.error(f"[Recorder] Failed to record message: {e}")
 
@@ -68,18 +75,22 @@ async def msg_recorder(event: MessageEvent):
         target = -event.sender.id
         target_name = "私聊"
     try:
-        await orm.insert_or_ignore(
-            MessageRecord,
-            [MessageRecord.msg_id == event.source.id, MessageRecord.target == target],
-            time=event.source.time,
-            msg_id=event.source.id,
-            target=target,
-            target_name=target_name,
-            sender=event.sender.id,
-            sender_name=getattr(event.sender, "name", "")
-            or getattr(event.sender, "nickname", "未知"),
-            content=message_chain.display,
-            message_chain=message_chain.json(ensure_ascii=False),
-        )
+        async with (await smith.get(channel.module)):
+            await orm.insert_or_ignore(
+                MessageRecord,
+                [
+                    MessageRecord.msg_id == event.source.id,
+                    MessageRecord.target == target,
+                ],
+                time=event.source.time,
+                msg_id=event.source.id,
+                target=target,
+                target_name=target_name,
+                sender=event.sender.id,
+                sender_name=getattr(event.sender, "name", "")
+                or getattr(event.sender, "nickname", "未知"),
+                content=message_chain.display,
+                message_chain=message_chain.json(ensure_ascii=False),
+            )
     except Exception as e:
         logger.error(f"[Recorder] Failed to record message: {e}")
