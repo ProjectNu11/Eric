@@ -11,7 +11,7 @@
         "utility:实用工具"
     ],
     "advanced": {
-        "enable_by_default": false,
+        "enable_by_default": true,
         "allow_disable": true,
         "allow_unload": true,
         "hidden": false

@@ -50,6 +50,7 @@ class _ColorMagicOpacity(Enum):
     BACK: float = 0.1
     FORE: float = 0.05
     HINT: float = 0.5
+    COMMON: float = 0.8
     HYPERLINK: float = 1.0
     SWITCH: float = 1.0
 
@@ -221,9 +222,9 @@ class ColorPalette:
 
     @classmethod
     def _generate_colored_text_color_pair(cls, front: ColorSingle) -> ColorPair:
-        base_light = _ColorMagicBase.BACK_DARK.value
+        base_light = _ColorMagicBase.FORE_DARK.value
         base_dark = _ColorMagicBase.BACK_LIGHT.value
-        front = front.with_alpha(_ColorMagicOpacity.HINT.value)
+        front = front.with_alpha(_ColorMagicOpacity.COMMON.value)
         return ColorPair(
             light=cls.mix_color(base_light, front),
             dark=cls.mix_color(base_dark, front),
