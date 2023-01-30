@@ -12,7 +12,7 @@ from graia.ariadne.event.message import (
     SyncMessage,
 )
 from graia.ariadne.message.chain import MessageChain
-from graia.ariadne.message.element import MultimediaElement
+from graia.ariadne.message.element import Forward, MultimediaElement
 from graia.saya import Channel
 from graiax.shortcut import listen, priority
 from loguru import logger
@@ -25,11 +25,19 @@ channel = Channel.current()
 smith = it(LockSmith)
 
 
-def _remove_binary(chain: MessageChain) -> MessageChain:
-    chain = chain.copy()
+def _remove_binary_fwd(fwd: Forward):
+    for node in fwd.node_list:
+        _remove_binary(node.message_chain, copy=False)
+
+
+def _remove_binary(chain: MessageChain, copy: bool = True) -> MessageChain:
+    if copy:
+        chain = chain.copy()
     for element in chain.content:
         if isinstance(element, MultimediaElement):
             element.base64 = None
+        elif isinstance(element, Forward):
+            _remove_binary_fwd(element)
     return chain
 
 
