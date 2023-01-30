@@ -86,6 +86,8 @@ class Page(Element):
             self._cached_schema = it(Color).current()
         elif self._schema == "auto":
             self._cached_schema = self._auto_schema()
+        else:
+            self._cached_schema = self._schema
         return self._cached_schema
 
     @schema.setter
