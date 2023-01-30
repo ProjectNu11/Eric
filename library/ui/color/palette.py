@@ -197,7 +197,7 @@ class ColorPalette:
         front = front.with_alpha(_ColorMagicOpacity.BACK.value)
         return ColorPair(
             light=cls.mix_color(base_light, front),
-            dark=base_dark,
+            dark=ColorSingle(color=base_dark),
         )
 
     @classmethod

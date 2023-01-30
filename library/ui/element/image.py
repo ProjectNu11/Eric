@@ -1,15 +1,19 @@
-from base64 import b64encode
+from base64 import b64decode, b64encode
 from io import BytesIO
 from pathlib import Path
 
+from creart import it
+from kayaku import create
 from lxml import etree
 from lxml.html import builder
 from lxml.html.builder import CLASS
 from PIL import Image
 from typing_extensions import Self
 
+from library.model.config import EricConfig
 from library.ui.color import ColorSchema
 from library.ui.element.base import Element, Style
+from library.util.session_container import SessionContainer
 
 
 class ImageBox(Element):
@@ -72,6 +76,27 @@ class ImageBox(Element):
     @classmethod
     def from_url(cls, url: str) -> Self:
         return cls(url=url)
+
+    def to_bytes(self) -> bytes:
+        if self.img:
+            return self.img
+        elif self.base64:
+            return b64decode(self.base64)
+        raise ValueError(f"Cannot extract bytes from {self}")
+
+    async def fetch(self, suppress: bool = True):
+        if self.img or self.base64:
+            return
+        if not self.url:
+            if suppress:
+                return
+            raise ValueError(f"Cannot fetch image from {self}")
+        session = await it(SessionContainer).get(self.__class__.__qualname__)
+        config: EricConfig = create(EricConfig)
+        async with session.get(self.url, proxy=config.proxy) as resp:
+            if not suppress:
+                resp.raise_for_status()
+            self.img = await resp.read()
 
     def _to_e_bytes(self):
         data = self.base64 or b64encode(self.img).decode("utf-8")
