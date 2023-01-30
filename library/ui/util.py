@@ -4,8 +4,6 @@ from typing import TypeVar
 from lxml.builder import E
 from lxml.etree import _Element  # noqa
 
-# type(E.DIV()) == lxml.etree._Element
-
 HYPERLINK_PATTERN = re.compile(r"https?://\S+")
 _T = TypeVar("_T")
 
@@ -42,20 +40,17 @@ def _replace_with_hyperlink(text: str, link: str) -> list[str | _Element]:
 
 
 def _add_hyperlink(text: list[_T]) -> list[_T | _Element]:
-    # wrapped = []
-    # for part in text:
-    #     if not isinstance(part, str):
-    #         wrapped.append(part)
-    #         continue
-    #     if not (urls := HYPERLINK_PATTERN.findall(part)):
-    #         wrapped.append(part)
-    #         continue
-    #     parts = []
-    #     for url in urls:
-    #         parts.extend(_replace_with_hyperlink(part, url))
-    #     wrapped.extend(parts)
-    # return wrapped
-
-    # Temporarily commented out the above code
-    # TODO Re-implement hyperlink functionality
-    return text
+    wrapped = []
+    for part in text:
+        if not isinstance(part, str):
+            wrapped.append(part)
+            continue
+        if not (urls := HYPERLINK_PATTERN.findall(part)):
+            wrapped.append(part)
+            continue
+        urls = [E.a(link, href=link) for link in urls]
+        parts = re.split(HYPERLINK_PATTERN, part)
+        for _part, url in zip(parts, urls):
+            wrapped.extend((_part, url))
+        wrapped.append(parts[-1])
+    return wrapped

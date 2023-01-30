@@ -138,7 +138,7 @@ class Page(Element):
             + " body {font-family: 'homo'}"
             # Apply color to a
             + f" a {{ color: {self.schema.HYPERLINK.rgb(dark)}; "
-            "text-decoration: none }"
+            "text-decoration: underline }"
         )
 
     def head(self, schema: ColorSchema, dark: bool):
