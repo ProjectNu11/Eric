@@ -54,6 +54,10 @@ class Page(Element):
             f"_Page:{':' .join(str(hash(element)) for element in self.elements)}"
         )
 
+    def set_schema(self, schema: ColorSchema | None = None) -> Self:
+        self.schema = schema or it(Color).current()
+        return self
+
     def add(self, *elements: Element | list[Element] | tuple[Element]) -> Self:
         for element in elements:
             self.elements.append(element)
