@@ -32,13 +32,6 @@ def _newline_to_br(text: list[_T]) -> list[_T | _Element]:
     return wrapped
 
 
-def _replace_with_hyperlink(text: str, link: str) -> list[str | _Element]:
-    wrapped = []
-    for piece in text.split(link):
-        wrapped.extend((piece, E.a(link, href=link)))
-    return wrapped[:-1]
-
-
 def _add_hyperlink(text: list[_T]) -> list[_T | _Element]:
     wrapped = []
     for part in text:
