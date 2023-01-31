@@ -76,7 +76,14 @@ class Page(Element):
                 continue
             else:
                 break
-        return ColorPalette.generate_schema(image) if image else it(Color).current()
+        try:
+            return ColorPalette.generate_schema(image) if image else it(Color).current()
+        except ValueError:
+            logger.warning(
+                f"[{self.title}] Failed to generate color schema, "
+                f"fallback to current"
+            )
+            return it(Color).current()
 
     @property
     def schema(self):

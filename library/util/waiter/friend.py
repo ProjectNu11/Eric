@@ -43,7 +43,7 @@ class FriendMessageWaiter(Waiter.create([FriendMessage])):
 
 
 class FriendImageWaiter(Waiter.create([FriendMessage])):
-    def __init__(self, friend: Friend | int, force: bool = False):
+    def __init__(self, friend: Friend | int, *, force: bool = False):
         self.friend_id = int(friend)
         self.force = force
 

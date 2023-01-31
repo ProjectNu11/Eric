@@ -72,7 +72,9 @@ class GroupMessageWaiter(Waiter.create([GroupMessage])):
 
 
 class GroupImageWaiter(Waiter.create([GroupMessage])):
-    def __init__(self, group: Group | int, member: Member | int, force: bool = False):
+    def __init__(
+        self, group: Group | int, member: Member | int, *, force: bool = False
+    ):
         self.group_id = int(group)
         self.member_id = int(member)
         self.force = force
