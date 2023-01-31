@@ -1,17 +1,37 @@
 from abc import ABC
 from datetime import datetime
+from json import JSONDecodeError
+from pathlib import Path
 
 from creart import AbstractCreator, CreateTargetInfo, exists_module
-from pydantic import BaseModel
+from kayaku import create
+from loguru import logger
+from pydantic import BaseModel, ValidationError
 from typing_extensions import Self
 
+from library.model.config import DataPathConfig
 from library.ui.color.schema import ColorSchema, ColorSingle
+
+config: DataPathConfig = create(DataPathConfig)
 
 
 class Color(BaseModel):
     schemas: dict[str, ColorSchema] = {"default": ColorSchema()}
     colors: dict[str, ColorSingle] = {}
     current_using: str = "default"
+
+    @classmethod
+    def load(cls) -> Self:
+        path = Path(config.library) / "color.json"
+        try:
+            return cls.parse_file(path)
+        except (FileNotFoundError, ValidationError, JSONDecodeError):
+            logger.error("[Color] Failed to load color config, using default config.")
+            return cls()
+
+    def save(self):
+        path = Path(config.library) / "color.json"
+        path.write_text(self.json(ensure_ascii=False))
 
     def initialize(self) -> Self:
         self.colors |= {
@@ -48,22 +68,29 @@ class Color(BaseModel):
     def get_color(self, name: str) -> ColorSingle:
         return self.colors[name]
 
-    def mix_color(
-        self, *colors: ColorSingle | str | tuple[int, int, int]
-    ) -> ColorSingle:
-        colors = [
-            self.get_color(color)
-            if isinstance(color, str)
-            else ColorSingle(color=color)
-            if isinstance(color, tuple)
-            else color
-            for color in colors
-        ]
-        return ColorSingle(
-            color=tuple(
-                map(lambda x: sum(x) // len(x), zip(*[color.color for color in colors]))
-            )
-        )
+    def register_schema(
+        self, name: str, color_schema: ColorSchema, *, update: bool = True
+    ):
+        if name in self.schemas:
+            if not update:
+                raise ValueError(f"[Color] Schema {name} already exists")
+            logger.warning(f"[Color] Schema {name} already exists, updating")
+        self.schemas[name] = color_schema
+        self.save()
+
+    def register_color(self, name: str, color: ColorSingle, *, update: bool = True):
+        if name in self.colors:
+            if not update:
+                raise ValueError(f"[Color] Color {name} already exists")
+            logger.warning(f"[Color] Color {name} already exists, updating")
+        self.colors[name] = color
+        self.save()
+
+    def set_current(self, name: str):
+        if name not in self.schemas:
+            raise ValueError(f"[Color] Schema {name} not exists")
+        self.current_using = name
+        self.save()
 
 
 class ColorCreator(AbstractCreator, ABC):
@@ -75,7 +102,7 @@ class ColorCreator(AbstractCreator, ABC):
 
     @staticmethod
     def create(_create_type: type[Color]) -> Color:
-        return Color().initialize()
+        return Color.load().initialize()
 
 
 def is_dark() -> bool:

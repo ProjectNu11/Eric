@@ -68,7 +68,6 @@ class ColorSchema(BaseModel):
             light=(ColorSingle(color=(37, 37, 37))),
             dark=(ColorSingle(color=(250, 250, 250))),
         ),
-        alias="text",
     )
     """ 文本颜色 """
 
@@ -77,7 +76,6 @@ class ColorSchema(BaseModel):
             light=(ColorSingle(color=(37, 37, 37))),
             dark=(ColorSingle(color=(250, 250, 250))),
         ),
-        alias="colored_text",
     )
 
     DESCRIPTION: ColorPair = Field(
@@ -85,7 +83,6 @@ class ColorSchema(BaseModel):
             light=(ColorSingle(color=(140, 140, 140))),
             dark=(ColorSingle(color=(204, 204, 204))),
         ),
-        alias="description",
     )
     """ 描述颜色 """
 
@@ -94,7 +91,6 @@ class ColorSchema(BaseModel):
             light=(ColorSingle(color=(156, 156, 156))),
             dark=(ColorSingle(color=(99, 99, 99))),
         ),
-        alias="secondary_description",
     )
     """ 次要描述颜色 """
 
@@ -103,7 +99,6 @@ class ColorSchema(BaseModel):
             light=(ColorSingle(color=(252, 252, 252))),
             dark=(ColorSingle(color=(23, 23, 23))),
         ),
-        alias="foreground",
     )
     """ 前景色 """
 
@@ -112,7 +107,6 @@ class ColorSchema(BaseModel):
             light=(ColorSingle(color=(246, 246, 246))),
             dark=(ColorSingle(color=(1, 1, 1))),
         ),
-        alias="background",
     )
     """ 背景色 """
 
@@ -121,7 +115,6 @@ class ColorSchema(BaseModel):
             light=(ColorSingle(color=(232, 232, 232))),
             dark=(ColorSingle(color=(58, 58, 58))),
         ),
-        alias="line",
     )
     """ 分割线颜色 """
 
@@ -130,7 +123,6 @@ class ColorSchema(BaseModel):
             light=(ColorSingle(color=(231, 238, 244))),
             dark=(ColorSingle(color=(0, 43, 78))),
         ),
-        alias="hint",
     )
     """ 提示颜色 """
 
@@ -139,7 +131,6 @@ class ColorSchema(BaseModel):
             light=(ColorSingle(color=(0, 114, 221))),
             dark=(ColorSingle(color=(67, 144, 245))),
         ),
-        alias="highlight",
     )
     """ 高亮颜色 """
 
@@ -148,7 +139,6 @@ class ColorSchema(BaseModel):
             light=(ColorSingle(color=(235, 235, 235))),
             dark=(ColorSingle(color=(59, 59, 59))),
         ),
-        alias="secondary_highlight",
     )
     """ 次要高亮颜色 """
 
@@ -157,7 +147,6 @@ class ColorSchema(BaseModel):
             light=(ColorSingle(color=(4, 129, 255))),
             dark=(ColorSingle(color=(4, 129, 255))),
         ),
-        alias="switch_enable",
     )
     """ 开关开启颜色 """
 
@@ -166,7 +155,6 @@ class ColorSchema(BaseModel):
             light=(ColorSingle(color=(153, 153, 153))),
             dark=(ColorSingle(color=(101, 102, 96))),
         ),
-        alias="switch_disable",
     )
     """ 开关关闭颜色 """
 
@@ -175,6 +163,5 @@ class ColorSchema(BaseModel):
             light=(ColorSingle(color=(0, 114, 221))),
             dark=(ColorSingle(color=(67, 144, 245))),
         ),
-        alias="hyperlink",
     )
     """ 超链接颜色 """

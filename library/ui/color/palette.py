@@ -264,14 +264,14 @@ class ColorPalette:
     def generate_schema(cls, img: bytes, sample_size: int = 10) -> ColorSchema:
         dominant, sub_dom = cls._parse_dominant(img, sample_size)
         return ColorSchema(
-            foreground=cls._generate_fg_color_pair(dominant.copy()),
-            background=cls._generate_bg_color_pair(dominant.copy()),
-            hint=cls._generate_hint_color_pair(dominant.copy()),
-            colored_text=cls._generate_colored_text_color_pair(dominant.copy()),
-            highlight=cls._generate_hyperlink_color_pair(sub_dom.copy()),
-            hyperlink=cls._generate_hyperlink_color_pair(sub_dom.copy()),
-            switch_enable=cls._generate_switch_color_pair(sub_dom.copy()),
-            secondary_highlight=cls._generate_secondary_highlight_color_pair(
+            FOREGROUND=cls._generate_fg_color_pair(dominant.copy()),
+            BACKGROUND=cls._generate_bg_color_pair(dominant.copy()),
+            HINT=cls._generate_hint_color_pair(dominant.copy()),
+            COLORED_TEXT=cls._generate_colored_text_color_pair(dominant.copy()),
+            HIGHLIGHT=cls._generate_hyperlink_color_pair(sub_dom.copy()),
+            HYPERLINK=cls._generate_hyperlink_color_pair(sub_dom.copy()),
+            SWITCH_ENABLE=cls._generate_switch_color_pair(sub_dom.copy()),
+            SECONDARY_HIGHLIGHT=cls._generate_secondary_highlight_color_pair(
                 sub_dom.copy()
             ),
         )
