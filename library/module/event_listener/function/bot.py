@@ -60,6 +60,7 @@ async def bot_join_group_event(app: Ariadne, event: BotJoinGroupEvent):
     msg, owner_msg = _get_cfg(int(group), event, app=app, group=group)
     await _send_message(group, msg, app.account, event)
     await broadcast_to_owners(owner_msg, app.account)
+    it(PublicGroup).add_group(group, app.account)
 
 
 # bot_leave_event_active
