@@ -7,11 +7,11 @@ from graia.ariadne.model import Group
 
 
 class _EventListenerContainer:
-    container: dict[int, dict[ActiveMessage, tuple[datetime, MiraiEvent]]] = {}
+    container: dict[int, dict[int, tuple[datetime, MiraiEvent]]] = {}
 
     @classmethod
     def add(cls, field: int | Group, message: ActiveMessage, event: MiraiEvent):
-        cls.container.setdefault(field, {})[message] = (datetime.now(), event)
+        cls.container.setdefault(field, {})[message.id] = (datetime.now(), event)
         cls.cleanup()
 
     @classmethod
@@ -29,7 +29,7 @@ class _EventListenerContainer:
             return False
         return bool(
             next(
-                (msg for msg in cls.container[group_id] if msg.id == quote.id),
+                (msg for msg in cls.container[group_id] if msg == quote.id),
                 None,
             )
         )
