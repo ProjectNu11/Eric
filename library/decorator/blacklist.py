@@ -66,17 +66,17 @@ class Blacklist(EricDecorator):
     async def target(self, interface: DecoratorInterface):
         try:
             sender: Sender = await interface.dispatcher_interface.lookup_param(
-                "sender", Member | Friend | Stranger, None
+                "sender", Member | Friend | Stranger | None, None
             )
             field: FieldWide = await interface.dispatcher_interface.lookup_param(
-                "group", Group | int, None
+                "group", Group | int | None, None
             )
             event: MiraiEvent = await interface.dispatcher_interface.lookup_param(
-                "event", MiraiEvent, None
+                "event", MiraiEvent | None, None
             )
-            if sender is None and field is None:
+            if sender is None:
                 if self._show_log:
-                    logger.debug(f"[{self.__class__.__name__}] 无法获取发信人和聊天区域，跳过黑名单检查")
+                    logger.debug(f"[{self.__class__.__name__}] 无法获取发信人，跳过黑名单检查")
                 raise RequirementCrashed
         except RequirementCrashed as e:
             logger.warning(f"[{self.__class__.__name__}] RequirementCrashed")

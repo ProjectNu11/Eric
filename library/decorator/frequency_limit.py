@@ -48,10 +48,10 @@ class Frequency(EricDecorator):
     async def target(self, interface: DecoratorInterface):
         try:
             sender: Sender = await interface.dispatcher_interface.lookup_param(
-                "sender", Member | Friend | Stranger, None
+                "sender", Member | Friend | Stranger | None, None
             )
             field: FieldWide = await interface.dispatcher_interface.lookup_param(
-                "group", Group | int, None
+                "group", Group | int | None, None
             )
             field = field or 0
             if sender is None or field is None:
