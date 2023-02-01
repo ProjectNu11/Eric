@@ -4,6 +4,7 @@ from creart import it
 from graia.amnesia.builtins.memcache import Memcache
 from graia.ariadne import Ariadne
 from graia.ariadne.event import MiraiEvent
+from graia.ariadne.model import Friend, Group, Member, Stranger
 from graia.broadcast import DecoratorInterface, ExecutionStop, RequirementCrashed
 from loguru import logger
 from sqlalchemy import select
@@ -65,13 +66,13 @@ class Blacklist(EricDecorator):
     async def target(self, interface: DecoratorInterface):
         try:
             sender: Sender = await interface.dispatcher_interface.lookup_param(
-                "__decorator_parameter__", Sender, None
+                "sender", Member | Friend | Stranger, None
             )
             field: FieldWide = await interface.dispatcher_interface.lookup_param(
-                "__decorator_parameter_group__", FieldWide, None
+                "group", Group | int, None
             )
             event: MiraiEvent = await interface.dispatcher_interface.lookup_param(
-                "__decorator_parameter_event__", MiraiEvent, None
+                "event", MiraiEvent, None
             )
             if sender is None and field is None:
                 if self._show_log:

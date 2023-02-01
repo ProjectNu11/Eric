@@ -1,5 +1,6 @@
 from graia.ariadne import Ariadne
 from graia.ariadne.event import MiraiEvent
+from graia.ariadne.model import Friend, Group, Member, Stranger
 from graia.broadcast import DecoratorInterface, ExecutionStop, RequirementCrashed
 from loguru import logger
 from typing_extensions import Self
@@ -47,10 +48,10 @@ class Frequency(EricDecorator):
     async def target(self, interface: DecoratorInterface):
         try:
             sender: Sender = await interface.dispatcher_interface.lookup_param(
-                "__decorator_parameter__", Sender, None
+                "sender", Member | Friend | Stranger, None
             )
             field: FieldWide = await interface.dispatcher_interface.lookup_param(
-                "__decorator_parameter_group__", FieldWide, None
+                "group", Group | int, None
             )
             field = field or 0
             if sender is None or field is None:
