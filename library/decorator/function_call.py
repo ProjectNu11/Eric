@@ -2,7 +2,6 @@ from datetime import datetime
 from typing import NoReturn
 
 from graia.ariadne.event import MiraiEvent
-from graia.ariadne.model import Friend, Group, Member, Stranger
 from graia.broadcast import DecoratorInterface, ExecutionStop, RequirementCrashed
 from loguru import logger
 from typing_extensions import Self
@@ -32,16 +31,12 @@ class FunctionCall(EricDecorator):
 
     async def target(self, interface: DecoratorInterface):
         try:
-            sender: Sender = await interface.dispatcher_interface.lookup_param(
-                "sender", Member | Friend | Stranger | None, None
-            )
-            field: FieldWide = await interface.dispatcher_interface.lookup_param(
-                "group", Group | int | None, None
-            )
+            sender: Sender = await self.lookup_param(interface, "sender", Sender, None)
+            field: FieldWide = await self.lookup_param(interface, "field", FieldWide, 0)
             if sender is None:
                 raise RequirementCrashed
         except RequirementCrashed as e:
-            logger.warning(f"[{self.__class__.__name__}] RequirementCrashed")
+            logger.warning(f"[{self.__class__.__name__}] RequirementCrashed: {e.args}")
             raise ExecutionStop from e
         field = field or 0
         await self.add_record(self._pack, int(field), int(sender))
