@@ -31,6 +31,7 @@ from graia.broadcast import run_always_await
 from graia.saya import Channel
 from graiax.shortcut import listen
 from graiax.shortcut.saya import decorate, dispatch, every
+from loguru import logger
 
 from library.decorator import Blacklist, FunctionCall
 from library.module.event_listener.util import _unpickle_request
@@ -96,9 +97,13 @@ async def request_handler(
     action: str = action.result.display
     request_id: str = request_id.result.display
     path = _data_path / str(app.account)
+    logger.info(f"[Request] Getting pickled event {request_id}")
     if not (pickle_path := path / f"{request_id}.pkl").is_file():
         return await send_message(event, MessageChain("无法找到该请求"), app.account)
     request: _Request = await _unpickle_request(app.account, request_id)
+    logger.success(
+        f"[Request] Found {request.__class__.__name__}: {request.request_id}"
+    )
     try:
         if action == "通过":
             await request.accept()
