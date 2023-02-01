@@ -74,13 +74,16 @@ class Blacklist(EricDecorator):
                 "__decorator_parameter_event__", MiraiEvent, None
             )
             if sender is None and field is None:
+                if self._show_log:
+                    logger.debug(f"[{self.__class__.__name__}] 无法获取发信人和聊天区域，跳过黑名单检查")
                 raise RequirementCrashed
         except RequirementCrashed as e:
+            logger.warning(f"[{self.__class__.__name__}] RequirementCrashed")
             raise ExecutionStop from e
         field = field or 0
         if await self._run_check(event, sender, field):
             if self._show_log:
-                logger.warning(f"[Blacklist] {field}: {sender} 在黑名单中")
+                logger.warning(f"[{self.__class__.__name__}] {field}: {sender} 在黑名单中")
             raise ExecutionStop
 
     async def _run_check(
@@ -109,6 +112,8 @@ class Blacklist(EricDecorator):
             else None,
         }
         if self._cache:
+            if self._show_log:
+                logger.debug(f"[{self.__class__.__name__}] 设置缓存: {key} = {results}")
             await Ariadne.launch_manager.get_interface(Memcache).set(
                 key, results, timedelta(seconds=15)
             )

@@ -3,6 +3,7 @@ from typing import NoReturn
 
 from graia.ariadne.event import MiraiEvent
 from graia.broadcast import DecoratorInterface, ExecutionStop, RequirementCrashed
+from loguru import logger
 from typing_extensions import Self
 
 from library.decorator.base import EricDecorator
@@ -39,6 +40,7 @@ class FunctionCall(EricDecorator):
             if sender is None or field is None:
                 raise RequirementCrashed
         except RequirementCrashed as e:
+            logger.warning(f"[{self.__class__.__name__}] RequirementCrashed")
             raise ExecutionStop from e
         field = field or 0
         await self.add_record(self._pack, int(field), int(sender))

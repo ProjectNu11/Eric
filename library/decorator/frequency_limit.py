@@ -64,12 +64,12 @@ class Frequency(EricDecorator):
                 field_weight = self._interface.field_check(int(field), suppress=True)
                 global_weight = self._interface.global_check(suppress=True)
                 logger.info(
-                    f"[Frequency] {field}: {sender} 权重: "
+                    f"[{self.__class__.__name__}] {field}: {sender} 权重: "
                     f"{user_weight} / {field_weight} / {global_weight}"
                 )
         except FrequencyLimitHit as e:
             if self._show_log:
-                logger.warning(f"[Frequency] {e}")
+                logger.warning(f"[{self.__class__.__name__}] {e}")
             raise ExecutionStop from e
 
     @classmethod
