@@ -70,6 +70,7 @@ async def bot_leave_event_active(app: Ariadne, event: BotLeaveEventActive):
     msg, owner_msg = _get_cfg(int(group), event, app=app, group=group)
     await _send_message(group, msg, app.account, event)
     await broadcast_to_owners(owner_msg, app.account)
+    it(PublicGroup).remove_group(group, app.account)
 
 
 # bot_leave_event_disband
@@ -81,6 +82,7 @@ async def bot_leave_event_disband(app: Ariadne, event: BotLeaveEventDisband):
     msg, owner_msg = _get_cfg(int(group), event, app=app, group=group)
     await _send_message(group, msg, app.account, event)
     await broadcast_to_owners(owner_msg, app.account)
+    it(PublicGroup).remove_group(group, app.account)
 
 
 # bot_leave_event_kick
@@ -90,6 +92,7 @@ async def bot_leave_event_kick(app: Ariadne, event: BotLeaveEventKick):
     msg, owner_msg = _get_cfg(int(group), event, app=app, group=group)
     await _send_message(group, msg, app.account, event)
     await broadcast_to_owners(owner_msg, app.account)
+    it(PublicGroup).remove_group(group, app.account)
 
 
 # bot_mute_event
