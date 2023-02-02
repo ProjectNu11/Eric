@@ -2,10 +2,16 @@
     "name": "广播公告",
     "version": "0.0.1",
     "pack": "library.module.broadcast",
-    "authors": ["nullqwertyuiop"],
-    "required": [],
+    "authors": [
+        "nullqwertyuiop"
+    ],
+    "required": [
+        "library.module.manager"
+    ],
     "description": "广播来自机器人维护人员的公告",
-    "category": ["basic:基础"],
+    "category": [
+        "basic:基础"
+    ],
     "advanced": {
         "enable_by_default": true,
         "allow_disable": true,

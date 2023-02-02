@@ -18,10 +18,10 @@ from graiax.shortcut import decorate, dispatch, listen
 
 from library.decorator import Blacklist, Distribution, FunctionCall, Permission, Switch
 from library.model.permission import UserPerm
+from library.module.manager.util.module.search import search_module
 from library.ui import GenericBox, GenericBoxItem, ImageBox, Page, Title
 from library.util.dispatcher import PrefixMatch
 from library.util.message import send_message
-from library.util.module import Modules
 from library.util.multi_account.public_group import PublicGroup
 from library.util.waiter import confirm_waiter, message_waiter
 
@@ -50,7 +50,7 @@ async def broadcast(
     p_group = it(PublicGroup)
     groups = set().union(*p_group.data.values())
     module: str = module.result
-    if module and not it(Modules).get(module):
+    if module and not search_module(module):
         return await send_message(event, MessageChain(f"无法找到模块 {module}"), app.account)
     await send_message(event, MessageChain("请发送公告内容"), app.account)
     try:
