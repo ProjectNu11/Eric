@@ -1,5 +1,6 @@
 import contextlib
 from base64 import b64encode
+from io import BytesIO
 from pathlib import Path
 
 import PIL
@@ -14,11 +15,16 @@ from library.ui.element.base import Element, Style
 class Icon(Element):
     svg: str | None
     img: Image.Image | None
+    data_bytes: bytes | None
 
-    def __init__(self, *, svg: str = "", img: Image.Image = None):
+    def __init__(
+        self, *, svg: str = "", img: Image.Image = None, data_bytes: bytes = None
+    ):
         assert svg or img
         self.svg = svg
         self.img = img
+        if data_bytes:
+            self.img = Image.open(BytesIO(data_bytes))
 
     def __hash__(self):
         return hash(f"_Icon:{self.svg}:{hash(self.img)}")
@@ -34,11 +40,15 @@ class Icon(Element):
 
     @classmethod
     def from_svg(cls, path: Path | str) -> Self:
-        return Icon(svg=Path(path).read_text(encoding="utf-8"))
+        return cls(svg=Path(path).read_text(encoding="utf-8"))
 
     @classmethod
     def from_image(cls, path: Path | str) -> Self:
-        return Icon(img=Image.open(path))
+        return cls(img=Image.open(path))
+
+    @classmethod
+    def from_bytes(cls, data: bytes) -> Self:
+        return cls(data_bytes=data)
 
     def _to_html_svg(self):
         return etree.XML(self.svg)
