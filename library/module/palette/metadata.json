@@ -1,6 +1,6 @@
 {
     "name": "调色盘",
-    "version": "0.1.0",
+    "version": "0.0.1",
     "pack": "library.module.palette",
     "authors": [
         "nullqwertyuiop"
