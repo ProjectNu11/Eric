@@ -52,9 +52,9 @@ async def broadcast(
     module: str = module.result
     if module and not search_module(module):
         return await send_message(event, MessageChain(f"无法找到模块 {module}"), app.account)
-    await send_message(event, MessageChain("请发送公告内容"), app.account)
+    await send_message(event, MessageChain("请在 5 分钟内发送公告内容"), app.account)
     try:
-        result: MessageEvent = await inc.wait(message_waiter(event), timeout=30)
+        result: MessageEvent = await inc.wait(message_waiter(event), timeout=300)
     except asyncio.TimeoutError:
         return await send_message(event, MessageChain("操作超时"), app.account)
     page = Page(
@@ -74,11 +74,10 @@ async def broadcast(
             page.add(ImageBox(img=await element.get_bytes()))
             continue
         page.add(GenericBox(GenericBoxItem(None, str(element))))
+    page_bytes = await page.render()
     await send_message(
         event,
-        MessageChain(
-            Image(data_bytes=(page_bytes := await page.render())), "请确认是否发送公告[y/n]"
-        ),
+        MessageChain(Image(data_bytes=page_bytes), "请确认是否发送公告[y/n]"),
         app.account,
     )
     try:
@@ -88,6 +87,7 @@ async def broadcast(
         return await send_message(event, MessageChain("操作超时"), app.account)
     failed = set()
     skipped = set()
+    msg = MessageChain(Image(data_bytes=page_bytes))
     while groups:
         with suppress(Exception):
             group = groups.pop()
@@ -100,7 +100,7 @@ async def broadcast(
             accounts = list(p_group.get_accounts(group))
             if not await send_message(
                 group,
-                MessageChain(Image(data_bytes=page_bytes)),
+                msg,
                 accounts[0],
                 is_group=True,
             ):
@@ -110,11 +110,8 @@ async def broadcast(
         event,
         MessageChain(
             f"已发送公告至 {len(p_group.data) - len(skipped) - len(failed)} 个群组"
-            + f"\n跳过 {len(skipped)} 个群组"
-            if skipped
-            else f"\n失败 {len(failed)} 个群组"
-            if failed
-            else ""
+            + (f"\n跳过 {len(skipped)} 个群组" if skipped else "")
+            + (f"\n失败 {len(failed)} 个群组" if failed else "")
         ),
         app.account,
     )
