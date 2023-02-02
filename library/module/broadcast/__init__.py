@@ -1,5 +1,5 @@
 import asyncio
-from contextlib import suppress
+import random
 
 from creart import it
 from graia.ariadne import Ariadne
@@ -15,6 +15,7 @@ from graia.ariadne.message.parser.twilight import (
 from graia.broadcast.interrupt import InterruptControl
 from graia.saya import Channel
 from graiax.shortcut import decorate, dispatch, listen
+from loguru import logger
 
 from library.decorator import Blacklist, Distribution, FunctionCall, Permission, Switch
 from library.model.permission import UserPerm
@@ -49,6 +50,7 @@ async def broadcast(
 ):
     p_group = it(PublicGroup)
     groups = set().union(*p_group.data.values())
+    g_copy = groups.copy()
     module: str = module.result
     if module and not search_module(module):
         return await send_message(event, MessageChain(f"无法找到模块 {module}"), app.account)
@@ -89,13 +91,16 @@ async def broadcast(
     skipped = set()
     msg = MessageChain(Image(data_bytes=page_bytes))
     while groups:
-        with suppress(Exception):
-            group = groups.pop()
+        group = groups.pop()
+        try:
+            await asyncio.sleep(0.5 * random.randint(1, 3))
             if not Switch.get(channel.module, group):
                 skipped.add(group)
+                logger.warning(f"[Broadcast] 跳过 {group}：未启用广播模块")
                 continue
             if module and not Switch.get(module, group):
                 skipped.add(group)
+                logger.warning(f"[Broadcast] 跳过 {group}：已被过滤器过滤 ({module})")
                 continue
             accounts = list(p_group.get_accounts(group))
             if not await send_message(
@@ -104,12 +109,17 @@ async def broadcast(
                 accounts[0],
                 is_group=True,
             ):
+                logger.warning(f"[Broadcast] 跳过 {group}：发送失败")
                 failed.add(group)
                 continue
+            logger.success(f"[Broadcast] 已发送公告至 {group}")
+        except Exception as e:
+            logger.error(f"[Broadcast] 广播至 {group} 时发生错误：{e}")
+            failed.add(group)
     await send_message(
         event,
         MessageChain(
-            f"已发送公告至 {len(p_group.data) - len(skipped) - len(failed)} 个群组"
+            f"已发送公告至 {len(g_copy) - len(skipped) - len(failed)} 个群组"
             + (f"\n跳过 {len(skipped)} 个群组" if skipped else "")
             + (f"\n失败 {len(failed)} 个群组" if failed else "")
         ),
