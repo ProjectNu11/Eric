@@ -1,3 +1,6 @@
+import base64
+
+from lxml import etree
 from lxml.html import builder
 from lxml.html.builder import CLASS
 from typing_extensions import Self
@@ -45,9 +48,11 @@ class _GenericBoxText(Element):
 class GenericBoxItem(Element):
     TEXT_SIZE: int = 35
     DESCRIPTION_SIZE: int = 25
+    IMAGE_SIZE: int = 100
 
     text: _GenericBoxText | None
     description: _GenericBoxText | None
+    image: bytes | None
 
     def __init__(
         self,
@@ -55,6 +60,7 @@ class GenericBoxItem(Element):
         description: str | None = None,
         _switch: bool | None = None,
         highlight: bool = False,
+        image: bytes | None = None,
     ):
         assert (
             text is not None or description is not None
@@ -69,6 +75,7 @@ class GenericBoxItem(Element):
             if description is not None
             else None
         )
+        self.image = image
 
     def __hash__(self):
         return hash(f"_GenericBoxItem:{hash(self.text)}:{hash(self.description)}")
@@ -105,17 +112,44 @@ class GenericBoxItem(Element):
             )
         return self
 
-    def to_e(self, *, schema: ColorSchema, dark: bool, **_kwargs) -> str:
-        parts = [
+    def _get_parts(self, *, schema: ColorSchema, dark: bool) -> list[str]:
+        return [
             self.text.to_e(schema=schema, dark=dark) if self.text else None,
             self.description.to_e(schema=schema, dark=dark)
             if self.description
             else None,
         ]
+
+    def _to_e_no_img(self, *, schema: ColorSchema, dark: bool, **_kwargs) -> str:
+        parts = self._get_parts(schema=schema, dark=dark)
         return builder.DIV(
             *[part for part in parts if part is not None],
             CLASS(" ".join({*self.style_keys(schema, dark)})),
             style="display: flex; padding: 40px 0 40px 0; flex-direction: column",
+        )
+
+    def _to_e_img(self, *, schema: ColorSchema, dark: bool, **_kwargs) -> str:
+        img_b64 = base64.b64encode(self.image).decode("utf-8")
+        parts = self._get_parts(schema=schema, dark=dark)
+        return builder.DIV(
+            builder.DIV(
+                *[part for part in parts if part is not None],
+                CLASS(" ".join({*self.style_keys(schema, dark)})),
+                style="display: flex; padding: 40px 0 40px 0; flex-direction: column",
+            ),
+            etree.XML(
+                f'<img src="data:image/png;base64,{img_b64}" '
+                f'style="width: {self.IMAGE_SIZE}px; '
+                f'height: {self.IMAGE_SIZE}px; border-radius: 50%;"/>'
+            ),
+            style="display: flex; justify-content: space-between; align-items: center",
+        )
+
+    def to_e(self, *, schema: ColorSchema, dark: bool, **_kwargs) -> str:
+        return (
+            self._to_e_img(schema=schema, dark=dark)
+            if self.image
+            else self._to_e_no_img(schema=schema, dark=dark)
         )
 
 
