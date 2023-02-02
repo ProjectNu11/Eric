@@ -51,8 +51,8 @@ async def broadcast(
     p_group = it(PublicGroup)
     groups = set().union(*p_group.data.values())
     g_copy = groups.copy()
-    module: str = module.result
-    if module and not search_module(module):
+    module = module.result
+    if module and not (module := search_module(module)):
         return await send_message(event, MessageChain(f"无法找到模块 {module}"), app.account)
     await send_message(event, MessageChain("请在 5 分钟内发送公告内容"), app.account)
     try:
