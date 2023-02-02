@@ -49,7 +49,7 @@ async def broadcast(
     app: Ariadne, event: GroupMessage | FriendMessage, module: ArgResult
 ):
     p_group = it(PublicGroup)
-    groups = set().union(*p_group.data.values())
+    groups = set(p_group.data.keys())
     g_copy = groups.copy()
     module = module.result
     if module and not (module := search_module(module)):
@@ -100,7 +100,7 @@ async def broadcast(
                 continue
             if module and not Switch.get(module, group):
                 skipped.add(group)
-                logger.warning(f"[Broadcast] 跳过 {group}：已被过滤器过滤 ({module})")
+                logger.warning(f"[Broadcast] 跳过 {group}：已被过滤器过滤 ({module.pack})")
                 continue
             accounts = list(p_group.get_accounts(group))
             if not await send_message(
