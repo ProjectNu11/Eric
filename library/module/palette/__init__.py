@@ -46,7 +46,9 @@ inc = it(InterruptControl)
     FunctionCall.record(channel.module),
     Permission.require(UserPerm.BOT_OWNER),
 )
-async def change_color_schema(app: Ariadne, event: MessageEvent, size: ArgResult):
+async def change_color_schema(
+    app: Ariadne, event: GroupMessage | FriendMessage, size: ArgResult
+):
     if not (quote := event.quote):
         return await send_message(
             event,
@@ -89,7 +91,7 @@ async def change_color_schema(app: Ariadne, event: MessageEvent, size: ArgResult
         app.account,
     )
     try:
-        if not (result := await inc.wait(confirm_waiter(event), timeout=30)):
+        if not await inc.wait(confirm_waiter(event), timeout=30):
             return await send_message(event, MessageChain("操作已取消"), app.account)
     except asyncio.TimeoutError:
         return await send_message(event, MessageChain("操作超时"), app.account)
@@ -102,3 +104,27 @@ async def change_color_schema(app: Ariadne, event: MessageEvent, size: ArgResult
     it(Color).register_schema(name, schema)
     it(Color).set_current(name)
     await send_message(event, MessageChain(f"已更换配色方案为 {name}"), app.account)
+
+
+@listen(GroupMessage, FriendMessage)
+@dispatch(Twilight(PrefixMatch(), FullMatch("恢复配色方案")))
+@decorate(
+    Switch.check(channel.module),
+    Distribution.distribute(),
+    Blacklist.check(),
+    FunctionCall.record(channel.module),
+    Permission.require(UserPerm.BOT_OWNER),
+)
+async def reset_color_schema(app: Ariadne, event: GroupMessage | FriendMessage):
+    await send_message(
+        event,
+        MessageChain("是否确认恢复配色方案？[y/n]"),
+        app.account,
+    )
+    try:
+        if not await inc.wait(confirm_waiter(event), timeout=30):
+            return await send_message(event, MessageChain("操作已取消"), app.account)
+    except asyncio.TimeoutError:
+        return await send_message(event, MessageChain("操作超时"), app.account)
+    it(Color).set_current()
+    await send_message(event, MessageChain("已恢复配色方案"), app.account)

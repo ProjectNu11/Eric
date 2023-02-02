@@ -57,6 +57,7 @@ class Color(BaseModel):
             "silver": ColorSingle(color=(192, 192, 192)),
             "violet": ColorSingle(color=(128, 0, 128)),
         }
+        self.schemas |= {"default": ColorSchema()}
         return self
 
     def current(self) -> ColorSchema:
@@ -86,7 +87,8 @@ class Color(BaseModel):
         self.colors[name] = color
         self.save()
 
-    def set_current(self, name: str):
+    def set_current(self, name: str = None):
+        name = name or "default"
         if name not in self.schemas:
             raise ValueError(f"[Color] Schema {name} not exists")
         self.current_using = name
