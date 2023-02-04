@@ -6,6 +6,7 @@ from library.ui.tui.widget.input_box import (
     MutableInputPair,
 )
 from library.ui.tui.widget.message_box import MessageBox
+from library.ui.tui.widget.misc import Body, ContainerTitle
 
 __all__ = [
     "FrozenInput",
@@ -14,4 +15,6 @@ __all__ = [
     "MutableInputField",
     "MutableInputPair",
     "MessageBox",
+    "Body",
+    "ContainerTitle",
 ]
