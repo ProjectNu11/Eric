@@ -12,7 +12,6 @@ from library.util.type import FieldWide, Sender
 
 
 class FunctionCall(EricDecorator):
-
     pre = True
 
     @property

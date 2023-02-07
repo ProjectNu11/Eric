@@ -19,7 +19,6 @@ HARMONY_FONT_URL = (
 
 
 class Page(Element):
-
     elements: list[Element]
     max_width: int
     schema: ColorSchema

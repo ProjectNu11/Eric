@@ -98,7 +98,6 @@ class ColorPalette:
     def get_dominant_colors(
         cls, image: Image.Image, size: int = 5
     ) -> list[tuple[int, int, int]]:
-
         # Snippets from SAGIRI-kawaii/SAGIRI-BOT
         result = image.convert("P", palette=Image.ADAPTIVE, colors=size)
 
