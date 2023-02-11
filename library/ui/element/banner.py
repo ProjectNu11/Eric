@@ -12,7 +12,6 @@ from library.ui.util import wrap_text
 
 
 class Banner(Element):
-
     text: str
     icon: Icon | None
     blank_height: int

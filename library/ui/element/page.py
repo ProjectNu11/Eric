@@ -21,7 +21,6 @@ HARMONY_FONT_URL = (
 
 
 class Page(Element):
-
     elements: list[Element]
     max_width: int
     _schema: ColorSchema | Literal["auto"] | None

@@ -7,7 +7,6 @@ from library.ui.util import wrap_text
 
 
 class ProgressBar(Element):
-
     percent: float
     text: str | None
     description: str | None

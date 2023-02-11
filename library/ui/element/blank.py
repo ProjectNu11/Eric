@@ -4,7 +4,6 @@ from library.ui.element.base import Element, Style
 
 
 class Blank(Element):
-
     height: int
 
     def __init__(self, height: int):
