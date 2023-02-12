@@ -1,4 +1,4 @@
-from sqlalchemy import BIGINT, Column, DateTime, Float, Integer, String
+from sqlalchemy import BIGINT, TEXT, Column, DateTime, Float, Integer, String
 
 from library.util.orm import Base
 
@@ -88,3 +88,33 @@ class ProcessTimeStat(Base):
 
     time_used = Column(Float, nullable=False)
     """ 耗时 """
+
+
+class UserProfile(Base):
+    """用户资料"""
+
+    __tablename__ = "user_profile"
+
+    id = Column(BIGINT, nullable=False, primary_key=True)
+    """ 用户ID """
+
+    fields = Column(TEXT, nullable=False)
+    """ 用户组ID列表 """
+
+    name = Column(TEXT, nullable=False)
+    """ 用户名 """
+
+    nickname = Column(TEXT, nullable=False)
+    """ 昵称 """
+
+    preferred_name = Column(TEXT, nullable=False)
+    """ 首选名 """
+
+    chat_count = Column(BIGINT, nullable=False)
+    """ 聊天次数 """
+
+    usage_count = Column(BIGINT, nullable=False)
+    """ 使用次数 """
+
+    module_preferences = Column(TEXT, nullable=False)
+    """ 模块偏好设置 """

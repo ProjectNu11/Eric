@@ -10,7 +10,7 @@ class LockSmith:
 
     _lock: dict[str, Lock] = {}
 
-    async def get(
+    def get(
         self, name: str, no_assert: bool = True, assert_msg: str = "{name} 已被锁定"
     ) -> Lock:
         """
@@ -79,7 +79,7 @@ class LockSmith:
             no_assert: 是否禁用断言
             assert_msg: 断言失败时的提示信息，可使用 `{name}` 作为锁名称的占位符
         """
-        lock = await self.get(name, no_assert, assert_msg)
+        lock = self.get(name, no_assert, assert_msg)
         await lock.acquire()
         logger.info(f"[LockSmith] 获取锁 {name}")
         try:

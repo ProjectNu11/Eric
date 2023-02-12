@@ -52,7 +52,7 @@ async def active_msg_recorder(app: Ariadne, event: ActiveMessage | SyncMessage):
         target = -event.subject.id
         target_name = "私聊"
     try:
-        async with (await smith.get(channel.module)):
+        async with smith.get(channel.module):
             await orm.insert_or_ignore(
                 MessageRecord,
                 [
@@ -83,7 +83,7 @@ async def msg_recorder(event: MessageEvent):
         target = -event.sender.id
         target_name = "私聊"
     try:
-        async with (await smith.get(channel.module)):
+        async with smith.get(channel.module):
             await orm.insert_or_ignore(
                 MessageRecord,
                 [

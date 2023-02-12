@@ -26,8 +26,9 @@ from kayaku import create
 from loguru import logger
 
 from library.decorator import Distribution, MentionMeOptional, Permission
-from library.model.config import ManagerConfig
+from library.model.config import EricConfig, ManagerConfig
 from library.model.core import EricCore
+from library.model.event.lifecycle import EricLaunched
 from library.model.permission import UserPerm
 from library.module.manager.match import (
     CHANGE_GROUP_MODULE_STATE_CH,
@@ -133,12 +134,20 @@ async def manager_change_group_module_state(
 
 
 @listen(AccountLaunch)
-async def manager_account_launch(event: AccountLaunch):
+async def manager_account_launch(app: Ariadne, event: AccountLaunch):
     await asyncio.sleep(1)
-    await it(PublicGroup).init_account(event.app.account)
+    await (pg := it(PublicGroup)).init_account(event.app.account)
+    cfg: EricConfig = create(EricConfig)
     if not (core := it(EricCore)).initialized:
         core.finish_init()
         logger.success("[EricService] Eric 核心初始化完成")
+    if not (rem := (pg.accounts - set(cfg.accounts))):
+        logger.success("[EricService] Eric 服务启动完成")
+        app.broadcast.postEvent(EricLaunched())
+    else:
+        logger.warning(
+            f"[EricService] 已启动 {len(cfg.accounts) - len(rem)} / {len(cfg.accounts)} 个账号"
+        )
 
 
 @listen(GroupMessage, FriendMessage)
