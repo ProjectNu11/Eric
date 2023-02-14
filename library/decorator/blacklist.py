@@ -13,7 +13,7 @@ from library.decorator.base import EricDecorator
 from library.model.bot_list import BotList
 from library.util.orm import orm
 from library.util.orm.table import BlacklistTable
-from library.util.type import FieldWide, Sender, SenderWide
+from library.util.typ import FieldWide, Sender, SenderWide
 
 
 class Blacklist(EricDecorator):

@@ -57,3 +57,7 @@ build-backend = "pdm.pep517.api"
 
 [tool.isort]
 profile = "black"
+
+[tool.pdm.scripts]
+start = "python main.py"
+console = "python main.py --console"

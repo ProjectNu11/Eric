@@ -9,7 +9,7 @@ from typing_extensions import Self
 from library.decorator.base import EricDecorator
 from library.util.orm import orm
 from library.util.orm.table import FunctionCallRecord
-from library.util.type import FieldWide, Sender
+from library.util.typ import FieldWide, Sender
 
 
 class FunctionCall(EricDecorator):

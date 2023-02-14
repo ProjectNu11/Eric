@@ -11,7 +11,7 @@ from library.model.exception import (
     FrequencyLimitGlobalHit,
     FrequencyLimitUserHit,
 )
-from library.util.type import FieldWide, SenderWide
+from library.util.typ import FieldWide, SenderWide
 
 
 class FrequencyLimitCache(CacheStorage[int]):

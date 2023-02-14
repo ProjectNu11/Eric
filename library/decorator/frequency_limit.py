@@ -8,7 +8,7 @@ from library.decorator.base import EricDecorator
 from library.model.exception import FrequencyLimitHit
 from library.model.permission import UserPerm
 from library.util.frequency_limit import FrequencyLimitCache
-from library.util.type import FieldWide, Sender
+from library.util.typ import FieldWide, Sender
 
 
 class Frequency(EricDecorator):

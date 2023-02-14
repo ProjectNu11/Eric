@@ -5,7 +5,7 @@ from graia.ariadne.event.message import GroupMessage, MessageEvent
 from graia.ariadne.model import MemberPerm
 
 from library.model.permission import UserPerm
-from library.util.type import FieldWide
+from library.util.typ import FieldWide
 
 _T = TypeVar("_T")
 
