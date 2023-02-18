@@ -93,7 +93,6 @@ async def broadcast(
     while groups:
         group = groups.pop()
         try:
-            await asyncio.sleep(0.5 * random.randint(1, 3))
             if not Switch.get(channel.module, group):
                 skipped.add(group)
                 logger.warning(f"[Broadcast] 跳过 {group}：未启用广播模块")
@@ -102,6 +101,7 @@ async def broadcast(
                 skipped.add(group)
                 logger.warning(f"[Broadcast] 跳过 {group}：已被过滤器过滤 ({module.pack})")
                 continue
+            await asyncio.sleep(0.5 * random.randint(1, 3))
             accounts = list(p_group.get_accounts(group))
             if not await send_message(
                 group,
