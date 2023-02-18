@@ -1,16 +1,20 @@
 import re
 from typing import Generator, Iterable, TypeVar
 
+from aiohttp import ClientResponseError
 from creart import it
 from graia.ariadne.event.message import GroupMessage, MessageEvent
 from graia.ariadne.message.element import MultimediaElement
 from graia.ariadne.model import MemberPerm
+from loguru import logger
 
 from library.model.permission import UserPerm
 from library.util.session_container import SessionContainer
 from library.util.typ import FieldWide
 
 _T = TypeVar("_T")
+
+IMAGE_URL = "https://gchat.qpic.cn/gchatpic_new/0/0-0-{id}/0"
 
 
 def seconds_to_string(
@@ -119,7 +123,23 @@ def extract_field(event: MessageEvent) -> FieldWide:
 async def get_bytes(element: MultimediaElement) -> bytes:
     assert element.url or element.base64, "url or base64 is required"
     if element.base64:
+        logger.success(f"[get_bytes] Element(id={element.id}): loaded from base64")
         return bytes.fromhex(element.base64)
     session = await it(SessionContainer).get()
-    async with session.get(element.url) as resp:
-        return await resp.read()
+    try:
+        async with session.get(element.url) as resp:
+            resp.raise_for_status()
+            logger.success(f"[get_bytes] Element(id={element.id}): loaded from url")
+            return await resp.read()
+    except ClientResponseError as e:
+        logger.warning(
+            f"[get_bytes] Element(id={element.id}): "
+            f"fallback to cache url due to {e}"
+        )
+        img_id = re.search(r"{(.+?)}", element.id)[1].replace("-", "")
+        async with session.get(IMAGE_URL.format(id=img_id)) as resp:
+            resp.raise_for_status()
+            logger.success(
+                f"[get_bytes] Element(id={element.id}): loaded from cache url"
+            )
+            return await resp.read()
