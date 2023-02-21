@@ -5,10 +5,8 @@ from aiohttp import ClientResponseError
 from creart import it
 from graia.ariadne.event.message import GroupMessage, MessageEvent
 from graia.ariadne.message.element import MultimediaElement
-from graia.ariadne.model import MemberPerm
 from loguru import logger
 
-from library.model.permission import UserPerm
 from library.util.session_container import SessionContainer
 from library.util.typ import FieldWide
 
@@ -99,21 +97,6 @@ def camel_to_snake(name: str) -> str:
         下划线命名法字符串
     """
     return "_".join(re.sub(r"([A-Z])", r"_\1", name).lower().split("_")).strip("_")
-
-
-PERMISSION_MAPPING: dict[UserPerm | MemberPerm, str] = {
-    UserPerm.BLOCKED: UserPerm.BLOCKED.value[-1],
-    UserPerm.BOT: UserPerm.BOT.value[-1],
-    UserPerm.MEMBER: UserPerm.MEMBER.value[-1],
-    UserPerm.ADMINISTRATOR: UserPerm.ADMINISTRATOR.value[-1],
-    UserPerm.OWNER: UserPerm.OWNER.value[-1],
-    UserPerm.BOT_ADMIN: UserPerm.BOT_ADMIN.value[-1],
-    UserPerm.BOT_OWNER: UserPerm.BOT_OWNER.value[-1],
-    UserPerm.INFINITE: UserPerm.INFINITE.value[-1],
-    MemberPerm.Member: "普通成员",
-    MemberPerm.Administrator: "管理员",
-    MemberPerm.Owner: "群主",
-}
 
 
 def extract_field(event: MessageEvent) -> FieldWide:

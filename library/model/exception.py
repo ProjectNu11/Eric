@@ -54,3 +54,7 @@ class FrequencyLimitGlobalHit(FrequencyLimitHit):
 
 class InvalidConfig(Exception):
     """无效配置"""
+
+
+class UserProfileNotFound(Exception):
+    """用户资料未找到"""

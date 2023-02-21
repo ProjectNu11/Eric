@@ -1,10 +1,15 @@
 from enum import Enum
 
+from creart import it
 from graia.ariadne.model import Friend, Member, MemberPerm
 from kayaku import create
+from sqlalchemy import select
 from typing_extensions import Self
 
+from library.model.bot_list import BotList
 from library.model.config import EricConfig
+from library.util.orm import orm
+from library.util.orm.table import UserProfileTable
 
 
 class UserPerm(Enum):
@@ -98,16 +103,46 @@ class UserPerm(Enum):
         return getattr(cls, name.upper(), cls.MEMBER)
 
     @classmethod
-    async def get(cls, supplicant: int | Member | Friend) -> Self:
+    async def get(
+        cls,
+        supplicant: int | Member | Friend,
+        *,
+        check_member_perm: bool = True,
+        no_query: bool = False,
+    ) -> Self:
         config: EricConfig = create(EricConfig)
         if int(supplicant) in config.owners:
             return cls.BOT_OWNER
 
-        if isinstance(supplicant, Member):
+        if isinstance(supplicant, Member) and check_member_perm:
             return cls.from_member_perm(supplicant.permission)
 
-        # TODO Implement UserPerm.BLOCKED
-        # TODO Implement UserPerm.BOT
-        # TODO Implement UserPerm.BOT_ADMIN
+        if it(BotList).check(supplicant):
+            return cls.BOT
+
+        if not no_query and (
+            data := await orm.fetchone(
+                select(UserProfileTable.permission).where(
+                    UserProfileTable.id == int(supplicant)  # type: ignore
+                )
+            )
+        ):
+            permission = data[0][0]
+            return cls.from_name(permission)
 
         return cls.MEMBER
+
+
+PERMISSION_MAPPING: dict[UserPerm | MemberPerm, str] = {
+    UserPerm.BLOCKED: UserPerm.BLOCKED.value[-1],
+    UserPerm.BOT: UserPerm.BOT.value[-1],
+    UserPerm.MEMBER: UserPerm.MEMBER.value[-1],
+    UserPerm.ADMINISTRATOR: UserPerm.ADMINISTRATOR.value[-1],
+    UserPerm.OWNER: UserPerm.OWNER.value[-1],
+    UserPerm.BOT_ADMIN: UserPerm.BOT_ADMIN.value[-1],
+    UserPerm.BOT_OWNER: UserPerm.BOT_OWNER.value[-1],
+    UserPerm.INFINITE: UserPerm.INFINITE.value[-1],
+    MemberPerm.Member: "普通成员",
+    MemberPerm.Administrator: "管理员",
+    MemberPerm.Owner: "群主",
+}

@@ -18,9 +18,10 @@ from kayaku import create
 from loguru import logger
 
 from library.model.config import EricConfig
+from library.model.permission import PERMISSION_MAPPING
 from library.module.event_listener.util import _get_cfg, _send_message
 from library.util.message import broadcast_to_owners
-from library.util.misc import PERMISSION_MAPPING, seconds_to_string
+from library.util.misc import seconds_to_string
 from library.util.multi_account.public_group import PublicGroup
 
 _eric_cfg: EricConfig = create(EricConfig)
