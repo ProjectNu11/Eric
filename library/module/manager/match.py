@@ -1,4 +1,4 @@
-from arclet.alconna import Alconna, AllParam, Arg, Args, Option, Subcommand
+from arclet.alconna import Alconna, AllParam, Arg, Args, Option, Subcommand, store_true
 from graia.ariadne.message.parser.twilight import (
     ArgumentMatch,
     FullMatch,
@@ -104,11 +104,11 @@ MANAGER_ALC = Alconna(
     Subcommand("update"),
     Subcommand(
         "upgrade",
-        Option("--yes", alias=["-y"], action=lambda x: True),
+        Option("--yes", alias=["-y"], action=store_true),
     ),
     Subcommand(
         "install",
-        Option("--yes", alias=["-y"], action=lambda x: True),
+        Option("--yes", alias=["-y"], action=store_true),
         Arg("modules", AllParam),
     ),
     Subcommand(
@@ -119,12 +119,12 @@ MANAGER_ALC = Alconna(
         "config",
         Subcommand(
             "get",
-            Option("--group", alias=["-g"], args=Args["group":int]),
+            Option("--group", alias=["-g"], args=Args["group", int]),
             Arg("content", AllParam),
         ),
         Subcommand(
             "set",
-            Option("--group", alias=["-g"], args=Args["group":int]),
+            Option("--group", alias=["-g"], args=Args["group", int]),
             Arg("content", AllParam),
         ),
         Subcommand("list"),
