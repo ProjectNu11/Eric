@@ -1,3 +1,4 @@
+from arclet.alconna import Alconna, AllParam, Arg, Args, Option, Subcommand
 from graia.ariadne.message.parser.twilight import (
     ArgumentMatch,
     FullMatch,
@@ -6,6 +7,11 @@ from graia.ariadne.message.parser.twilight import (
     UnionMatch,
     WildcardMatch,
 )
+from kayaku import create
+
+from library.model.config import FunctionConfig
+
+_FUNC_CONFIG: FunctionConfig = create(FunctionConfig)
 
 SUBCOMMANDS: dict[str, str] = {
     "enable": "打开模块",
@@ -82,3 +88,45 @@ LIST_CONFIG_EN = [
     FullMatch("config").space(SpacePolicy.FORCE),
     FullMatch("list"),
 ]
+
+MANAGER_ALC = Alconna(
+    _FUNC_CONFIG.prefix,
+    "manager",
+    Subcommand(
+        "enable",
+        Arg("modules", AllParam),
+    ),
+    Subcommand(
+        "disable",
+        Arg("modules", AllParam),
+    ),
+    Subcommand("register"),
+    Subcommand("update"),
+    Subcommand(
+        "upgrade",
+        Option("--yes", alias=["-y"], action=lambda x: True),
+    ),
+    Subcommand(
+        "install",
+        Option("--yes", alias=["-y"], action=lambda x: True),
+        Arg("modules", AllParam),
+    ),
+    Subcommand(
+        "unload",
+        Arg("modules", AllParam),
+    ),
+    Subcommand(
+        "config",
+        Subcommand(
+            "get",
+            Option("--group", alias=["-g"], args=Args["group":int]),
+            Arg("content", AllParam),
+        ),
+        Subcommand(
+            "set",
+            Option("--group", alias=["-g"], args=Args["group":int]),
+            Arg("content", AllParam),
+        ),
+        Subcommand("list"),
+    ),
+)
