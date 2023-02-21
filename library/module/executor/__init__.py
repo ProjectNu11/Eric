@@ -20,7 +20,7 @@ from graia.saya.builtins.broadcast import ListenerSchema
 from kayaku import create
 from loguru import logger
 
-from library.decorator import Blacklist, FunctionCall, Permission, timer
+from library.decorator import Blacklist, FunctionCall, Permission
 from library.model.config import EricConfig
 from library.model.permission import UserPerm
 from library.util.image import render_md
@@ -96,7 +96,6 @@ async def _execute(command: str) -> tuple[str, str]:
         return stdout.decode("gbk"), stderr.decode("gbk")
 
 
-@timer(channel.module)
 async def execute(command: str) -> tuple[str, str, float]:
     start_time = time.perf_counter()
     stdout, stderr = await _execute(command)

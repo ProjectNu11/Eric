@@ -13,7 +13,7 @@ from graiax.fastapi.saya import route
 from graiax.shortcut import decorate, dispatch, listen
 from loguru import logger
 
-from library.decorator import Distribution, Switch, timer
+from library.decorator import Distribution, Switch
 from library.model.response import GeneralResponse
 from library.util.dispatcher import PrefixMatch
 
@@ -31,7 +31,6 @@ async def ping_web():
     Twilight(ElementMatch(At, optional=True) @ "at", PrefixMatch(), FullMatch("ping"))
 )
 @decorate(Switch.check(channel.module))
-@timer(channel.module)
 async def ping_message(app: Ariadne, event: MessageEvent, at: ElementResult):
     if at.matched and at.result.target != app.account:
         return
