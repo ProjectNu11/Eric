@@ -9,9 +9,6 @@ from graia.ariadne.connection.config import (
     WebsocketClientConfig,
     config,
 )
-from graia.ariadne.console import Console
-from graia.ariadne.console.saya import ConsoleBehaviour
-from graia.broadcast import Broadcast
 from graia.saya import Saya
 from graia.saya.builtins.broadcast import BroadcastBehaviour
 from graia.scheduler import GraiaScheduler
@@ -36,7 +33,7 @@ from library.util.log import setup_logger
 from library.util.module.launch import launch_require
 
 
-def initialize(*, with_console: bool):
+def initialize():
     setup_logger()
     initialize_config()
 
@@ -93,11 +90,5 @@ def initialize(*, with_console: bool):
         it(GraiaSchedulerBehaviour),
         FastAPIBehaviour(it(FastAPI)),
     )
-    if with_console:
-        saya.install_behaviours(
-            ConsoleBehaviour(
-                Console(broadcast=it(Broadcast), prompt=f"{eric_config.name}> ")
-            )
-        )
 
     launch_require()

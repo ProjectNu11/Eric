@@ -20,13 +20,9 @@ def setup():
 if __name__ == "__main__":
     setup()
 
-    import sys
-
-    with_console = "--console" in sys.argv
-
     from graia.ariadne import Ariadne
 
     from library.service.stage import initialize
 
-    initialize(with_console=with_console)
+    initialize()
     Ariadne.launch_blocking()
