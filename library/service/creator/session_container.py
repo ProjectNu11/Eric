@@ -10,7 +10,7 @@ class SessionContainerCreator(AbstractCreator, ABC):
 
     @staticmethod
     def available() -> bool:
-        return exists_module("library.model.config.group_config")
+        return exists_module("library.util.session_container")
 
     @staticmethod
     def create(_create_type: type[SessionContainer]) -> SessionContainer:

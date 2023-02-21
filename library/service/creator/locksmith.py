@@ -10,7 +10,7 @@ class LockSmithCreator(AbstractCreator, ABC):
 
     @staticmethod
     def available() -> bool:
-        return exists_module("library.model.config.group_config")
+        return exists_module("library.util.locksmith")
 
     @staticmethod
     def create(_create_type: type[LockSmith]) -> LockSmith:
