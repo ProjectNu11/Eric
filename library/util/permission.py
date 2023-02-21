@@ -53,12 +53,13 @@ class PermissionRegistry:
         """
         self._registry.difference_update(permissions)
 
-    def get(self, _id: str) -> FineGrainedPermission:
+    def get(self, _id: str, *, suppress: bool = False) -> FineGrainedPermission:
         """
         获取权限
 
         Args:
             _id: 细粒度权限 ID
+            suppress: 是否抑制异常
 
         Returns:
             细粒度权限
@@ -69,7 +70,8 @@ class PermissionRegistry:
         for permission in self._registry:
             if permission.id == _id:
                 return permission
-        raise KeyError(f"Permission {_id} not found")
+        if not suppress:
+            raise KeyError(f"Permission {_id} not found")
 
     def __getitem__(self, item: str) -> FineGrainedPermission:
         return self.get(item)

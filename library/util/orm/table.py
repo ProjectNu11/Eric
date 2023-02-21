@@ -90,7 +90,7 @@ class ProcessTimeStat(Base):
     """ 耗时 """
 
 
-class UserProfile(Base):
+class UserProfileTable(Base):
     """用户资料"""
 
     __tablename__ = "user_profile"
@@ -115,6 +115,12 @@ class UserProfile(Base):
 
     usage_count = Column(BIGINT, nullable=False)
     """ 使用次数 """
+
+    permission = Column(TEXT, nullable=False)
+    """ 权限 """
+
+    fg_permission = Column(TEXT, nullable=False)
+    """ 细粒度权限 """
 
     module_preferences = Column(TEXT, nullable=False)
     """ 模块偏好设置 """

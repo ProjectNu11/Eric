@@ -72,6 +72,32 @@ class UserPerm(Enum):
         return getattr(cls, str(perm), cls.MEMBER)
 
     @classmethod
+    def from_level(cls, level: int) -> Self:
+        """
+        从权限等级转换为 UserPerm 枚举
+
+        Args:
+            level (int): 权限等级
+
+        Returns:
+            UserPerm: UserPerm 枚举，如果无法转换则返回 MEMBER
+        """
+        return next((perm for perm in cls if perm.value[1] == level), cls.MEMBER)
+
+    @classmethod
+    def from_name(cls, name: str) -> Self:
+        """
+        从权限名转换为 UserPerm 枚举
+
+        Args:
+            name (str): 权限名
+
+        Returns:
+            UserPerm: UserPerm 枚举，如果无法转换则返回 MEMBER
+        """
+        return getattr(cls, name.upper(), cls.MEMBER)
+
+    @classmethod
     async def get(cls, supplicant: int | Member | Friend) -> Self:
         config: EricConfig = create(EricConfig)
         if int(supplicant) in config.owners:
