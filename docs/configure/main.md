@@ -12,7 +12,6 @@ description: "主配置文件"
 | `accounts`        | `list[int]` | `[]`     | 机器人的账号列表，不可为空                   |
 | `default_account` | `int`       | `0`      | 机器人使用的默认账号                      |
 | `description`     | `str`       | `""`     | 机器人的描述，用于显示在帮助信息中               |
-| `environment`     | `str`       | `poetry` | 机器人的运行环境，可选 `poetry` 或 `pip`    |
 | `host`            | `str`       | `""`     | `mirai-api-http` 的地址            |
 | `verify_key`      | `str`       | `""`     | `mirai-api-http` 的认证密钥          |
 | `owners`          | `list[int]` | `[]`     | 机器人的所有者 QQ 号列表，用于分配权限           |

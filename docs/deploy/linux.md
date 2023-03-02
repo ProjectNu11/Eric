@@ -73,32 +73,32 @@ Eric 使用了 `PDM` 来管理依赖。
 
 !!! warning "Eric 将不再支持 `poetry`，请使用 `PDM` 进行安装"
 
-#### 3.1.1. 安装 `poetry`
+#### 3.1.1. 安装 `pdm`
 
-首先，你需要安装 `poetry`。你可以通过以下方式安装：
+首先，你需要安装 `pdm`。你可以通过以下方式安装：
 
 - 通过脚本安装（推荐）
 
     在终端中输入以下命令：
 
     ```bash
-    curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
+    curl -sSL https://raw.githubusercontent.com/pdm-project/pdm/main/install-pdm.py | python3 -
     ```
 
     随后在 `.bashrc` 或 `.zshrc` 中添加脚本打印的 `export`
-    以便在终端中使用 `poetry` 命令
+    以便在终端中使用 `pdm` 命令
 
 - 通过 `pip` 安装
 
     在终端中输入以下命令：
 
     ```bash
-    pip install poetry
+    pip install pdm
     ```
 
 !!! warning "建议使用脚本安装"
 
-    某些情况下，使用 `pip` 直接安装 `poetry` 可能会影响当前 `Python` 环境安装的依赖出现冲突。
+    某些情况下，使用 `pip` 直接安装 `pdm` 可能会影响当前 `Python` 环境安装的依赖出现冲突。
 
 
 #### 3.1.2. 安装依赖
@@ -106,15 +106,15 @@ Eric 使用了 `PDM` 来管理依赖。
 在终端中输入以下命令即可安装 Eric 的依赖：
 
 ```bash
-poetry install
+pdm install
 ```
 
-??? question "需要修改 `poetry` 使用的 Python 版本？"
+??? question "需要修改 `pdm` 使用的 Python 版本？"
 
-    如果你需要修改 `poetry` 使用的 Python 版本，请使用以下命令：
+    如果你需要修改 `pdm` 使用的 Python 版本，请使用以下命令：
 
     ```bash
-    poetry env use <python_path>
+    pdm use <python_path>
     ```
 
     其中，`<python_path>` 为你需要使用的 Python 的路径或版本号，
@@ -127,7 +127,7 @@ poetry install
 在终端中输入以下命令生成空白配置文件：
 
 ```bash
-poetry run python main.py
+pdm run start
 ```
 
 随后，你应可以在 `config` 文件夹中找到生成的空白配置文件，按照你的需求修改 `.jsonc` 文件即可。
@@ -137,7 +137,7 @@ poetry run python main.py
 在终端中输入以下命令即可运行 Eric：
 
 ```bash
-poetry run python main.py
+pdm run start
 ```
 
 你应可以在终端中看到 Eric 的输出：

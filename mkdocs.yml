@@ -88,7 +88,6 @@ nav:
     - 帮助菜单: module/help.md
   - 特性:
     - FastAPI 支持: feature/fastapi.md
-    - 控制台支持: feature/console.md
   - 项目结构: tree.md
   - 常见问题: faq.md
   - 鸣谢: credits.md
