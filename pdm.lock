@@ -270,7 +270,7 @@ dependencies = [
 
 [[package]]
 name = "graia-ariadne"
-version = "0.11.0"
+version = "0.11.1"
 requires_python = ">=3.8,<4.0"
 summary = "Another elegant Python QQ Bot framework for mirai and mirai-api-http v2."
 dependencies = [
@@ -679,7 +679,7 @@ dependencies = [
 
 [[package]]
 name = "prompt-toolkit"
-version = "3.0.37"
+version = "3.0.38"
 requires_python = ">=3.7.0"
 summary = "Library for building powerful interactive command lines in Python"
 dependencies = [
@@ -838,7 +838,7 @@ summary = "a uniform status implementation for graia project"
 
 [[package]]
 name = "textual"
-version = "0.11.1"
+version = "0.12.1"
 requires_python = ">=3.7,<4.0"
 summary = "Modern Text User Interface framework"
 dependencies = [
@@ -851,7 +851,7 @@ dependencies = [
 
 [[package]]
 name = "textual"
-version = "0.11.1"
+version = "0.12.1"
 extras = ["dev"]
 requires_python = ">=3.7,<4.0"
 summary = "Modern Text User Interface framework"
@@ -859,7 +859,7 @@ dependencies = [
     "aiohttp>=3.8.1",
     "click>=8.1.2",
     "msgpack>=1.0.3",
-    "textual==0.11.1",
+    "textual==0.12.1",
 ]
 
 [[package]]
@@ -1341,9 +1341,9 @@ content_hash = "sha256:62955ffc4fb441c609d525c0501118d5827238f238c6b759a859085ea
     {url = "https://files.pythonhosted.org/packages/49/6c/9f6c4f5badfd04e0f3118ef1509a684101dade8124031e2fe90297d3dda8/graia-amnesia-0.7.1.tar.gz", hash = "sha256:d93efde0a36b6c4463401d9f142d03e49d14d37b5d005161cf3468136aba931d"},
     {url = "https://files.pythonhosted.org/packages/9c/16/3afcf0811a9a81352633bf24705974e8122e0031bf00ce6c1b3c1b3da500/graia_amnesia-0.7.1-py3-none-any.whl", hash = "sha256:7292c43d3caa9884bf60e827d1fd2190b076b00210a4881a907d63ba2e5bfa6d"},
 ]
-"graia-ariadne 0.11.0" = [
-    {url = "https://files.pythonhosted.org/packages/a4/db/c8250694acbdcb71f8cf1a69cc827ba296f7443f060f6c05357dcc596c30/graia_ariadne-0.11.0-py3-none-any.whl", hash = "sha256:d83a6c9bc0ac8000dff1afd063cfc07b66e136359cb1bbbef06ebe8d04434853"},
-    {url = "https://files.pythonhosted.org/packages/b6/1d/c3f82a3d8f8e91d28a465c488f9f9678f5969c8eeb9d7eac06fa83f936b4/graia-ariadne-0.11.0.tar.gz", hash = "sha256:6e1852449c44e200138fb807ae3b725497fb574d708a3d9d45b36b3e370f7055"},
+"graia-ariadne 0.11.1" = [
+    {url = "https://files.pythonhosted.org/packages/72/b4/69b0078f69efb55c40ab39e23bdb6f360a25de784445531df58c587b20c9/graia-ariadne-0.11.1.tar.gz", hash = "sha256:10a2c2f6139bef09f81182a96a01ede4be153900e4de702567c20a4d161b3b2f"},
+    {url = "https://files.pythonhosted.org/packages/d4/7a/5892924b3c458670c867106ced9aed62c2fcec8a86f73667cbde596dfded/graia_ariadne-0.11.1-py3-none-any.whl", hash = "sha256:d28be3f701231463dee1fde177cbc319a4b26b555fed084f5ea4df1d2f1bcdef"},
 ]
 "graia-broadcast 0.19.1" = [
     {url = "https://files.pythonhosted.org/packages/2d/74/479522bf0643121b6bd967ee26410faa0129b35ef3339e0d9a513dfc3057/graia_broadcast-0.19.1-py3-none-any.whl", hash = "sha256:94ba3a53b3dda292e95f6be2ae964d975e34d5f6fb973df31016bd34089e2c47"},
@@ -1925,9 +1925,9 @@ content_hash = "sha256:62955ffc4fb441c609d525c0501118d5827238f238c6b759a859085ea
     {url = "https://files.pythonhosted.org/packages/7e/ba/4d263a47ded76149dcbd11a1cc4035413f5765ffe407810338209c2a2d43/pre_commit-3.0.4.tar.gz", hash = "sha256:bc4687478d55578c4ac37272fe96df66f73d9b5cf81be6f28627d4e712e752d5"},
     {url = "https://files.pythonhosted.org/packages/cb/5c/d74ae18271f63d15c40851ccbff8f5dd259454f5225245ca85152e77ab85/pre_commit-3.0.4-py2.py3-none-any.whl", hash = "sha256:9e3255edb0c9e7fe9b4f328cb3dc86069f8fdc38026f1bf521018a05eaf4d67b"},
 ]
-"prompt-toolkit 3.0.37" = [
-    {url = "https://files.pythonhosted.org/packages/20/58/bbc8510ed1774ea2879b9996d2783d461c3c612904e230ff6954ce23c694/prompt_toolkit-3.0.37.tar.gz", hash = "sha256:d5d73d4b5eb1a92ba884a88962b157f49b71e06c4348b417dd622b25cdd3800b"},
-    {url = "https://files.pythonhosted.org/packages/6b/f8/1bb04f1ed50ceffa077ad762911c10aa27defdea6094e1f78ed5cbae1d81/prompt_toolkit-3.0.37-py3-none-any.whl", hash = "sha256:6a2948ec427dfcc7c983027b1044b355db6aaa8be374f54ad2015471f7d81c5b"},
+"prompt-toolkit 3.0.38" = [
+    {url = "https://files.pythonhosted.org/packages/4b/bb/75cdcd356f57d17b295aba121494c2333d26bfff1a837e6199b8b83c415a/prompt_toolkit-3.0.38.tar.gz", hash = "sha256:23ac5d50538a9a38c8bde05fecb47d0b403ecd0662857a86f886f798563d5b9b"},
+    {url = "https://files.pythonhosted.org/packages/87/3f/1f5a0ff475ae6481f4b0d45d4d911824d3218b94ee2a97a8cb84e5569836/prompt_toolkit-3.0.38-py3-none-any.whl", hash = "sha256:45ea77a2f7c60418850331366c81cf6b5b9cf4c7fd34616f733c5427e6abbb1f"},
 ]
 "psutil 5.9.4" = [
     {url = "https://files.pythonhosted.org/packages/1d/80/e1502ba4ff65390bd17b4612010762075f64f5a0e7c28e889c4820bd95a9/psutil-5.9.4-cp27-cp27m-manylinux2010_x86_64.whl", hash = "sha256:3ff89f9b835100a825b14c2808a106b6fdcc4b15483141482a12c725e7f78549"},
@@ -2218,9 +2218,9 @@ content_hash = "sha256:62955ffc4fb441c609d525c0501118d5827238f238c6b759a859085ea
     {url = "https://files.pythonhosted.org/packages/17/94/90af52fbb882f7d5a86f75b8f151fabb3540a01b592d5c12646b55712266/statv-0.3.2-py3-none-any.whl", hash = "sha256:32e430b21ab6a62695c67ab6cae3dba6e01e9c3fdbc9344e3236ad7a1f51d0c7"},
     {url = "https://files.pythonhosted.org/packages/eb/34/55f3fde006d8d6c1f8d2422856360a9fde6a3f81dcd79f9203cfeac5b9dc/statv-0.3.2.tar.gz", hash = "sha256:fb4df2a37bf7a792e36a6e657c74cbdef9e2cdb8de3a0762b28b35c9e13f0fdd"},
 ]
-"textual 0.11.1" = [
-    {url = "https://files.pythonhosted.org/packages/39/13/df9de46653d69e3c8dafbfec175f90dab479ff0d868f0e9fff9cb69a12da/textual-0.11.1-py3-none-any.whl", hash = "sha256:77afbb64caa136fdc568ee43601fd5a1a94f13bb7e057c95dc8ee5dfa3f3083b"},
-    {url = "https://files.pythonhosted.org/packages/e2/d4/5ee9f1c44721a85316dd47129ca4ebd151aa0fe93fa76a1c39cdc74e8938/textual-0.11.1.tar.gz", hash = "sha256:9b027853b686ac9561a3dc6f2b637a25089f2ee67a9e37bbf39d0da7567694b0"},
+"textual 0.12.1" = [
+    {url = "https://files.pythonhosted.org/packages/8d/7c/1ce1c9119abe83c8c00910dc2609e2c1ccfdb89fdfc08cc1531034ac32c6/textual-0.12.1-py3-none-any.whl", hash = "sha256:976226eb7e56e31e70acff0d4146d8c96a0cd35613769c7f9e0b63df28ee6902"},
+    {url = "https://files.pythonhosted.org/packages/c7/49/f90f1df0b9b585cadbb4a288b4dc3f5604cf5e93820b4b20fd6d73f58c23/textual-0.12.1.tar.gz", hash = "sha256:f826b422e39e4ca188307336f6a4f4b0a89834dab2628430b613084c70799dfd"},
 ]
 "tomli 2.0.1" = [
     {url = "https://files.pythonhosted.org/packages/97/75/10a9ebee3fd790d20926a90a2547f0bf78f371b2f13aa822c759680ca7b9/tomli-2.0.1-py3-none-any.whl", hash = "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc"},
