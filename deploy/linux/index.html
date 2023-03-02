@@ -426,8 +426,8 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#311-poetry" class="md-nav__link">
-    3.1.1. 安装 poetry
+  <a href="#311-pdm" class="md-nav__link">
+    3.1.1. 安装 pdm
   </a>
   
 </li>
@@ -785,20 +785,6 @@
 
             
           
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../feature/console/" class="md-nav__link">
-        控制台支持
-      </a>
-    </li>
-  
-
-            
-          
         </ul>
       </nav>
     </li>
@@ -940,8 +926,8 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#311-poetry" class="md-nav__link">
-    3.1.1. 安装 poetry
+  <a href="#311-pdm" class="md-nav__link">
+    3.1.1. 安装 pdm
   </a>
   
 </li>
@@ -1058,36 +1044,36 @@
 <div class="admonition warning">
 <p class="admonition-title">Eric 将不再支持 <code>poetry</code>，请使用 <code>PDM</code> 进行安装</p>
 </div>
-<h4 id="311-poetry">3.1.1. 安装 <code>poetry</code></h4>
-<p>首先，你需要安装 <code>poetry</code>。你可以通过以下方式安装：</p>
+<h4 id="311-pdm">3.1.1. 安装 <code>pdm</code></h4>
+<p>首先，你需要安装 <code>pdm</code>。你可以通过以下方式安装：</p>
 <ul>
 <li>
 <p>通过脚本安装（推荐）</p>
 <p>在终端中输入以下命令：</p>
-<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sSL<span class="w"> </span>https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py<span class="w"> </span><span class="p">|</span><span class="w"> </span>python<span class="w"> </span>-
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sSL<span class="w"> </span>https://raw.githubusercontent.com/pdm-project/pdm/main/install-pdm.py<span class="w"> </span><span class="p">|</span><span class="w"> </span>python3<span class="w"> </span>-
 </code></pre></div>
 <p>随后在 <code>.bashrc</code> 或 <code>.zshrc</code> 中添加脚本打印的 <code>export</code>
-以便在终端中使用 <code>poetry</code> 命令</p>
+以便在终端中使用 <code>pdm</code> 命令</p>
 </li>
 <li>
 <p>通过 <code>pip</code> 安装</p>
 <p>在终端中输入以下命令：</p>
-<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>poetry
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>pdm
 </code></pre></div>
 </li>
 </ul>
 <div class="admonition warning">
 <p class="admonition-title">建议使用脚本安装</p>
-<p>某些情况下，使用 <code>pip</code> 直接安装 <code>poetry</code> 可能会影响当前 <code>Python</code> 环境安装的依赖出现冲突。</p>
+<p>某些情况下，使用 <code>pip</code> 直接安装 <code>pdm</code> 可能会影响当前 <code>Python</code> 环境安装的依赖出现冲突。</p>
 </div>
 <h4 id="312">3.1.2. 安装依赖</h4>
 <p>在终端中输入以下命令即可安装 Eric 的依赖：</p>
-<div class="highlight"><pre><span></span><code>poetry<span class="w"> </span>install
+<div class="highlight"><pre><span></span><code>pdm<span class="w"> </span>install
 </code></pre></div>
 <details class="question">
-<summary>需要修改 <code>poetry</code> 使用的 Python 版本？</summary>
-<p>如果你需要修改 <code>poetry</code> 使用的 Python 版本，请使用以下命令：</p>
-<div class="highlight"><pre><span></span><code>poetry<span class="w"> </span>env<span class="w"> </span>use<span class="w"> </span>&lt;python_path&gt;
+<summary>需要修改 <code>pdm</code> 使用的 Python 版本？</summary>
+<p>如果你需要修改 <code>pdm</code> 使用的 Python 版本，请使用以下命令：</p>
+<div class="highlight"><pre><span></span><code>pdm<span class="w"> </span>use<span class="w"> </span>&lt;python_path&gt;
 </code></pre></div>
 <p>其中，<code>&lt;python_path&gt;</code> 为你需要使用的 Python 的路径或版本号，
 如 <code>python3.10</code> 或 <code>/usr/bin/python3.10</code>。</p>
@@ -1095,12 +1081,12 @@
 <h2 id="4">4. 配置</h2>
 <p>初次运行 Eric 时，你需要配置 Eric。</p>
 <p>在终端中输入以下命令生成空白配置文件：</p>
-<div class="highlight"><pre><span></span><code>poetry<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>main.py
+<div class="highlight"><pre><span></span><code>pdm<span class="w"> </span>run<span class="w"> </span>start
 </code></pre></div>
 <p>随后，你应可以在 <code>config</code> 文件夹中找到生成的空白配置文件，按照你的需求修改 <code>.jsonc</code> 文件即可。</p>
 <h2 id="5">5. 运行</h2>
 <p>在终端中输入以下命令即可运行 Eric：</p>
-<div class="highlight"><pre><span></span><code>poetry<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>main.py
+<div class="highlight"><pre><span></span><code>pdm<span class="w"> </span>run<span class="w"> </span>start
 </code></pre></div>
 <p>你应可以在终端中看到 Eric 的输出：</p>
 <div class="highlight"><pre><span></span><code>2022-12-09 10:17:47.858 | SUCCESS  | library.config.validate:validate_config:94 - 配置验证通过
@@ -1144,7 +1130,7 @@ statv: 0.3.2
   <small>
     
       最后更新:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">January 22, 2023</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">March 2, 2023</span>
       
         <br>
         创建日期:
