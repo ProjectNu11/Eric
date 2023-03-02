@@ -87,7 +87,9 @@ async def change_color_schema(
     )
     await send_message(
         event,
-        MessageChain(Image(data_bytes=await page.render()), "是否确认更换配色方案？[y/n]"),
+        MessageChain(
+            Image(data_bytes=await page.render(local=True)), "是否确认更换配色方案？[y/n]"
+        ),
         app.account,
     )
     try:

@@ -101,7 +101,7 @@ async def category_search(category: str):
 )
 async def help_handler(app: Ariadne, event: MessageEvent):
     fastapi_config: FastAPIConfig = create(FastAPIConfig)
-    page = await about_page().render()
+    page = await about_page().render(local=True)
     await send_message(event, MessageChain(Image(data_bytes=page)), app.account)
     await send_message(
         event,

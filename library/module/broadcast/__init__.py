@@ -70,6 +70,7 @@ async def broadcast(
                 image=await event.sender.get_avatar(),
             )
         ),
+        local=True,
     )
     for element in result.message_chain:
         if isinstance(element, Image):

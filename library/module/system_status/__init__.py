@@ -72,6 +72,6 @@ async def system_status(app: Ariadne, event: MessageEvent):
     )
     await send_message(
         event.sender.group if isinstance(event, GroupMessage) else event.sender,
-        MessageChain(Image(data_bytes=await page.render())),
+        MessageChain(Image(data_bytes=await page.render(local=True))),
         app.account,
     )

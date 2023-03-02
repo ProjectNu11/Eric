@@ -1,11 +1,22 @@
 import re
+from pathlib import Path
 from typing import TypeVar
 
 from lxml.builder import E
 from lxml.etree import _Element  # noqa
 
-HYPERLINK_PATTERN = re.compile(r"https?://\S+")
 _T = TypeVar("_T")
+
+HYPERLINK_PATTERN = re.compile(r"https?://\S+")
+FONT_PATH = Path.cwd().resolve() / "library" / "assets" / "fonts"
+FONT_MIME_MAP = {
+    "collection": "font/collection",
+    "otf": "font/otf",
+    "sfnt": "font/sfnt",
+    "ttf": "font/ttf",
+    "woff": "font/woff",
+    "woff2": "font/woff2",
+}
 
 
 def wrap_text(
