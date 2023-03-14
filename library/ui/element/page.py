@@ -1,5 +1,3 @@
-import re
-
 from creart import it
 from graia.ariadne import Ariadne
 from graiax.playwright import PlaywrightBrowser
@@ -8,9 +6,7 @@ from loguru import logger
 from lxml.html import builder, tostring
 from lxml.html.builder import CLASS
 from playwright.async_api import Page as PWPage
-from playwright.async_api import Request, Route
 from typing_extensions import Literal, Self
-from yarl import URL
 
 from library.model.config import FastAPIConfig
 from library.ui.color import Color, ColorSchema, is_dark
@@ -18,15 +14,13 @@ from library.ui.color.palette import ColorPalette
 from library.ui.element.base import Element
 from library.ui.element.blank import Blank
 from library.ui.element.image import ImageBox
-from library.ui.util import FONT_MIME_MAP, FONT_PATH
+from library.util.playwright import route_fulfill
 
-DUMMY_BASE_PATTERN = "https?://static.eric"
-DUMMY_ASSETS_BASE = f"{DUMMY_BASE_PATTERN}/assets"
-DUMMY_FONTS_BASE = f"{DUMMY_ASSETS_BASE}/library/fonts"
-
-HARMONY_FONT_URL = (
-    f"{create(FastAPIConfig).link}/assets/library/fonts/HarmonyOSHans.ttf"
-)
+BASE_LINK = create(FastAPIConfig).link
+LIB_ASSETS_BASE = f"{BASE_LINK}/assets/library"
+LIB_FONT_BASE = f"{LIB_ASSETS_BASE}/fonts"
+HARMONY_FONT_URL = f"{LIB_FONT_BASE}/HarmonyOSHans.ttf"
+MODULE_ASSETS_BASE = f"{BASE_LINK}/assets/([a-zA-Z0-9_.]+)"
 
 
 class Page(Element):
@@ -195,21 +189,6 @@ a:hover {{ opacity: 0.8; }}
             pretty_print=True,
         )
 
-    async def fulfill_font(self, page: PWPage):
-        async def impl(route: Route, request: Request):
-            url = URL(request.url)
-            if (FONT_PATH / url.name).exists():
-                logger.debug(f"[Page:{self.title}] Fulfilling {url}...")
-                await route.fulfill(
-                    path=FONT_PATH / url.name,
-                    content_type=FONT_MIME_MAP.get(url.suffix, None),
-                )
-                return
-            await route.fallback()
-
-        await page.route(HARMONY_FONT_URL, impl)
-        await page.route(re.compile(rf"^{DUMMY_FONTS_BASE}/(.*)$"), impl)
-
     async def render(
         self,
         width: int = 720,
@@ -230,8 +209,8 @@ a:hover {{ opacity: 0.8; }}
             page: PWPage
 
             if local or self.local:
-                logger.info(f"[Page:{self.title}] Fulfilling font...")
-                await self.fulfill_font(page)
+                logger.info(f"[Page:{self.title}] Fulfilling route...")
+                await route_fulfill(page)
 
             logger.info(f"[Page:{self.title}] Setting content...")
             await page.set_content(
