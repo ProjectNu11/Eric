@@ -2,6 +2,7 @@ from library.ui.element.banner import Banner
 from library.ui.element.base import Element
 from library.ui.element.blank import Blank
 from library.ui.element.button import Button
+from library.ui.element.footer import Footer
 from library.ui.element.generic import GenericBox, GenericBoxItem
 from library.ui.element.icon import Icon
 from library.ui.element.image import ImageBox
@@ -15,6 +16,7 @@ __all__ = [
     "Element",
     "Blank",
     "Button",
+    "Footer",
     "GenericBox",
     "GenericBoxItem",
     "Icon",

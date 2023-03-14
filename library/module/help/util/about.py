@@ -13,7 +13,7 @@ _PROJECT_URL = "ProjectNu11/Eric"
 def about_page() -> Page:
     eric_config: EricConfig = create(EricConfig)
     modules = list(it(Modules).__all__.values())
-    page = Page(title=f"{eric_config.name} 关于")
+    page = Page(title=f"{eric_config.name} 关于", auto_footer=False)
     page.add(
         Title(eric_config.name, eric_config.description),
         Button(f"版本 {__version__}", width=400),
