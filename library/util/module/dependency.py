@@ -26,7 +26,7 @@ def install_dependency(
     if module:
         requirements = _get_requirements_by_module(module)
 
-    command = ["pdm", "run", "pip", "install"]
+    command = ["pdm", "run", "pip", "install", "--upgrade"]
     process = subprocess.Popen(
         [*command, *requirements],
         stdout=subprocess.PIPE,
