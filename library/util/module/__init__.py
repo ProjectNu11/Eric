@@ -71,7 +71,7 @@ class Modules:
                 raise RequirementResolveFailed(unresolved)
             unresolved -= layer
             resolved |= {module.pack for module in layer}
-            result.extend(layer)
+            result.extend(sorted(layer, key=lambda m: m.pack))
 
         if dry_run:
             return result
