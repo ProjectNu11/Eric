@@ -26,6 +26,7 @@ async def fulfill_font(route: Route, request: Request):
             path=FONT_PATH / url.name,
             content_type=FONT_MIME_MAP.get(url.suffix, None),
         )
+        logger.success(f"Fulfilled font {url}.")
         return
     logger.debug(f"Skip fulfilling font {url}: No such file")
     await route.fallback()
@@ -48,8 +49,8 @@ async def fulfill_module_assets(route: Route, request: Request):
         logger.debug("Skip fulfilling module assets: No such file")
         await route.fallback()
         return
-    logger.debug(f"Fulfilling module assets {request.url}...")
     await route.fulfill(path=path)
+    logger.debug(f"Fulfilled module assets {request.url}.")
 
 
 async def route_fulfill(page: Page):
