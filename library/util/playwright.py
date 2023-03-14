@@ -44,5 +44,11 @@ async def fulfill_module_assets(route: Route, request: Request):
 
 
 async def route_fulfill(page: Page):
+    """
+    实现路由拦截，用于替换字体和模块资源
+
+    Args:
+        page (Page): Playwright 页面，并非 `library.ui.Page` 实例
+    """
     await page.route(re.compile(rf"^{LIB_FONT_BASE}/(.*)$"), fulfill_font)
     await page.route(re.compile(rf"^{MODULE_ASSETS_BASE}/(.*)$"), fulfill_module_assets)
