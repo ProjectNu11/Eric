@@ -15,7 +15,7 @@ BASE_LINK = create(FastAPIConfig).link
 LIB_ASSETS_BASE = f"{BASE_LINK}/assets/library"
 LIB_FONT_BASE = f"{LIB_ASSETS_BASE}/fonts"
 HARMONY_FONT_URL = f"{LIB_FONT_BASE}/HarmonyOSHans.ttf"
-MODULE_ASSETS_BASE = f"{BASE_LINK}/assets/([a-zA-Z0-9_.]+)"
+MODULE_ASSETS_BASE = rf"{BASE_LINK}/assets/((?:library\.)?module\.[a-zA-Z0-9_]+)"
 
 
 async def fulfill_font(route: Route, request: Request):
