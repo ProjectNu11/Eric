@@ -68,7 +68,7 @@ a:hover {{ opacity: 0.8; }}
             "\n".join(
                 (self._css,)
                 + ((self.additional_css,) if self.additional_css else ())
-                + (self.schema.gen_style(self.dark),)
+                + (self.schema.gen_style(not self.dark),)
             )
             + "\n"
         )
