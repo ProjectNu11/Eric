@@ -27,20 +27,24 @@ async def fulfill_font(route: Route, request: Request):
             content_type=FONT_MIME_MAP.get(url.suffix, None),
         )
         return
+    logger.debug(f"Skip fulfilling font {url}: No such file")
     await route.fallback()
 
 
 async def fulfill_module_assets(route: Route, request: Request):
     pattern = re.compile(f"{MODULE_ASSETS_BASE}/(.*)")
     if not (group := pattern.search(request.url)):
+        logger.debug("Skip fulfilling module assets: No match")
         await route.fallback()
         return
     module, file = group.groups()
     if not it(Modules).get(module):
+        logger.debug("Skip fulfilling module assets: No such module")
         await route.fallback()
         return
     path = Path(*module.split("."), "assets", file)
     if not path.is_file():
+        logger.debug("Skip fulfilling module assets: No such file")
         await route.fallback()
         return
     logger.debug(f"Fulfilling module assets {request.url}...")
@@ -54,5 +58,7 @@ async def route_fulfill(page: Page):
     Args:
         page (Page): Playwright 页面，并非 `library.ui.Page` 实例
     """
+    logger.debug("Fulfilling route...")
     await page.route(re.compile(rf"^{LIB_FONT_BASE}/(.*)$"), fulfill_font)
     await page.route(re.compile(rf"^{MODULE_ASSETS_BASE}/(.*)$"), fulfill_module_assets)
+    logger.success("Route fulfilled")
