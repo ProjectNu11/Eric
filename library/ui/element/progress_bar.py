@@ -2,7 +2,7 @@ from lxml.html import builder
 from lxml.html.builder import CLASS
 
 from library.ui.color import ColorSchema
-from library.ui.element.base import Element, Style
+from library.ui.element.base import Element
 from library.ui.util import wrap_text
 
 
@@ -31,25 +31,6 @@ class ProgressBar(Element):
         self.text_size = text_size
         self.description_size = description_size
 
-    def __hash__(self):
-        return hash(f"_ProgressBar:{self.percent}:{self.text!r}:{self.description!r}")
-
-    def style(self, schema: ColorSchema, dark: bool) -> set[Style[str, str]]:
-        styles = {
-            Style(
-                {
-                    "color-progress-bar": f"background-color: {schema.HIGHLIGHT.rgb(dark)}"
-                }
-            )
-        }
-        if self.text is not None:
-            styles.add(Style({"color-text": f"color: {schema.TEXT.rgb(dark)}"}))
-        if self.description is not None:
-            styles.add(
-                Style({"color-description": f"color: {schema.DESCRIPTION.rgb(dark)}"})
-            )
-        return styles
-
     def _build_text(self):
         return (
             builder.DIV(
@@ -76,26 +57,26 @@ class ProgressBar(Element):
             else None
         )
 
-    def _build_progress_bar(self, schema: ColorSchema, dark: bool):
+    def _build_progress_bar(self):
         return builder.DIV(
             builder.DIV(
                 builder.DIV(
-                    CLASS("color-progress-bar"),
+                    CLASS("color-highlight-bg"),
                     style=f"width: {self.percent}%; height: 100%",
                 ),
+                CLASS("color-secondary-highlight-bg"),
                 style=f"height: {self.height}px; "
                 "width: 100%; "
-                f"background-color: {schema.SECONDARY_HIGHLIGHT.rgb(dark)}; "
                 f"border-radius: {self.height}px; "
                 "overflow: hidden",
             ),
-            style="padding: 0 40px 0 40px",
+            CLASS("lr-padding"),
         )
 
     def to_e(self, *args, schema: ColorSchema, dark: bool, **kwargs):
         parts = [
             self._build_text(),
-            self._build_progress_bar(schema, dark),
+            self._build_progress_bar(),
             self._build_description(),
         ]
         parts = [part for part in parts if part is not None]

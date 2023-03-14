@@ -3,7 +3,6 @@ from lxml.html.builder import CLASS
 
 from library.ui.color import ColorSchema
 from library.ui.element import Blank, Element
-from library.ui.element.base import Style
 from library.ui.util import wrap_text
 
 
@@ -30,21 +29,6 @@ class Title(Element):
         self.description_size = description_size
         self.blank_height = blank_height
 
-    def __hash__(self):
-        return hash(
-            f"_Title:{self.title}:{self.description}:{self.title_size}:{self.description_size}"
-        )
-
-    def style(self, schema: ColorSchema, dark: bool) -> set[Style[str, str]]:
-        return {
-            Style(
-                {
-                    "color-colored-text": f"color: {schema.COLORED_TEXT.rgb(dark)}",
-                    "color-description": f"color: {schema.DESCRIPTION.rgb(dark)}",
-                }
-            )
-        }
-
     def _description(self) -> str:
         if self.description is None:
             return ""
@@ -63,6 +47,5 @@ class Title(Element):
                 style=f"font-size: {self.title_size}px; word-wrap: break-word",
             ),
             self._description(),
-            CLASS(" ".join(self.style_keys(schema, dark))),
             style="text-align: center",
         )

@@ -15,6 +15,7 @@ class ColorSingle(BaseModel):
     def alpha(self):
         return self.color[3] if self.has_alpha else 1.0
 
+    @property
     def hex(self) -> str:
         if self.has_alpha:
             return (
@@ -22,6 +23,7 @@ class ColorSingle(BaseModel):
             )
         return f"#{''.join(f'{int(c):02X}' for c in self.color)}"
 
+    @property
     def rgb(self) -> str:
         return f"{'rgba' if self.has_alpha else 'rgb'}{self.color}"
 
@@ -51,10 +53,10 @@ class ColorPair(BaseModel):
         return color if float == 1.0 else color.with_alpha(alpha)
 
     def hex(self, dark: bool, alpha: float = 1.0) -> str:
-        return self.get(dark, alpha).hex()
+        return self.get(dark, alpha).hex
 
     def rgb(self, dark: bool, alpha: float = 1.0) -> str:
-        return self.get(dark, alpha).rgb()
+        return self.get(dark, alpha).rgb
 
     class Config:
         allow_mutation = False
@@ -165,3 +167,28 @@ class ColorSchema(BaseModel):
         ),
     )
     """ 超链接颜色 """
+
+    def gen_style(self, default: bool = True) -> str:
+        results = []
+        for name, pair in self.__dict__.items():
+            name: str
+            pair: ColorPair
+            name = name.lower().replace("_", "-")
+            for c_name, color in pair.__dict__.items():
+                c_name: str
+                color: ColorSingle
+                results.extend(
+                    (
+                        f".color-{name}-{c_name} {{ color: {color.hex}; }}",
+                        f".color-{name}-{c_name}-bg "
+                        f"{{ background-color: {color.hex}; }}",
+                    )
+                )
+            clr = pair.light if default else pair.dark
+            results.extend(
+                (
+                    f".color-{name} {{ color: {clr.hex}; }}",
+                    f".color-{name}-bg {{ background-color: {clr.hex}; }}",
+                )
+            )
+        return "\n".join(results)

@@ -11,8 +11,7 @@ from PIL import Image
 from typing_extensions import Self
 
 from library.model.config import EricConfig
-from library.ui.color import ColorSchema
-from library.ui.element.base import Element, Style
+from library.ui.element.base import Element
 from library.util.session_container import SessionContainer
 
 
@@ -50,12 +49,6 @@ class ImageBox(Element):
                 self.img = img
             else:
                 raise TypeError
-
-    def __hash__(self):
-        return hash(f"_ImageBox:{self.img}:{self.url}:{self.base64}")
-
-    def style(self, schema: ColorSchema, dark: bool) -> set[Style[str, str]]:
-        return set()
 
     @classmethod
     def from_file(cls, path: Path | str) -> Self:

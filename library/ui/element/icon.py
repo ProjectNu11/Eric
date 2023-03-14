@@ -8,8 +8,7 @@ from lxml import etree
 from PIL import Image
 from typing_extensions import Self
 
-from library.ui.color import ColorSchema
-from library.ui.element.base import Element, Style
+from library.ui.element.base import Element
 
 
 class Icon(Element):
@@ -25,12 +24,6 @@ class Icon(Element):
         self.img = img
         if data_bytes:
             self.img = Image.open(BytesIO(data_bytes))
-
-    def __hash__(self):
-        return hash(f"_Icon:{self.svg}:{hash(self.img)}")
-
-    def style(self, schema: ColorSchema, dark: bool) -> set[Style[str, str]]:
-        return set()
 
     @classmethod
     def from_file(cls, path: Path | str) -> Self:

@@ -6,9 +6,8 @@ from lxml.html.builder import CLASS
 from typing_extensions import Self
 
 from library.ui.color import ColorSchema
-from library.ui.element.base import Element, Style
+from library.ui.element.base import Element
 from library.ui.util import wrap_text
-from library.util.misc import inflate
 
 
 class _GenericBoxText(Element):
@@ -23,24 +22,15 @@ class _GenericBoxText(Element):
         self.is_desc = is_desc
         self.highlight = highlight
 
-    def __hash__(self):
-        return hash(
-            f"_GenericBoxText:{self.text}:{self.size}:{self.is_desc}:{self.highlight}"
-        )
-
-    def style(self, schema: ColorSchema, dark: bool) -> set[Style[str, str]]:
-        if not self.is_desc:
-            return {Style({"color-text": f"color: {schema.TEXT.rgb(dark)}"})}
-        return (
-            {Style({"color-description": f"color: {schema.DESCRIPTION.rgb(dark)}"})}
-            if self.is_desc
-            else {Style({"color-text": f"color: {schema.TEXT.rgb(dark)}"})}
-        )
+    def style(self) -> str:
+        if self.highlight and self.is_desc:
+            return "color-highlight"
+        return "color-description" if self.is_desc else "color-text"
 
     def to_e(self, *, schema: ColorSchema, dark: bool, **_kwargs) -> str:
         return builder.DIV(
             *wrap_text(self.text),
-            CLASS(" ".join(self.style_keys(schema, dark))),
+            CLASS(self.style()),
             style=f"font-size: {self.size}px; word-wrap: break-word",
         )
 
@@ -77,25 +67,6 @@ class GenericBoxItem(Element):
         )
         self.image = image
 
-    def __hash__(self):
-        return hash(f"_GenericBoxItem:{hash(self.text)}:{hash(self.description)}")
-
-    def style(self, schema: ColorSchema, dark: bool) -> set[Style[str, str]]:
-        return set().union(
-            self.text.style(schema, dark) if self.text is not None else set(),
-            self.description.style(schema, dark)
-            if self.description is not None
-            else set(),
-            {
-                Style(
-                    {
-                        "color-foreground": f"background-color: "
-                        f"{schema.FOREGROUND.rgb(dark)}"
-                    }
-                ),
-            },
-        )
-
     def set_text(self, text: str, highlight: bool = False) -> Self:
         if self.text:
             self.text.text = text
@@ -124,8 +95,8 @@ class GenericBoxItem(Element):
         parts = self._get_parts(schema=schema, dark=dark)
         return builder.DIV(
             *[part for part in parts if part is not None],
-            CLASS(" ".join({*self.style_keys(schema, dark)})),
-            style="display: flex; padding: 40px 0 40px 0; flex-direction: column",
+            CLASS("color-foreground-bg tb-padding"),
+            style="display: flex; flex-direction: column",
         )
 
     def _to_e_img(self, *, schema: ColorSchema, dark: bool, **_kwargs) -> str:
@@ -134,8 +105,8 @@ class GenericBoxItem(Element):
         return builder.DIV(
             builder.DIV(
                 *[part for part in parts if part is not None],
-                CLASS(" ".join({*self.style_keys(schema, dark)})),
-                style="display: flex; padding: 40px 0 40px 0; flex-direction: column",
+                CLASS("color-foreground-bg tb-padding"),
+                style="display: flex; flex-direction: column",
             ),
             etree.XML(
                 f'<img src="data:image/png;base64,{img_b64}" '
@@ -162,9 +133,6 @@ class GenericBox(Element):
         self.boarder = boarder
         self.add(*items)
 
-    def __hash__(self):
-        return hash(f"GenericBox:{':'.join(str(hash(item)) for item in self.items)})")
-
     def add(self, *items: GenericBoxItem) -> Self:
         for item in items:
             if self.items:
@@ -174,32 +142,15 @@ class GenericBox(Element):
 
     @property
     def _divider(self):
-        return builder.DIV({"class": "color-line", "style": "height: 3px"})
-
-    def style(self, schema: ColorSchema, dark: bool) -> set[Style[str, str]]:
-        return {
-            Style({"color-line": f"background-color: {schema.LINE.rgb(dark)}"})
-        }.union(
-            inflate(  # type: ignore
-                [
-                    item.style(schema, dark)
-                    for item in self.items
-                    if isinstance(item, GenericBoxItem)
-                ]
-            )
-        )
+        return builder.DIV(CLASS("color-line-bg"), style="height: 3px")
 
     def to_e(self, *, schema: ColorSchema, dark: bool, **_kwargs) -> str:
         return builder.DIV(
-            builder.DIV(
-                *[
-                    item.to_e(schema=schema, dark=dark)
-                    if isinstance(item, GenericBoxItem)
-                    else item
-                    for item in self.items
-                ],
-                CLASS("color-foreground round-corner"),
-                style="padding: 0 40px 0 40px",
-            ),
-            {},
+            *[
+                item.to_e(schema=schema, dark=dark)
+                if isinstance(item, GenericBoxItem)
+                else item
+                for item in self.items
+            ],
+            CLASS("color-foreground-bg round-corner lr-padding"),
         )

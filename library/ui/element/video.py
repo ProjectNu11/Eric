@@ -1,8 +1,7 @@
 from lxml.html.builder import CLASS, E
 from typing_extensions import Self
 
-from library.ui.color import ColorSchema
-from library.ui.element.base import Element, Style
+from library.ui.element.base import Element
 
 
 class VideoBox(Element):
@@ -14,12 +13,6 @@ class VideoBox(Element):
         self.url = url
         self.loop = loop
         self.controls = controls
-
-    def __hash__(self):
-        return hash(f"_VideoBox:{self.url}:{self.loop}:{self.controls}")
-
-    def style(self, schema: ColorSchema, dark: bool) -> set[Style[str, str]]:
-        return set()
 
     @classmethod
     def from_url(cls, url: str) -> Self:

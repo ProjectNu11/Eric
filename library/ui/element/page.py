@@ -15,14 +15,13 @@ from yarl import URL
 from library.model.config import FastAPIConfig
 from library.ui.color import Color, ColorSchema, is_dark
 from library.ui.color.palette import ColorPalette
-from library.ui.element.base import Element, Style
+from library.ui.element.base import Element
 from library.ui.element.blank import Blank
 from library.ui.element.image import ImageBox
 from library.ui.util import FONT_MIME_MAP, FONT_PATH
-from library.util.misc import inflate
 
-DUMMY_BASE_URL = "https?://static.eric"
-DUMMY_ASSETS_BASE = f"{DUMMY_BASE_URL}/assets"
+DUMMY_BASE_PATTERN = "https?://static.eric"
+DUMMY_ASSETS_BASE = f"{DUMMY_BASE_PATTERN}/assets"
 DUMMY_FONTS_BASE = f"{DUMMY_ASSETS_BASE}/library/fonts"
 
 HARMONY_FONT_URL = (
@@ -42,9 +41,6 @@ class Page(Element):
     dark: bool
     """ 是否为暗色模式 """
 
-    styles: set[Style[str, str]]
-    """ 页面样式，将在未来被移除 """
-
     border_radius: int
     """ 页面圆角 """
 
@@ -57,9 +53,34 @@ class Page(Element):
     local: bool
     """ 是否使用本地字体，如果为 True 则将无法在公网上正常显示 """
 
+    additional_css: str
+
+    @property
+    def _css(self):
+        return f"""
+.lr-padding {{ padding: 0 40px 0 40px; }}
+.tb-padding {{ padding: 40px 0 40px 0; }}
+.auto-width {{ width: 100%; max-width: {self.max_width - self.border_radius * 2}px; }}
+.round-corner {{ border-radius: {self.border_radius}px; }}
+@font-face {{ font-family: homo; src: url('{HARMONY_FONT_URL}') format('truetype'); }}
+body {{ font-family: homo, serif; }}
+a {{ color: {self.schema.HYPERLINK.rgb(self.dark)}; text-decoration: underline; }}
+a:hover {{ opacity: 0.8; }}
+"""
+
+    @property
+    def css(self) -> str:
+        return (
+            "\n".join(
+                (self._css,)
+                + ((self.additional_css,) if self.additional_css else ())
+                + (self.schema.gen_style(self.dark),)
+            )
+            + "\n"
+        )
+
     _schema: ColorSchema | Literal["auto"] | None
     _cached_schema: ColorSchema | None
-    _local: bool
 
     def __init__(
         self,
@@ -71,6 +92,7 @@ class Page(Element):
         title: str = "Page",
         fetch_on_render: bool = True,
         local: bool = False,
+        css: str = "",
     ):
         if dark is None:
             dark = is_dark()
@@ -84,6 +106,7 @@ class Page(Element):
         self.title = title
         self.fetch_on_render = fetch_on_render
         self.local = local
+        self.additional_css = css
         self.elements = []
         self.add(*elements)
 
@@ -112,13 +135,14 @@ class Page(Element):
             return ColorPalette.generate_schema(image) if image else it(Color).current()
         except ValueError:
             logger.warning(
-                f"[{self.title}] Failed to generate color schema, "
+                f"[Page:{self.title}] Failed to generate color schema, "
                 f"fallback to current"
             )
             return it(Color).current()
 
     @property
     def schema(self):
+        """页面配色方案"""
         if self._cached_schema is not None:
             return self._cached_schema
         if self._schema is None:
@@ -134,11 +158,6 @@ class Page(Element):
         self._schema = schema
         self._cached_schema = None
 
-    def __hash__(self):
-        return hash(
-            f"_Page:{':' .join(str(hash(element)) for element in self.elements)}"
-        )
-
     def set_schema(self, schema: ColorSchema | Literal["auto"] | None = None) -> Self:
         self.schema = schema or it(Color).current()
         return self
@@ -149,54 +168,23 @@ class Page(Element):
             self.elements.append(Blank(self.border_radius))
         return self
 
-    def style(self, *_) -> set[Style[str, str]]:
-        return {
-            Style(
-                {
-                    "color-background": f"background-color: {self.schema.BACKGROUND.rgb(self.dark)}",
-                    "auto-width": "width: 100%; "
-                    f"max-width: {self.max_width - self.border_radius * 2}px",
-                    "round-corner": f"border-radius: {self.border_radius}px",
-                }
-            ),
-        }
-
-    def styles(self, schema: ColorSchema, dark: bool):
-        return builder.E.style(
-            " ".join(
-                f".{key} {{ {value.get(key, '')} }}"
-                for value in self.style().union(
-                    inflate(element.style(schema, dark) for element in self.elements)  # type: ignore
-                )
-                for key in value
-            )
-            # Add font
-            + " @font-face {font-family: homo; "
-            f"src: url('{HARMONY_FONT_URL}') format('truetype')}}"  # noqa
-            # Apply font to body
-            + " body {font-family: 'homo'}"
-            # Apply color to a
-            + f" a {{ color: {self.schema.HYPERLINK.rgb(dark)}; "
-            "text-decoration: underline }"
-        )
-
-    def head(self, schema: ColorSchema, dark: bool):
+    def head(self):
         return builder.HEAD(
             builder.TITLE(self.title),
             builder.META(charset="utf-8"),
-            self.styles(schema, dark),
+            builder.STYLE(self.css),
         )
 
     def body(self, schema: ColorSchema, dark: bool):
         return builder.BODY(
             *(element.to_e(schema=schema, dark=dark) for element in self.elements),
-            CLASS("color-background auto-width"),
+            CLASS("color-background-bg auto-width"),
             style="margin: 0 auto",
         )
 
     def to_e(self, *_args, schema: ColorSchema, dark: bool, **_kwargs):
         return builder.HTML(
-            self.head(schema, dark),
+            self.head(),
             self.body(schema, dark),
         )
 
