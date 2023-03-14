@@ -22,23 +22,27 @@ async def fulfill_font(route: Route, request: Request):
     url = URL(request.url)
     if (FONT_PATH / url.name).exists():
         logger.debug(f"Fulfilling font {url}...")
-        return await route.fulfill(
+        await route.fulfill(
             path=FONT_PATH / url.name,
             content_type=FONT_MIME_MAP.get(url.suffix, None),
         )
+        return
     await route.fallback()
 
 
 async def fulfill_module_assets(route: Route, request: Request):
     pattern = re.compile(f"{MODULE_ASSETS_BASE}/(.*)")
     if not (group := pattern.search(request.url)):
-        return await route.fallback()
+        await route.fallback()
+        return
     module, file = group.groups()
     if not it(Modules).get(module):
-        return await route.fallback()
+        await route.fallback()
+        return
     path = Path(*module.split("."), "assets", file)
     if not path.is_file():
-        return await route.fallback()
+        await route.fallback()
+        return
     logger.debug(f"Fulfilling module assets {request.url}...")
     await route.fulfill(path=path)
 
