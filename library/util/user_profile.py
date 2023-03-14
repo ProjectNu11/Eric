@@ -58,9 +58,17 @@ class UserProfile(BaseModel):
         for i in raw:
             if perm := it(PermissionRegistry).get(i, suppress=True):
                 permissions.add(perm)
+            else:
+                permissions.add(
+                    FineGrainedPermission(
+                        id=i,
+                        name=i,
+                        description="Unknown permission.",
+                    )
+                )
         return list(permissions)
 
-    def to_insertable(self) -> dict[str, ...]:
+    def to_insertable(self) -> dict[str, str]:
         return {
             "id": str(self.id),
             "fields": str(self.fields),

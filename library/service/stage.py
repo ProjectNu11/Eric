@@ -19,7 +19,6 @@ from kayaku import create
 from loguru import logger
 from playwright.async_api import ProxySettings
 
-from library.config.initialize import initialize_config
 from library.model.config import EricConfig, FastAPIConfig, PlaywrightConfig
 from library.service.launchable import (
     EricCoreBotList,
@@ -29,6 +28,7 @@ from library.service.launchable import (
     EricUtilSession,
     FrequencyLimitService,
 )
+from library.util.config import initialize_config
 from library.util.log import setup_logger
 from library.util.module.launch import launch_require
 

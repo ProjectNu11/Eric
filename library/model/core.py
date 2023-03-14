@@ -1,7 +1,7 @@
 from datetime import datetime
 from pathlib import Path
 
-from library import __launch__
+from library import __launch_time__
 
 
 class EricCore:
@@ -15,7 +15,7 @@ class EricCore:
     """ 是否已初始化 """
 
     def __init__(self):
-        self.__launch_time = __launch__
+        self.__launch_time = __launch_time__
         self.__working_dir = Path.cwd()
 
     @property

@@ -1,4 +1,5 @@
 from library.service.creator.bot_list import BotListCreator
+from library.service.creator.color import ColorCreator
 from library.service.creator.core_creator import EricCoreCreator
 from library.service.creator.fastapi_creator import FastAPICreator
 from library.service.creator.group_config import GroupConfigCreator
@@ -9,6 +10,7 @@ from library.service.creator.user_registry import UserRegistryCreator
 
 __all__ = [
     "BotListCreator",
+    "ColorCreator",
     "EricCoreCreator",
     "FastAPICreator",
     "GroupConfigCreator",

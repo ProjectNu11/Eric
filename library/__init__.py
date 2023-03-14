@@ -1,6 +1,6 @@
 from datetime import datetime
 
-__launch__: datetime = datetime.now()
+__launch_time__: datetime = datetime.now()
 
 
 def get_version() -> str:

@@ -1,6 +1,3 @@
-from creart import add_creator
-
-from library.ui.color import ColorCreator
 from library.ui.color.schema import ColorPair, ColorSchema, ColorSingle
 from library.ui.element import (
     Banner,
@@ -16,8 +13,6 @@ from library.ui.element import (
     Title,
     VideoBox,
 )
-
-add_creator(ColorCreator)
 
 __all__ = [
     "ColorPair",

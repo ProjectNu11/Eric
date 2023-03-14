@@ -1,9 +1,7 @@
-from abc import ABC
 from datetime import datetime
 from json import JSONDecodeError
 from pathlib import Path
 
-from creart import AbstractCreator, CreateTargetInfo, exists_module
 from kayaku import create
 from loguru import logger
 from pydantic import BaseModel, ValidationError
@@ -93,18 +91,6 @@ class Color(BaseModel):
             raise ValueError(f"[Color] Schema {name} not exists")
         self.current_using = name
         self.save()
-
-
-class ColorCreator(AbstractCreator, ABC):
-    targets = (CreateTargetInfo("library.ui.color", "Color"),)
-
-    @staticmethod
-    def available() -> bool:
-        return exists_module("library.ui.color")
-
-    @staticmethod
-    def create(_create_type: type[Color]) -> Color:
-        return Color.load().initialize()
 
 
 def is_dark() -> bool:

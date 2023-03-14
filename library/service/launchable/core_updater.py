@@ -5,7 +5,7 @@ from launart import Launart, Launchable
 from loguru import logger
 
 from library.model.config import ManagerConfig
-from library.service.updater import check_update, perform_update
+from library.util.updater import check_update, perform_update
 
 
 class EricCoreUpdater(Launchable):
