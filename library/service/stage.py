@@ -23,10 +23,10 @@ from library.model.config import EricConfig, FastAPIConfig, PlaywrightConfig
 from library.service.launchable import (
     EricCoreBotList,
     EricCoreData,
-    EricCoreMisc,
     EricCoreUpdater,
     EricUtilSession,
     FrequencyLimitService,
+    LaunchTimeService,
 )
 from library.util.config import initialize_config
 from library.util.log import setup_logger
@@ -77,10 +77,10 @@ def initialize():
 
     Ariadne.launch_manager.add_service(EricCoreUpdater())
     Ariadne.launch_manager.add_service(EricCoreData())
-    Ariadne.launch_manager.add_service(EricCoreMisc())
     Ariadne.launch_manager.add_service(EricCoreBotList())
-    Ariadne.launch_manager.add_service(EricUtilSession())
     Ariadne.launch_manager.add_service(FrequencyLimitService())
+    Ariadne.launch_manager.add_service(LaunchTimeService())
+    Ariadne.launch_manager.add_service(EricUtilSession())
 
     it(GraiaScheduler)
 

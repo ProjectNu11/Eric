@@ -1,8 +1,3 @@
-from datetime import datetime
-
-__launch_time__: datetime = datetime.now()
-
-
 def get_version() -> str:
     _BASE_VERSION = "0.1.0"
     from importlib import metadata

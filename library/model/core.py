@@ -1,7 +1,8 @@
+import os
 from datetime import datetime
 from pathlib import Path
 
-from library import __launch_time__
+import psutil
 
 
 class EricCore:
@@ -15,7 +16,9 @@ class EricCore:
     """ 是否已初始化 """
 
     def __init__(self):
-        self.__launch_time = __launch_time__
+        self.__launch_time = datetime.fromtimestamp(
+            psutil.Process(os.getpid()).create_time()
+        )
         self.__working_dir = Path.cwd()
 
     @property

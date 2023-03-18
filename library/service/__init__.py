@@ -14,16 +14,16 @@ from library.service.creator import (
 from library.service.launchable import (
     EricCoreBotList,
     EricCoreData,
-    EricCoreMisc,
     EricCoreUpdater,
     EricUtilSession,
     FrequencyLimitService,
+    LaunchTimeService,
 )
 
 __all__ = [
     "EricCoreBotList",
     "EricCoreData",
-    "EricCoreMisc",
+    "LaunchTimeService",
     "EricCoreUpdater",
     "FrequencyLimitService",
     "EricUtilSession",

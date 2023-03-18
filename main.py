@@ -1,6 +1,3 @@
-__import__("library")
-
-
 def setup():
     import os
     from pathlib import Path

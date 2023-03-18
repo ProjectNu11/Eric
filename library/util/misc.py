@@ -35,7 +35,7 @@ def seconds_to_string(
         转换后的字符串
     """
     seconds, ms = divmod(time, 1)
-    minutes, seconds = divmod(time, 60)
+    minutes, seconds = divmod(seconds, 60)
     hours, minutes = divmod(minutes, 60)
     days, hours = divmod(hours, 24)
     weeks, days = divmod(days, 7)
