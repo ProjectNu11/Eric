@@ -25,7 +25,9 @@ class Color(BaseModel):
             return cls.parse_file(path)
         except (FileNotFoundError, ValidationError, JSONDecodeError):
             logger.error("[Color] Failed to load color config, using default config.")
-            return cls()
+            instance = cls()
+            path.write_text(instance.json(ensure_ascii=False))
+            return instance
 
     def save(self):
         path = Path(config.library) / "color.json"
