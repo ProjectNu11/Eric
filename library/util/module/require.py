@@ -6,6 +6,7 @@ from creart import it
 from graia.saya import Saya
 from loguru import logger
 
+from library.model import RequireStatus
 from library.model.exception import SkipRequiring
 from library.model.module import Module, ModuleMetadata
 from library.service.launchable.util_launch_time import add_launch_time
@@ -20,22 +21,34 @@ def _require_install_deps(
     start = datetime.now()
     try:
         saya.require(module.pack)
-        add_launch_time(module, (datetime.now() - start).total_seconds(), 0)
+        add_launch_time(
+            module, (datetime.now() - start).total_seconds(), RequireStatus.SUCCESS
+        )
     except SkipRequiring as e:
         logger.warning(f"skipping {module.pack}: {e}")
-        add_launch_time(module, (datetime.now() - start).total_seconds(), 1)
+        add_launch_time(
+            module, (datetime.now() - start).total_seconds(), RequireStatus.SKIPPED
+        )
     except ModuleNotFoundError:
         logger.warning(f"缺少模块 {module.pack} 的依赖，正在安装...")
         install_dependency(module)
         try:
             saya.require(module.pack)
-            add_launch_time(module, (datetime.now() - start).total_seconds(), 0)
+            add_launch_time(
+                module, (datetime.now() - start).total_seconds(), RequireStatus.SUCCESS
+            )
         except ModuleNotFoundError as e:
             logger.error(e.with_traceback(e.__traceback__))
             logger.error(f"模块 {module.pack} 的依赖安装失败，请检查依赖列表")
-            add_launch_time(module, (datetime.now() - start).total_seconds(), 2)
+            add_launch_time(
+                module,
+                (datetime.now() - start).total_seconds(),
+                RequireStatus.MISSING_DEPENDENCY,
+            )
     except Exception as e:
-        add_launch_time(module, (datetime.now() - start).total_seconds(), 3)
+        add_launch_time(
+            module, (datetime.now() - start).total_seconds(), RequireStatus.ERROR
+        )
         if debug:
             logger.exception(e.with_traceback(e.__traceback__))
         elif suppress:

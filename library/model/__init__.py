@@ -30,6 +30,7 @@ from library.model.exception import (
     SkipRequiring,
     UserProfileNotFound,
 )
+from library.model.misc import Hashable, RequireStatus
 from library.model.module import Module, ModuleAdvancedSetting, ModuleMetadata
 from library.model.permission import PERMISSION_MAPPING, UserPerm
 from library.model.repo import (
@@ -71,6 +72,8 @@ __all__ = [
     "RequirementResolveFailed",
     "SkipRequiring",
     "UserProfileNotFound",
+    "Hashable",
+    "RequireStatus",
     "Module",
     "ModuleAdvancedSetting",
     "ModuleMetadata",
