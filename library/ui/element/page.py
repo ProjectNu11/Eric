@@ -18,11 +18,21 @@ from library.ui.element.footer import Footer
 from library.ui.element.image import ImageBox
 from library.util.playwright import route_fulfill
 
+DUMMY_LINK = "dummy://eric.static"
 BASE_LINK = create(FastAPIConfig).link
+LOCAL_LINK = f"http://127.0.0.1:{create(FastAPIConfig).port}"
+
 LIB_ASSETS_BASE = f"{BASE_LINK}/assets/library"
+DUMMY_ASSETS_BASE = f"{DUMMY_LINK}/assets/library"
+
 LIB_FONT_BASE = f"{LIB_ASSETS_BASE}/fonts"
+DUMMY_FONT_BASE = f"{DUMMY_ASSETS_BASE}/fonts"
+
 HARMONY_FONT_URL = f"{LIB_FONT_BASE}/HarmonyOSHans.ttf"
+DUMMY_HARMONY_FONT_URL = f"{DUMMY_FONT_BASE}/HarmonyOSHans.ttf"
+
 MODULE_ASSETS_BASE = f"{BASE_LINK}/assets/([a-zA-Z0-9_.]+)"
+DUMMY_MODULE_ASSETS_BASE = f"{DUMMY_LINK}/assets/([a-zA-Z0-9_.]+)"
 
 
 class Page(Element):
@@ -62,7 +72,7 @@ class Page(Element):
 .tb-padding {{ padding: 40px 0 40px 0; }}
 .auto-width {{ width: 100%; max-width: {self.max_width - self.border_radius * 2}px; }}
 .round-corner {{ border-radius: {self.border_radius}px; }}
-@font-face {{ font-family: homo; src: url('{HARMONY_FONT_URL}') format('truetype'); }}
+@font-face {{ font-family: homo; src: url('{DUMMY_HARMONY_FONT_URL}') format('truetype'); }}
 body {{ font-family: homo, serif; }}
 a {{ color: {self.schema.HYPERLINK.rgb(self.dark)}; text-decoration: underline; }}
 a:hover {{ opacity: 0.8; }}
@@ -198,12 +208,21 @@ a:hover {{ opacity: 0.8; }}
             self.body(schema, dark),
         )
 
-    def to_html(self, *_args, **_kwargs) -> str:
-        return tostring(
-            self.to_e(schema=self.schema, dark=self.dark),
-            encoding="unicode",
-            pretty_print=True,
+    def to_html(self, local: bool = False, *_args, **_kwargs) -> str:
+        return self.fill_dummy(
+            tostring(
+                self.to_e(schema=self.schema, dark=self.dark),
+                encoding="unicode",
+                pretty_print=True,
+            ),
+            local=local,
         )
+
+    def fill_dummy(self, before: str, local: bool) -> str:
+        logger.info(f"[Page:{self.title}] Filling dummy link...")
+        if local:
+            return before.replace(DUMMY_LINK, LOCAL_LINK)
+        return before.replace(DUMMY_LINK, BASE_LINK)
 
     async def render(
         self,
@@ -225,12 +244,14 @@ a:hover {{ opacity: 0.8; }}
             page: PWPage
 
             if local or self.local:
-                logger.info(f"[Page:{self.title}] Fulfilling route...")
+                logger.info(f"[Page:{self.title}] Setting fulfill route...")
                 await route_fulfill(page)
 
             logger.info(f"[Page:{self.title}] Setting content...")
             await page.set_content(
-                self.to_html(), timeout=timeout, wait_until=wait_until
+                self.to_html(),
+                timeout=timeout,
+                wait_until=wait_until,
             )
 
             logger.info(f"[Page:{self.title}] Getting screenshot...")
