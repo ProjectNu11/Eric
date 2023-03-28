@@ -33,6 +33,7 @@ dependencies = [
     "textual>=0.10.1",
     "arclet-alconna-graia>=0.12.0",
     "arclet-alconna-ariadne>=0.12.0",
+    "rich>=13.3.3",
 ]
 requires-python = ">=3.10,<4.0"
 license = { text = "AGPL-3.0 license" }
