@@ -164,7 +164,10 @@ async def send_message(
 async def broadcast_to_owners(
     message: MessageChain | str, account: int, suppress_on_none: bool = True
 ):
-    assert message or suppress_on_none, "消息不能为空"
+    if not message:
+        if suppress_on_none:
+            return
+        raise ValueError("消息不能为空")
     message = MessageChain(message) if isinstance(message, str) else message
     cfg: EricConfig = create(EricConfig)
     for owner in cfg.owners:
