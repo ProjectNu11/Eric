@@ -47,7 +47,8 @@ async def scheduled_cleanup():
 @route.get(LIB_ASSETS_ENTRYPOINT)
 async def library_assets(file: str):
     if (file := LIB_ASSETS_DIR / file).exists():
-        return FileResponse(file)
+        with contextlib.suppress(RuntimeError):
+            return FileResponse(file)
     raise HTTPException(status_code=404, detail="File not found")
 
 
@@ -58,9 +59,10 @@ async def module_assets(module: str, file: str):
             status_code=status.HTTP_404_NOT_FOUND, detail=f"Module {module} not found"
         )
     path = Path(*module.split("."), "assets", file)
-    if not path.is_file():
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"File {module}/{file} not found",
-        )
-    return FileResponse(path, filename=path.name)
+    if path.is_file():
+        with contextlib.suppress(RuntimeError):
+            return FileResponse(path, filename=path.name)
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail=f"File {module}/{file} not found",
+    )
