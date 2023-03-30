@@ -109,7 +109,7 @@ class Blacklist(EricDecorator):
         }
         if self._cache:
             if self._show_log:
-                logger.debug(f"[{self.__class__.__name__}] 设置缓存: {key} = {results}")
+                logger.debug(f"[{self.__class__.__name__}:{key}] 设置缓存")
             await Ariadne.launch_manager.get_interface(Memcache).set(
                 key, results, timedelta(seconds=15)
             )

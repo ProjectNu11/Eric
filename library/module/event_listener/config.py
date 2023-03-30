@@ -24,7 +24,7 @@ class _EventListenerConfig:
     """ Bot 加入群事件开关 """
 
     bot_unmute_event: str = (
-        "Bot {app.account} 在群组 {group.name} ({int(group)}) "
+        "Bot {app.account} 在群组 {group.name} ({group.id}) "
         "被 {operator.name} ({operator}) 解除禁言"
     )
     """ Bot 被取消禁言事件 """
@@ -95,6 +95,41 @@ class _EventListenerConfig:
     """ Bot 重连事件 """
     bot_relogin_event_switch: bool = False
     """ Bot 重连事件开关 """
+
+    member_join_event: str = ""
+    """ 群成员加入事件 """
+    member_join_event_switch: bool = False
+    """ 群成员加入事件开关 """
+
+    member_join_request_event: str = (
+        "收到入群申请\n"
+        "\n事件 ID: {uuid}"
+        "\n申请人: {supplicant}"
+        "\n申请人昵称: {nickname}"
+        "\n申请人留言: {message}"
+        "\n申请群: {source_group}"
+        "\n申请群名称: {group_name}\n"
+        "\n发送 #通过 {uuid} 以接受入群申请"
+        "\n发送 #拒绝 {uuid} 以拒绝入群申请"
+    )
+    """ 群成员加群申请事件 """
+    member_join_request_event_switch: bool = True
+    """ 群成员加群申请事件开关 """
+
+    member_leave_event_kick: str = ""
+    """ 群成员被踢事件 """
+    member_leave_event_kick_switch: bool = False
+    """ 群成员被踢事件开关 """
+
+    member_leave_event_quit: str = ""
+    """ 群成员主动离群事件 """
+    member_leave_event_quit_switch: bool = False
+    """ 群成员主动离群事件开关 """
+
+    member_permission_change_event: str = ""
+    """ 群成员权限改变事件 """
+    member_permission_change_event_switch: bool = False
+    """ 群成员权限改变事件开关 """
 
     new_friend_request_event: str = (
         "收到好友申请\n"

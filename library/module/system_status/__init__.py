@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 
 import psutil
@@ -40,6 +41,9 @@ async def system_status(app: Ariadne, event: MessageEvent):
     mem = psutil.virtual_memory()
     total_memery = round(mem.total / 1024**3, 2)
 
+    proc = psutil.Process(os.getpid())
+    proc_mem = proc.memory_info().rss
+
     page = Page(
         Banner("系统状态"),
         GenericBox(
@@ -48,17 +52,24 @@ async def system_status(app: Ariadne, event: MessageEvent):
             ),
             GenericBoxItem("启动时间", core.launch_time.strftime("%Y-%m-%d, %H:%M:%S")),
             GenericBoxItem(
-                "运行时间", seconds_to_string((datetime.now() - core.launch_time).seconds)
+                "运行时间",
+                seconds_to_string((datetime.now() - core.launch_time).total_seconds()),
             ),
         ),
         GenericBox(
             GenericBoxItem("内存总大小", f"{total_memery} GB"),
         ),
         ProgressBar(
-            round(mem.used / mem.total, 2),
+            round(mem.percent / 100, 2),
             "内存使用率",
             f"{round(mem.used / 1024 ** 3, 2)}GB / {total_memery}GB "
             f"({round(mem.used / mem.total * 100, 2)}%)",
+        ),
+        ProgressBar(
+            round(proc_mem / mem.total, 2),
+            "Eric 内存占用",
+            f"{round(proc_mem / 1024 ** 2, 2)}MB / {total_memery}GB "
+            f"({round(proc_mem / mem.total * 100, 2)}%)",
         ),
         GenericBox(
             GenericBoxItem("CPU 物理核心数", str(psutil.cpu_count(logical=False))),

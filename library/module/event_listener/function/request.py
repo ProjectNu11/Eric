@@ -5,8 +5,10 @@ from graia.ariadne.event.mirai import (
     NewFriendRequestEvent,
 )
 from loguru import logger
+from rich.table import Table
 
 from library.module.event_listener.util import _get_cfg, _pickle_request, _send_message
+from library.util.ctx import rich_console
 from library.util.message import broadcast_to_owners
 
 
@@ -32,15 +34,16 @@ async def bot_invited_join_group_request_event(
         source_group=source_group,
         group_name=group_name,
     )
-    text = "[EventListener] 收到入群邀请"
-    text += f"\n{'UUID':<8}: {uuid}"
-    text += f"\n{'事件 ID':<8}: {request_id}"
-    text += f"\n{'邀请人':<8}: {supplicant}"
-    text += f"\n{'邀请人昵称':<8}: {nickname}"
-    text += f"\n{'邀请人留言':<8}: {message}"
-    text += f"\n{'邀请群':<8}: {source_group}"
-    text += f"\n{'邀请群名称':<8}: {group_name}"
-    logger.info(text)
+    table = Table("Item", "Value", show_header=False)
+    table.add_row("UUID", uuid)
+    table.add_row("事件 ID", str(request_id))
+    table.add_row("邀请人", str(supplicant))
+    table.add_row("邀请人昵称", nickname)
+    table.add_row("邀请人留言", message)
+    table.add_row("邀请群", str(source_group))
+    table.add_row("邀请群名称", group_name)
+    rich_console.get().print(table)
+    logger.info("[EventListener] 收到入群邀请")
     await broadcast_to_owners(owner_msg, app.account)
 
 
@@ -64,15 +67,16 @@ async def member_join_request_event(app: Ariadne, event: MemberJoinRequestEvent)
         source_group=source_group,
         group_name=group_name,
     )
-    text = "[EventListener] 收到入群申请"
-    text += f"\n{'UUID':<8}: {uuid}"
-    text += f"\n{'事件 ID':<8}: {request_id}"
-    text += f"\n{'申请人':<8}: {supplicant}"
-    text += f"\n{'申请人昵称':<8}: {nickname}"
-    text += f"\n{'申请人留言':<8}: {message}"
-    text += f"\n{'申请群':<8}: {source_group}"
-    text += f"\n{'申请群名称':<8}: {group_name}"
-    logger.info(text)
+    table = Table("Item", "Value", show_header=False)
+    table.add_row("UUID", uuid)
+    table.add_row("事件 ID", str(request_id))
+    table.add_row("申请人", str(supplicant))
+    table.add_row("申请人昵称", nickname)
+    table.add_row("申请人留言", message)
+    table.add_row("申请群", str(source_group))
+    table.add_row("申请群名称", group_name)
+    rich_console.get().print(table)
+    logger.info("[EventListener] 收到入群申请")
     await _send_message(source_group, msg, app.account, event, is_group=True)
     await broadcast_to_owners(owner_msg, app.account)
 
@@ -95,12 +99,13 @@ async def new_friend_request_event(app: Ariadne, event: NewFriendRequestEvent):
         message=message,
         source_group=source_group,
     )
-    text = "[EventListener] 收到好友申请"
-    text += f"\n{'UUID':<8}: {uuid}"
-    text += f"\n{'事件 ID':<8}: {request_id}"
-    text += f"\n{'申请人':<8}: {supplicant}"
-    text += f"\n{'申请人昵称':<8}: {nickname}"
-    text += f"\n{'申请人留言':<8}: {message}"
-    text += f"\n{'来源群':<8}: {source_group}" if source_group else ""
-    logger.info(text)
+    table = Table("Item", "Value", show_header=False)
+    table.add_row("UUID", uuid)
+    table.add_row("事件 ID", str(request_id))
+    table.add_row("申请人", str(supplicant))
+    table.add_row("申请人昵称", nickname)
+    table.add_row("申请人留言", message)
+    table.add_row("来源群", str(source_group)) if source_group else ""
+    rich_console().get()
+    logger.info("[EventListener] 收到好友申请")
     await broadcast_to_owners(owner_msg, app.account)
