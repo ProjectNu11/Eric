@@ -60,9 +60,7 @@ async def route_fulfill(page: Page):
     Args:
         page (Page): Playwright 页面，并非 `library.ui.Page` 实例
     """
-    # await page.route(re.compile(rf"^{LIB_FONT_BASE}/(.*)$"), fulfill_font)
-    # await page.route(re.compile(rf"^{MODULE_ASSETS_BASE}/(.*)$"), fulfill_module_assets)
-    # logger.success("Set route fulfiller")
-
-    # 一直 Timeout，不知道为什么，先注释掉了
+    await page.route(re.compile(rf"^{LIB_FONT_BASE}/(.*)$"), fulfill_font)
+    await page.route(re.compile(rf"^{MODULE_ASSETS_BASE}/(.*)$"), fulfill_module_assets)
+    logger.success("Set route fulfiller")
     return
