@@ -8,6 +8,7 @@ from library.ui.element.icon import Icon
 from library.ui.element.image import ImageBox
 from library.ui.element.page import Page
 from library.ui.element.progress_bar import ProgressBar
+from library.ui.element.qrcode import QRCodeBox
 from library.ui.element.script import ScriptBox
 from library.ui.element.title import Title
 from library.ui.element.video import VideoBox
@@ -24,6 +25,7 @@ __all__ = [
     "ImageBox",
     "Page",
     "ProgressBar",
+    "QRCodeBox",
     "ScriptBox",
     "Title",
     "VideoBox",
