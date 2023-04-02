@@ -164,6 +164,13 @@ a:hover {{ opacity: 0.8; }}
         self.schema = schema or it(Color).current()
         return self
 
+    @property
+    def required_elements(self) -> set[Element]:
+        elements = set()
+        for element in self.elements:
+            elements |= element.require
+        return elements
+
     def add(self, *elements: Element | list[Element] | tuple[Element]) -> Self:
         for element in elements:
             self.elements.append(element)
@@ -178,7 +185,7 @@ a:hover {{ opacity: 0.8; }}
         )
 
     def body(self, schema: ColorSchema, dark: bool):
-        elements = self.elements
+        elements = list(self.required_elements) + self.elements
         if self.auto_footer and not isinstance(elements[-2], Footer):
             elements.extend(
                 (
