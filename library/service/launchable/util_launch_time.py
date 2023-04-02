@@ -55,7 +55,7 @@ class LaunchTimeService(Launchable):
             table.add_column("状态")
 
             for module, (_time, code) in sorted(
-                _launch_time.items(), key=lambda x: x[1], reverse=True
+                _launch_time.items(), key=lambda x: x[1][0], reverse=True
             ):
                 table.add_row(
                     Text(module.clean_name),
