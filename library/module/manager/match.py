@@ -129,4 +129,5 @@ MANAGER_ALC = Alconna(
         ),
         Subcommand("list"),
     ),
+    Subcommand("stop"),
 )
