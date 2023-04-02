@@ -20,7 +20,7 @@ description: "在 Windows 上部署 Eric"
 
 - 瓷器高速本地下载 [Git for Windows](https://webcdn.m.qq.com/spcmgr/download/Git-2.40.0-64-bit.exe)
 
-- 巨硬下载 
+- 巨硬下载
 ``` bash
 winget install --id Git.Git -e --source winget
 ```
@@ -101,7 +101,7 @@ pip 21.3.1 from c:\users\user\appdata\local\programs\python\python310\lib\site-p
     下载 Eric 的源代码归档文件。
 
     ~~随后，你可以通过 `unzip Eric-main.zip` 命令解压 Eric 的源代码归档文件并继续操作~~
-    
+
     都用 Win 了，别告诉我你不会解压。
 
 !!! warning "建议使用 Git 下载"
