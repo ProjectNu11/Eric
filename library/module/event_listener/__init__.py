@@ -97,7 +97,7 @@ async def request_handler(
     action: str = action.result.display
     request_id: str = request_id.result.display
     field: int = int(event.sender.group) if isinstance(event, GroupMessage) else 0
-    path = _data_path / str(app.account)
+    path = _data_path / str(app.account) / str(field)
     logger.info(f"[Request] Getting pickled event {request_id}")
     if not (pickle_path := path / f"{request_id}.pkl").is_file():
         logger.error(f"[Request] Pickled event {request_id} not found")
