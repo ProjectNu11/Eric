@@ -16,13 +16,13 @@ from library.util.message import broadcast_to_owners
 async def bot_invited_join_group_request_event(
     app: Ariadne, event: BotInvitedJoinGroupRequestEvent
 ):
-    uuid = await _pickle_request(app.account, event)
     request_id = event.request_id
     supplicant = event.supplicant
     nickname = event.nickname
     message = event.message
     source_group = event.source_group
     group_name = event.group_name
+    uuid = await _pickle_request(app.account, 0, event)
     msg, owner_msg = _get_cfg(
         0,
         event,
@@ -49,13 +49,13 @@ async def bot_invited_join_group_request_event(
 
 # member_join_request_event
 async def member_join_request_event(app: Ariadne, event: MemberJoinRequestEvent):
-    uuid = await _pickle_request(app.account, event)
     request_id = event.request_id
     supplicant = event.supplicant
     nickname = event.nickname
     message = event.message
     source_group = event.source_group
     group_name = event.group_name
+    uuid = await _pickle_request(app.account, source_group, event)
     msg, owner_msg = _get_cfg(
         source_group,
         event,
@@ -83,12 +83,12 @@ async def member_join_request_event(app: Ariadne, event: MemberJoinRequestEvent)
 
 # new_friend_request_event
 async def new_friend_request_event(app: Ariadne, event: NewFriendRequestEvent):
-    uuid = await _pickle_request(app.account, event)
     request_id = event.request_id
     supplicant = event.supplicant
     nickname = event.nickname
     message = event.message
     source_group = event.source_group
+    uuid = await _pickle_request(app.account, 0, event)
     msg, owner_msg = _get_cfg(
         0,
         event,
