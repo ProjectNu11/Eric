@@ -1,5 +1,5 @@
 import pickle
-import uuid
+from hashlib import md5
 
 import aiofiles
 from creart import it
@@ -78,19 +78,18 @@ def _get_cfg(field: int, event: MiraiEvent, /, **kwargs) -> tuple[str, str]:
     return (group_msg or msg).format(**kwargs), msg.format(**kwargs)
 
 
-async def _pickle_request(account: int, event: RequestEvent) -> str:
+async def _pickle_request(account: int, field: int, event: RequestEvent) -> str:
     request_id = event.request_id
     cls: str = camel_to_snake(event.__class__.__name__)
-    uuid_str = str(uuid.uuid5(uuid.NAMESPACE_OID, f"{request_id}_{cls}"))
-    path = data_path / str(account)
+    hashed = md5(f"{request_id}_{cls}".encode()).hexdigest()[:7]
+    path = data_path / str(account) / str(field)
     path.mkdir(parents=True, exist_ok=True)
-    async with aiofiles.open(path / f"{uuid_str}.pkl", "wb") as f:
+    async with aiofiles.open(path / f"{hashed}.pkl", "wb") as f:
         await f.write(pickle.dumps(event))
-    return uuid_str
+    return hashed
 
 
-async def _unpickle_request(account: int, request_id: str):
-    path = data_path / str(account)
-    path.mkdir(parents=True, exist_ok=True)
+async def _unpickle_request(account: int, field: int, request_id: str):
+    path = data_path / str(account) / str(field)
     async with aiofiles.open(path / f"{request_id}.pkl", "rb") as f:
         return pickle.loads(await f.read())

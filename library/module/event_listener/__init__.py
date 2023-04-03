@@ -33,7 +33,8 @@ from graiax.shortcut import listen
 from graiax.shortcut.saya import decorate, dispatch, every
 from loguru import logger
 
-from library.decorator import Blacklist, FunctionCall
+from library.decorator import Blacklist, FunctionCall, Permission
+from library.model import UserPerm
 from library.module.event_listener.util import _unpickle_request
 from library.util.message import send_message
 from library.util.misc import camel_to_snake
@@ -80,11 +81,7 @@ async def invalidate_outdated_pickle():
     Twilight(
         FullMatch("#"),
         UnionMatch("通过", "拒绝") @ "action",
-        RegexMatch(
-            r"[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-"
-            r"[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
-        )
-        @ "request_id",
+        RegexMatch(r"[a-fA-F0-9]{7}") @ "request_id",
     )
 )
 @decorate(
@@ -92,15 +89,22 @@ async def invalidate_outdated_pickle():
     FunctionCall(channel.module),
 )
 async def request_handler(
-    app: Ariadne, event: MessageEvent, action: RegexResult, request_id: RegexResult
+    app: Ariadne,
+    event: GroupMessage | FriendMessage,
+    action: RegexResult,
+    request_id: RegexResult,
 ):
     action: str = action.result.display
     request_id: str = request_id.result.display
+    field: int = int(event.sender.group) if isinstance(event, GroupMessage) else 0
     path = _data_path / str(app.account)
     logger.info(f"[Request] Getting pickled event {request_id}")
     if not (pickle_path := path / f"{request_id}.pkl").is_file():
-        return await send_message(event, MessageChain("无法找到该请求"), app.account)
-    request: _Request = await _unpickle_request(app.account, request_id)
+        logger.error(f"[Request] Pickled event {request_id} not found")
+        return
+    request: _Request = await _unpickle_request(app.account, field, request_id)
+    if not await Permission.check(event.sender, UserPerm.ADMINISTRATOR):
+        return await send_message(event, MessageChain("权限不足"), app.account)
     logger.success(
         f"[Request] Found {request.__class__.__name__}: {request.request_id}"
     )
