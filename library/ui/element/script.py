@@ -1,7 +1,7 @@
 from pathlib import Path
-from typing import Self
 
 from lxml.html import builder
+from typing_extensions import Self
 
 from library.ui.element.base import Element
 

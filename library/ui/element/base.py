@@ -1,5 +1,6 @@
 from abc import abstractmethod
-from typing import Self
+
+from typing_extensions import Self
 
 from library.model.misc import Hashable
 from library.ui.color import ColorSchema
