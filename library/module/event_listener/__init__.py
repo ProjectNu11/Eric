@@ -69,11 +69,15 @@ async def event_listener(app: Ariadne, event: MiraiEvent):
 
 @every(1, mode="hour")
 async def invalidate_outdated_pickle():
-    for file in _data_path.iterdir():
-        if file.suffix != ".pkl":
-            continue
-        if (datetime.now() - datetime.fromtimestamp(file.stat().st_mtime)).days > 3:
-            file.unlink()
+    for account in _data_path.iterdir():
+        for field in account.iterdir():
+            for file in field.iterdir():
+                if file.suffix != ".pkl":
+                    continue
+                if (
+                    datetime.now() - datetime.fromtimestamp(file.stat().st_mtime)
+                ).days > 3:
+                    file.unlink()
 
 
 @listen(GroupMessage, FriendMessage)
