@@ -43,6 +43,7 @@ async def system_status(app: Ariadne, event: MessageEvent):
 
     proc = psutil.Process(os.getpid())
     proc_mem = proc.memory_info().rss
+    proc_cpu = proc.cpu_percent()
 
     page = Page(
         Banner("系统状态"),
@@ -79,6 +80,11 @@ async def system_status(app: Ariadne, event: MessageEvent):
             (cpu_percent := psutil.cpu_percent()) / 100,
             "CPU 总体占用",
             f"{cpu_percent}%",
+        ),
+        ProgressBar(
+            proc_cpu / 100,
+            "Eric CPU 占用",
+            f"{proc_cpu}%",
         ),
     )
     await send_message(
