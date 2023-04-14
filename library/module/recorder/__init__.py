@@ -135,7 +135,9 @@ async def cache_media(message: MessageChain):
             return
         typ = element.__class__.__name__
         (typ_path := _CACHE_PATH / typ).mkdir(parents=True, exist_ok=True)
-        async with aiofiles.open(Path(typ_path) / f"{ele_id}.{suffix}", "wb") as f:
+        if (file := typ_path / f"{ele_id}.{suffix}").is_file():
+            continue
+        async with aiofiles.open(file, "wb") as f:
             try:
                 await f.write(await element.get_bytes())
             except ValueError:
