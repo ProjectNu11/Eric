@@ -401,6 +401,7 @@ async def manager_list_config(app: Ariadne, event: MessageEvent):
 async def manager_stop(app: Ariadne, event: MessageEvent):
     await send_message(event, MessageChain("Stop running..."), app.account)
     app.stop()
+    raise PropagationCancelled()
 
 
 @listen(GroupMessage, FriendMessage)
