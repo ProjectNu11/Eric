@@ -22,6 +22,7 @@ SUBCOMMANDS: dict[str, str] = {
     "install": "安装模块",
     "unload": "卸载模块",
     "config": "配置模块",
+    "stop": "停止运行",
 }
 
 CHANGE_GROUP_MODULE_STATE_CH = [
@@ -88,6 +89,9 @@ LIST_CONFIG_EN = [
     FullMatch("config").space(SpacePolicy.FORCE),
     FullMatch("list"),
 ]
+
+STOP_EN = [FullMatch("manager").space(SpacePolicy.FORCE), FullMatch("stop")]
+
 
 MANAGER_ALC = Alconna(
     _FUNC_CONFIG.prefix,

@@ -38,6 +38,7 @@ from library.module.manager.match import (
     INSTALL_EN,
     LIST_CONFIG_EN,
     REGISTER_REPOSITORY_EN,
+    STOP_EN,
     SUBCOMMANDS,
     UNLOAD_EN,
     UPDATE_CONFIG_EN,
@@ -388,6 +389,18 @@ async def manager_list_config(app: Ariadne, event: MessageEvent):
     result = mgr_list_module_configs()
     await send_message(event, MessageChain(result), app.account)
     raise PropagationCancelled()
+
+
+@listen(GroupMessage, FriendMessage)
+@dispatch(Twilight(PrefixMatch(), STOP_EN))
+@decorate(
+    Distribution.distribute(),
+    Permission.require(UserPerm.BOT_ADMIN, cancel_propagation=True),
+)
+@priority(1)
+async def manager_stop(app: Ariadne, event: MessageEvent):
+    await send_message(event, MessageChain("Stop running..."), app.account)
+    app.stop()
 
 
 @listen(GroupMessage, FriendMessage)
