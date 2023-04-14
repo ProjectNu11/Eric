@@ -44,3 +44,6 @@ class EricConfig:
 
     log_rotate: int = 7
     """ 日志文件保留天数 """
+
+    multimedia_caching: bool = True
+    """ 是否开启多媒体缓存 """

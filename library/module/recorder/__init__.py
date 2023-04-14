@@ -1,3 +1,7 @@
+import re
+from pathlib import Path
+
+import aiofiles
 from creart import it
 from graia.ariadne import Ariadne
 from graia.ariadne.event.message import (
@@ -12,17 +16,27 @@ from graia.ariadne.event.message import (
     SyncMessage,
 )
 from graia.ariadne.message.chain import MessageChain
-from graia.ariadne.message.element import Forward, MultimediaElement
+from graia.ariadne.message.element import (
+    FlashImage,
+    Forward,
+    Image,
+    MultimediaElement,
+    Voice,
+)
 from graia.saya import Channel
 from graiax.shortcut import listen, priority
+from kayaku import create
 from loguru import logger
 
+from library.model.config import PathConfig
 from library.module.recorder.table import MessageRecord
 from library.util.locksmith import LockSmith
 from library.util.orm import orm
 
 channel = Channel.current()
 smith = it(LockSmith)
+
+_CACHE_PATH = Path(create(PathConfig).data) / "cache"
 
 
 def _remove_binary_fwd(fwd: Forward):
@@ -102,3 +116,27 @@ async def msg_recorder(event: MessageEvent):
             )
     except Exception as e:
         logger.error(f"[Recorder] Failed to record message: {e}")
+
+
+@listen(GroupMessage, FriendMessage)
+@priority(1)
+async def cache_media(message: MessageChain):
+    for element in message.get(MultimediaElement):
+        if isinstance(element, FlashImage):
+            element = element.to_image()
+        if isinstance(element, Image):
+            ele_id, suffix = re.search(r"{(.+)}\.(.+)", element.id).groups()
+        elif isinstance(element, Voice):
+            ele_id, suffix = re.search(r"(.+)\.(.+)", element.id).groups()
+        else:
+            logger.error(
+                f"[Recorder] Unsupported element type: {element.__class__.__name__}"
+            )
+            return
+        typ = element.__class__.__name__
+        (typ_path := _CACHE_PATH / typ).mkdir(parents=True, exist_ok=True)
+        async with aiofiles.open(Path(typ_path) / f"{ele_id}.{suffix}", "wb") as f:
+            try:
+                await f.write(await element.get_bytes())
+            except ValueError:
+                logger.error(f"[Recorder] Failed to cache {typ} {ele_id}.{suffix}.")
