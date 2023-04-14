@@ -45,6 +45,10 @@ async def system_status(app: Ariadne, event: MessageEvent):
     proc_mem = proc.memory_info().rss
     proc_cpu = proc.cpu_percent()
 
+    disk = psutil.disk_usage("/")
+    disk_total = round(disk.total / 1024**3, 2)
+    disk_usage = round(disk.used / 1024**3, 2)
+
     page = Page(
         Banner("系统状态"),
         GenericBox(
@@ -56,9 +60,6 @@ async def system_status(app: Ariadne, event: MessageEvent):
                 "运行时间",
                 seconds_to_string((datetime.now() - core.launch_time).total_seconds()),
             ),
-        ),
-        GenericBox(
-            GenericBoxItem("内存总大小", f"{total_memery} GB"),
         ),
         ProgressBar(
             round(mem.percent / 100, 2),
@@ -72,19 +73,22 @@ async def system_status(app: Ariadne, event: MessageEvent):
             f"{round(proc_mem / 1024 ** 2, 2)}MB / {total_memery}GB "
             f"({round(proc_mem / mem.total * 100, 2)}%)",
         ),
-        GenericBox(
-            GenericBoxItem("CPU 物理核心数", str(psutil.cpu_count(logical=False))),
-            GenericBoxItem("CPU 频率", f"{psutil.cpu_freq().current}MHz"),
-        ),
         ProgressBar(
             (cpu_percent := psutil.cpu_percent()) / 100,
             "CPU 总体占用",
-            f"{cpu_percent}%",
+            f"{cpu_percent}% ({psutil.cpu_count()} 核心 "
+            f"@ {psutil.cpu_freq().current}MHz)",
         ),
         ProgressBar(
             proc_cpu / 100,
             "Eric CPU 占用",
             f"{proc_cpu}%",
+        ),
+        ProgressBar(
+            round(disk_usage / disk_total, 2),
+            "磁盘使用率",
+            f"{disk_usage}GB / {disk_total}GB "
+            f"({round(disk_usage / disk_total * 100, 2)}%)",
         ),
     )
     await send_message(
