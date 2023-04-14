@@ -28,6 +28,7 @@ from graiax.shortcut import listen, priority
 from kayaku import create
 from loguru import logger
 
+from library.model import EricConfig
 from library.model.config import PathConfig
 from library.module.recorder.table import MessageRecord
 from library.util.locksmith import LockSmith
@@ -122,6 +123,9 @@ async def msg_recorder(event: MessageEvent):
 @priority(1)
 async def cache_media(message: MessageChain):
     for element in message.get(MultimediaElement):
+        config: EricConfig = create(EricConfig)
+        if not config.multimedia_caching:
+            return
         if isinstance(element, FlashImage):
             element = element.to_image()
         if isinstance(element, Image):
@@ -140,5 +144,5 @@ async def cache_media(message: MessageChain):
         async with aiofiles.open(file, "wb") as f:
             try:
                 await f.write(await element.get_bytes())
-            except ValueError:
-                logger.error(f"[Recorder] Failed to cache {typ} {ele_id}.{suffix}.")
+            except Exception as e:
+                logger.error(f"[Recorder] Failed to cache {typ} {ele_id}.{suffix}: {e}")
