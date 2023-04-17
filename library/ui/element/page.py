@@ -58,6 +58,7 @@ class Page(Element):
     @property
     def _css(self):
         return f"""
+.full-padding {{ padding: 40px; }}
 .lr-padding {{ padding: 0 40px 0 40px; }}
 .tb-padding {{ padding: 40px 0 40px 0; }}
 .auto-width {{ width: 100%; max-width: {self.max_width - self.border_radius * 2}px; }}
