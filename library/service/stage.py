@@ -33,10 +33,12 @@ from library.util.log import setup_logger
 from library.util.module.launch import launch_require
 
 
-def initialize():
+def prepare():
     setup_logger()
     initialize_config()
 
+
+def init_ariadne():
     eric_config: EricConfig = create(EricConfig)
     ariadne: list[Ariadne] = [
         Ariadne(
@@ -52,38 +54,37 @@ def initialize():
     if not ariadne:
         logger.error("无可用账号，请检查配置文件")
         sys.exit(1)
-
     if eric_config.default_account:
         Ariadne.config(default_account=eric_config.default_account)
     else:
-        Ariadne.config(default_account=eric_config.accounts.copy().pop())
+        Ariadne.config(default_account=eric_config.accounts[0])
 
+
+def init_service():
+    eric_cfg: EricConfig = create(EricConfig)
     pw_cfg: PlaywrightConfig = create(PlaywrightConfig)
+    fastapi_cfg: FastAPIConfig = create(FastAPIConfig)
     Ariadne.launch_manager.add_service(
         PlaywrightService(
             pw_cfg.browser,
             auto_download_browser=pw_cfg.auto_download_browser,
-            proxy=ProxySettings({"server": eric_config.proxy})
-            if eric_config.proxy
-            else None,
+            proxy=ProxySettings({"server": eric_cfg.proxy}) if eric_cfg.proxy else None,
         )
     )
     Ariadne.launch_manager.add_service(FastAPIService(it(FastAPI)))
-
-    fastapi_config: FastAPIConfig = create(FastAPIConfig)
     Ariadne.launch_manager.add_service(
-        UvicornService(host=fastapi_config.host, port=fastapi_config.port)
+        UvicornService(host=fastapi_cfg.host, port=fastapi_cfg.port)
     )
-
     Ariadne.launch_manager.add_service(EricCoreUpdater())
     Ariadne.launch_manager.add_service(EricCoreData())
     Ariadne.launch_manager.add_service(EricCoreBotList())
+    Ariadne.launch_manager.add_service(EricUtilSession())
     Ariadne.launch_manager.add_service(FrequencyLimitService())
     Ariadne.launch_manager.add_service(LaunchTimeService())
-    Ariadne.launch_manager.add_service(EricUtilSession())
 
+
+def init_saya():
     it(GraiaScheduler)
-
     saya = it(Saya)
     saya.install_behaviours(
         it(BroadcastBehaviour),
@@ -91,4 +92,10 @@ def initialize():
         FastAPIBehaviour(it(FastAPI)),
     )
 
+
+def initialize():
+    prepare()
+    init_ariadne()
+    init_service()
+    init_saya()
     launch_require()
