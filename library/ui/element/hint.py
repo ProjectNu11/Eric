@@ -18,8 +18,8 @@ class HintBox(Element):
         self,
         *hints: str,
         title: str = None,
-        title_size: int = 40,
-        hint_size: int = 35,
+        title_size: int = 35,
+        hint_size: int = 30,
         hint_bold: bool = True,
     ):
         self.title = title
