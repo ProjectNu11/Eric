@@ -155,7 +155,7 @@ cython_debug/
 .vscode/
 
 # PDM
-.pdm.toml
+.pdm-python
 
 # Generated files
 /config/
