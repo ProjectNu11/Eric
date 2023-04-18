@@ -1,7 +1,6 @@
 from lxml.html import builder
 from lxml.html.builder import CLASS
 
-from library.ui.color import ColorSchema
 from library.ui.element.base import Element
 from library.ui.util import wrap_text
 
@@ -73,7 +72,7 @@ class ProgressBar(Element):
             CLASS("lr-padding"),
         )
 
-    def to_e(self, *args, schema: ColorSchema, dark: bool, **kwargs):
+    def to_e(self, *args, **kwargs):
         parts = [
             self._build_text(),
             self._build_progress_bar(),

@@ -18,7 +18,7 @@ class VideoBox(Element):
     def from_url(cls, url: str) -> Self:
         return cls(url=url)
 
-    def to_e(self, *_args, **_kwargs):
+    def to_e(self, *args, **kwargs):
         properties = [
             {"loop": "1"} if self.loop else {},
             {"controls": "1"} if self.controls else {},

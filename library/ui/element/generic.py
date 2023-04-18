@@ -22,15 +22,16 @@ class _GenericBoxText(Element):
         self.is_desc = is_desc
         self.highlight = highlight
 
+    @property
     def style(self) -> str:
         if self.highlight and self.is_desc:
             return "color-highlight"
         return "color-description" if self.is_desc else "color-text"
 
-    def to_e(self, *, schema: ColorSchema, dark: bool, **_kwargs) -> str:
+    def to_e(self, *args, **kwargs):
         return builder.DIV(
             *wrap_text(self.text),
-            CLASS(self.style()),
+            CLASS(self.style),
             style=f"font-size: {self.size}px; word-wrap: break-word",
         )
 
@@ -116,7 +117,7 @@ class GenericBoxItem(Element):
             style="display: flex; justify-content: space-between; align-items: center",
         )
 
-    def to_e(self, *, schema: ColorSchema, dark: bool, **_kwargs) -> str:
+    def to_e(self, *args, schema: ColorSchema, dark: bool, **kwargs):
         return (
             self._to_e_img(schema=schema, dark=dark)
             if self.image
@@ -144,7 +145,7 @@ class GenericBox(Element):
     def _divider(self):
         return builder.DIV(CLASS("color-line-bg"), style="height: 3px")
 
-    def to_e(self, *, schema: ColorSchema, dark: bool, **_kwargs) -> str:
+    def to_e(self, *args, schema: ColorSchema, dark: bool, **_kwargs):
         return builder.DIV(
             *[
                 item.to_e(schema=schema, dark=dark)

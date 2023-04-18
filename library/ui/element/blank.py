@@ -9,5 +9,5 @@ class Blank(Element):
     def __init__(self, height: int):
         self.height = height
 
-    def to_e(self, *_args, **_kwargs) -> str:
+    def to_e(self, *args, **kwargs) -> str:
         return builder.DIV(style=f"height: {self.height}px;")

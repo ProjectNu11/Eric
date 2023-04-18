@@ -1,7 +1,6 @@
 from lxml.html import builder
 from lxml.html.builder import CLASS
 
-from library.ui.color import ColorSchema
 from library.ui.element import Element
 from library.ui.util import wrap_text
 
@@ -25,7 +24,7 @@ class Button(Element):
         self.width = width
         self.text_size = text_size
 
-    def to_e(self, *args, schema: ColorSchema, dark: bool, **kwargs):
+    def to_e(self, *args, **kwargs):
         return builder.DIV(
             builder.A(
                 *wrap_text(self.text, hyperlink=False),

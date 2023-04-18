@@ -106,7 +106,7 @@ class ImageBox(Element):
     def _to_e_url(self):
         return builder.IMG(CLASS("round-corner"), src=self.url, style="width: 100%")
 
-    def to_e(self, *_args, **_kwargs):
+    def to_e(self, *args, **kwargs):
         if self.img or self.base64:
             return self._to_e_bytes()
         elif self.url:

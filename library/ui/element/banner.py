@@ -4,7 +4,6 @@ from lxml.html import builder
 from lxml.html.builder import CLASS
 from PIL import Image
 
-from library.ui.color import ColorSchema
 from library.ui.element.base import Element
 from library.ui.element.blank import Blank
 from library.ui.element.icon import Icon
@@ -39,7 +38,7 @@ class Banner(Element):
             return Icon(img=icon)
         return Icon.from_file(icon) if isinstance(icon, Path) else Icon(svg=icon)
 
-    def to_e(self, *_args, schema: ColorSchema, dark: bool, **_kwargs):
+    def to_e(self, *args, **kwargs):
         return builder.DIV(
             Blank(self.blank_height).to_e(),
             builder.DIV(

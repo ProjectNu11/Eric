@@ -12,6 +12,8 @@ from library.model import EricConfig
 from library.model.config import FastAPIConfig
 from library.ui.color import Color, ColorSchema, is_dark
 from library.ui.color.palette import ColorPalette
+from library.ui.element._cfg import PageConfig
+from library.ui.element._typ import OutputElement
 from library.ui.element.base import Element
 from library.ui.element.blank import Blank
 from library.ui.element.footer import Footer
@@ -28,32 +30,47 @@ MODULE_ASSETS_BASE = f"{BASE_LINK}/assets/([a-zA-Z0-9_.]+)"
 class Page(Element):
     """仿 OneUI 的页面布局"""
 
+    _page_config: PageConfig
+    _schema: ColorSchema | Literal["auto"] | None
+    _cached_schema: ColorSchema | None
+
     elements: list[Element]
     """ 页面元素 """
 
-    max_width: int
-    """ 页面最大宽度 """
-
-    dark: bool
-    """ 是否为暗色模式 """
-
-    border_radius: int
-    """ 页面圆角 """
-
-    title: str
-    """ 页面标题 """
-
-    fetch_on_render: bool
-    """ 是否在渲染时获取图片 """
-
-    local: bool
-    """ 是否使用本地字体，如果为 True 则将无法在公网上正常显示 """
-
-    additional_css: str
-    """ 附加 CSS """
-
-    auto_footer: bool
-    """ 是否自动添加页脚 """
+    # <editor-fold desc="Backward compatibility">
+    max_width: int = property(
+        lambda self: self._page_config.max_width,
+        lambda self, value: setattr(self._page_config, "max_width", value),
+    )
+    dark: bool = property(
+        lambda self: self._page_config.dark,
+        lambda self, value: setattr(self._page_config, "dark", value),
+    )
+    border_radius: int = property(
+        lambda self: self._page_config.border_radius,
+        lambda self, value: setattr(self._page_config, "border_radius", value),
+    )
+    title: str = property(
+        lambda self: self._page_config.title,
+        lambda self, value: setattr(self._page_config, "title", value),
+    )
+    fetch_on_render: bool = property(
+        lambda self: self._page_config.fetch_on_render,
+        lambda self, value: setattr(self._page_config, "fetch_on_render", value),
+    )
+    local: bool = property(
+        lambda self: self._page_config.local,
+        lambda self, value: setattr(self._page_config, "local", value),
+    )
+    additional_css: str = property(
+        lambda self: self._page_config.additional_css,
+        lambda self, value: setattr(self._page_config, "additional_css", value),
+    )
+    auto_footer: bool = property(
+        lambda self: self._page_config.auto_footer,
+        lambda self, value: setattr(self._page_config, "auto_footer", value),
+    )
+    # </editor-fold>
 
     @property
     def _css(self):
@@ -80,9 +97,6 @@ a:hover {{ opacity: 0.8; }}
             + "\n"
         )
 
-    _schema: ColorSchema | Literal["auto"] | None
-    _cached_schema: ColorSchema | None
-
     def __init__(
         self,
         *elements: Element | list[Element] | tuple[Element],
@@ -96,20 +110,18 @@ a:hover {{ opacity: 0.8; }}
         css: str = "",
         auto_footer: bool = True,
     ):
-        if dark is None:
-            dark = is_dark()
-        if schema is None:
-            schema = it(Color).current()
-        self._schema = schema
+        self._page_config = PageConfig(
+            max_width=max_width,
+            dark=is_dark() if dark is None else dark,
+            border_radius=border_radius,
+            title=title,
+            fetch_on_render=fetch_on_render,
+            local=local,
+            additional_css=css,
+            auto_footer=auto_footer,
+        )
+        self._schema = it(Color).current() if schema is None else schema
         self._cached_schema = None
-        self.dark = dark
-        self.max_width = max_width
-        self.border_radius = border_radius
-        self.title = title
-        self.fetch_on_render = fetch_on_render
-        self.local = local
-        self.additional_css = css
-        self.auto_footer = auto_footer
         self.elements = []
         self.add(*elements)
 
@@ -185,7 +197,7 @@ a:hover {{ opacity: 0.8; }}
             builder.STYLE(self.css),
         )
 
-    def body(self, schema: ColorSchema, dark: bool):
+    def body(self, schema: ColorSchema, dark: bool, page_cfg: PageConfig):
         elements = list(self.required_elements) + self.elements
         if self.auto_footer and not isinstance(elements[-2], Footer):
             elements.extend(
@@ -195,20 +207,47 @@ a:hover {{ opacity: 0.8; }}
                 )
             )
         return builder.BODY(
-            *(element.to_e(schema=schema, dark=dark) for element in elements),
+            *(
+                element.to_e(schema=schema, dark=dark, page_cfg=page_cfg)
+                for element in elements
+            ),
             CLASS("color-background-bg auto-width"),
             style="margin: 0 auto",
         )
 
-    def to_e(self, *_args, schema: ColorSchema, dark: bool, **_kwargs):
+    def to_e(
+        self, *args, schema: ColorSchema, dark: bool, page_cfg: PageConfig, **kwargs
+    ) -> OutputElement:
         return builder.HTML(
             self.head(),
-            self.body(schema, dark),
+            self.body(schema, dark, page_cfg),
         )
 
-    def to_html(self, *_args, **_kwargs) -> str:
+    def to_html(
+        self,
+        *_args,
+        schema: ColorSchema = None,
+        dark: bool = None,
+        page_cfg: PageConfig = None,
+        **_kwargs,
+    ) -> str:
+        """
+        将页面转换为 HTML 字符串
+
+        Args:
+            schema: 配色方案
+            dark: 是否为暗色模式
+            page_cfg: 页面配置
+
+        Returns:
+            HTML 字符串
+        """
         return tostring(
-            self.to_e(schema=self.schema, dark=self.dark),
+            self.to_e(
+                schema=self.schema if schema is None else schema,
+                dark=self.dark if dark is None else dark,
+                page_cfg=self._page_config if page_cfg is None else page_cfg,
+            ),
             encoding="unicode",
             pretty_print=True,
         )

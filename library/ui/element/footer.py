@@ -73,7 +73,7 @@ class Footer(Element):
             else None
         )
 
-    def to_e(self, *_args, **_kwargs) -> str:
+    def to_e(self, *args, **kwargs):
         parts = [
             self._build_upper(),
             self._build_middle(),

@@ -1,7 +1,6 @@
 from lxml.html import builder
 from lxml.html.builder import CLASS
 
-from library.ui.color.schema import ColorSchema
 from library.ui.element.base import Element
 from library.ui.element.blank import Blank
 from library.ui.util import wrap_text
@@ -54,7 +53,7 @@ class HintBox(Element):
             hints.insert(index * 2 - 1, Blank(5).to_e())
         return builder.DIV(*hints)
 
-    def to_e(self, *, schema: ColorSchema, dark: bool, **_kwargs):
+    def to_e(self, *args, **kwargs):
         if not self.title and not self.hints:
             return ""
         parts = [self._title_to_e(), self._hints_to_e()]

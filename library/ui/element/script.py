@@ -18,7 +18,7 @@ class ScriptBox(Element):
     def from_file(cls, path: Path) -> Self:
         return cls(script=path.read_text(encoding="utf-8"))
 
-    def to_e(self, *_args, **_kwargs):
+    def to_e(self, *args, **kwargs):
         if self.script is not None:
             return builder.SCRIPT(self.script)
         elif self.url is not None:

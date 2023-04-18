@@ -12,6 +12,8 @@ from library.ui.element import (
     ImageBox,
     Page,
     ProgressBar,
+    QRCodeBox,
+    ScriptBox,
     Title,
     VideoBox,
 )
@@ -32,6 +34,8 @@ __all__ = [
     "ImageBox",
     "Page",
     "ProgressBar",
+    "QRCodeBox",
+    "ScriptBox",
     "Title",
     "VideoBox",
 ]

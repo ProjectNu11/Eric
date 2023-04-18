@@ -54,5 +54,5 @@ class Icon(Element):
             'style="width: 100%; height: 100%;" />'
         )
 
-    def to_e(self, *_args, **_kwargs):
+    def to_e(self, *args, **kwargs):
         return self._to_html_svg() if self.svg else self._to_html_img()
