@@ -48,6 +48,7 @@ Eric
 │   ├── config.jsonc ············ (*) 主配置
 │   └── config.schema.json ······ (*) 主配置模式
 ├── data ························ (*) 运行数据
+│   ├── cache ··················· (*) 缓存数据
 │   ├── library ················· (*) 库数据
 │   ├── module ·················· (*) 模块数据
 │   ├── shared ·················· (*) 共享数据
@@ -66,11 +67,14 @@ Eric
 ├── module ······················ (*) 已安装模块
 ├── LICENSE ·····················     许可证
 ├── main.py ·····················     程序入口
-├── pdm.lock ····················     依赖锁定文件
-├── pyproject.toml ··············     项目依赖 (PDM)
+├── mkdocs.yml ··················     MkDocs 配置
+├── pdm.lock ····················     依赖锁定文件 (PDM)
+├── pdm.toml ·····················    PDM 配置文件
+├── pyproject.toml ··············     项目配置文件
 └── README.md ···················     项目说明
 
 * 表示该文件或文件夹在以默认配置运行时会被自动创建
+** 已忽略部分文件
 ```
 
 ## 参与贡献
@@ -82,7 +86,7 @@ Eric
 
 ## 许可证
 
-    Copyright (C) 2022 nullqwertyuiop
+    Copyright (C) 2023 nullqwertyuiop
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published

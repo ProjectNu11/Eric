@@ -84,7 +84,7 @@ nav:
   - 内置模块:
     - 管理器: module/manager.md
     - 文件服务器: module/file_server.md
-    - 实用工具: module/utility.md
+    - 实用工具: module/utilities.md
     - 帮助菜单: module/help.md
   - 特性:
     - FastAPI 支持: feature/fastapi.md

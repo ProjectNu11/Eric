@@ -19,6 +19,7 @@ description: "管理器"
 | `.manager unload <name> <name> ...`        | 卸载一个或多个模块                 | 机器人所有人 |
 | `.manager config get <name>`               | 获取一个聊天区域内的模块配置            | 群管理员   |
 | `.manager config set <name> <key> <value>` | 设置一个聊天区域内的模块的配置           | 群管理员   |
+| `.manager stop`                            | 停止 `Eric`                 | 机器人所有人 |
 | `打开模块 <name> <name> ...`                   | 启用一个或多个模块                 | 群管理员   |
 | `关闭模块 <name> <name> ...`                   | 禁用一个或多个模块                 | 群管理员   |
 
