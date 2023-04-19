@@ -7,7 +7,7 @@ from loguru import logger
 from library.model.module import ModuleMetadata
 
 
-def _get_requirements_by_module(module: ModuleMetadata) -> list[str]:
+def _get_deps_by_module(module: ModuleMetadata) -> list[str]:
     requirements_path = Path(
         Path().resolve(), *module.pack.split("."), "requirements.txt"
     )
@@ -18,13 +18,13 @@ def _get_requirements_by_module(module: ModuleMetadata) -> list[str]:
     )
 
 
-def install_dependency(
+def install_deps(
     module: ModuleMetadata = None, requirements: list[str] = None
 ) -> NoReturn:
     if not module and not requirements:
         raise ValueError("模块或依赖列表必须填写")
     if module:
-        requirements = _get_requirements_by_module(module)
+        requirements = _get_deps_by_module(module)
 
     command = ["pdm", "run", "pip", "install", "--upgrade"]
     process = subprocess.Popen(

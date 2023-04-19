@@ -11,7 +11,7 @@ from library.model.exception import SkipRequiring
 from library.model.module import Module, ModuleMetadata
 from library.service.launchable.util_launch_time import add_launch_time
 from library.util.misc import inflate
-from library.util.module.dependency import install_dependency
+from library.util.module.dependency import install_deps
 from library.util.module.get import list_module
 
 
@@ -31,7 +31,7 @@ def _require_install_deps(
         )
     except ModuleNotFoundError:
         logger.warning(f"缺少模块 {module.pack} 的依赖，正在安装...")
-        install_dependency(module)
+        install_deps(module)
         try:
             saya.require(module.pack)
             add_launch_time(

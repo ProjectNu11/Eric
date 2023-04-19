@@ -13,7 +13,7 @@ class MentionMeOptional:
         async def judge(app: Ariadne, event: MessageEvent) -> NoReturn:
             msg_copy = event.message_chain.copy().exclude(Source, Quote)
             if isinstance((at := msg_copy[0]), At):
-                if at.target != app.account:
+                if at.target != app.account:  # type: ignore
                     raise ExecutionStop
 
         return Depend(judge)
