@@ -51,7 +51,6 @@ git version 2.40.0.windows.1
 - 不推荐西西下载园，ZOL下载，绿色资源网等等等等下载
 - 不推荐 csdn 付费资源下载 （？）?😨
 
-
 #### Step2 安装 Python
 
 - 安装第一页，勾选 `Add Python.exe to path`,字有点小但是这一步很关键，不勾选的话，你的命令行工具（终端，powershell）无法识别 python 命令
@@ -72,7 +71,7 @@ OR
 python -m pip -V
 ```
 
-输出 belike （不太一样没问题，确保结尾是 python3.10 及以上）
+输出 be like （不太一样没问题，确保结尾是 python3.10 及以上）
 
 ``` bash
 pip 21.3.1 from c:\users\user\appdata\local\programs\python\python310\lib\site-packages\pip (python 3.10)

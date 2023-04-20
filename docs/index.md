@@ -32,7 +32,7 @@
 
 本项目使用 [AGPL-3.0](https://www.gnu.org/licenses/agpl-3.0) 许可证
 
-    Copyright (C) 2022 nullqwertyuiop
+    Copyright (C) 2023 nullqwertyuiop
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
