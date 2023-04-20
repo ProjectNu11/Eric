@@ -162,7 +162,7 @@ cython_debug/
 /data/
 /log/
 /module/
-/.lock-hash
+/.eric-lock
 
 # Test Files
 /test/
