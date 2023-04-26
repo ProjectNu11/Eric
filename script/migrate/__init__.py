@@ -2,7 +2,7 @@ from pkgutil import walk_packages
 
 from packaging.version import Version
 
-from library.migrate.base import BaseMigrator
+from script.migrate.base import BaseMigrator
 
 
 def _get_all_migrators() -> list[BaseMigrator]:
