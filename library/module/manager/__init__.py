@@ -29,7 +29,6 @@ from library.decorator import Distribution, MentionMeOptional, Permission
 from library.model.config import EricConfig, ManagerConfig
 from library.model.core import EricCore
 from library.model.event.lifecycle import EricLaunched
-from library.model.event.util import UserProfilePendingUpdate
 from library.model.permission import UserPerm
 from library.module.manager.match import (
     CHANGE_GROUP_MODULE_STATE_CH,
@@ -58,7 +57,6 @@ from library.module.manager.util.remote.update import update_gen_img, update_gen
 from library.module.manager.util.remote.version import check_update
 from library.module.manager.util.repository.register import wait_and_register
 from library.util.dispatcher import PrefixMatch
-from library.util.locksmith import LockSmith
 from library.util.message import send_message
 from library.util.multi_account.public_group import PublicGroup
 from library.util.waiter.friend import FriendConfirmWaiter
@@ -435,12 +433,3 @@ async def manager_greetings(app: Ariadne, event: MessageEvent):
         text += f"\n - {subcommand}: {description}"
     await send_message(event, MessageChain(text), app.account)
     raise PropagationCancelled()
-
-
-@listen(UserProfilePendingUpdate)
-async def update_user_profile(event: UserProfilePendingUpdate):
-    update_lock = it(LockSmith).get(f"{channel.module}:user_profile")
-    async with update_lock:
-        logger.info(f"[Manager] Updating profile for {event.profile.id}...")
-        _ = event.profile
-        # TODO Implement this

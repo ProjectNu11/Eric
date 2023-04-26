@@ -77,17 +77,8 @@ class UserProfileTable(Base):
     id = Column(BIGINT, nullable=False, primary_key=True)
     """ 用户ID """
 
-    fields = Column(TEXT, nullable=False)
-    """ 用户组ID列表 """
-
     name = Column(TEXT, nullable=False)
     """ 用户名 """
-
-    nickname = Column(TEXT, nullable=False)
-    """ 昵称 """
-
-    preferred_name = Column(TEXT, nullable=False)
-    """ 首选名 """
 
     chat_count = Column(BIGINT, nullable=False)
     """ 聊天次数 """
@@ -96,10 +87,7 @@ class UserProfileTable(Base):
     """ 使用次数 """
 
     permission = Column(TEXT, nullable=False)
-    """ 权限 """
+    """ 权限，只能为 `UserPerm` 中已定义的值 """
 
     fg_permission = Column(TEXT, nullable=False)
-    """ 细粒度权限 """
-
-    module_preferences = Column(TEXT, nullable=False)
-    """ 模块偏好设置 """
+    """ 细粒度权限，格式为 `permission1,permission2,permission3` """

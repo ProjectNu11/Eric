@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from enum import Enum
 
 from creart import it
@@ -146,3 +147,30 @@ PERMISSION_MAPPING: dict[UserPerm | MemberPerm, str] = {
     MemberPerm.Administrator: "管理员",
     MemberPerm.Owner: "群主",
 }
+""" 权限枚举与权限名称的映射 """
+
+
+@dataclass
+class FineGrainedPermission:
+    """细粒度权限"""
+
+    id: str
+    """ 权限 ID，推荐使用 `channel.module:name` 等具有唯一性的字符串 """
+
+    name: str
+    """ 权限名称 """
+
+    description: str = ""
+    """ 权限描述 """
+
+    def __repr__(self):
+        return (
+            f"<FineGrainedPermission id={self.id} "
+            f"name={self.name} description={self.description}>"
+        )
+
+    def __str__(self):
+        return self.name
+
+    def __hash__(self):
+        return hash(self.id)

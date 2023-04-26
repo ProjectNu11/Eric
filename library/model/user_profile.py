@@ -1,38 +1,60 @@
-from dataclasses import dataclass, field
+from creart import it
+from pydantic import BaseModel, validator
+
+from library.model.permission import FineGrainedPermission, UserPerm
+from library.util.permission import PermissionRegistry
 
 
-@dataclass
-class UserProfile:
-    """用户资料模型"""
+class UserProfile(BaseModel):
+    """用户资料"""
 
     id: int
-    """ 用户 ID """
-
-    fields: list[int]
-    """ 用户组 ID 列表 """
+    """ 用户ID """
 
     name: str
     """ 用户名 """
 
-    nickname: str
-    """ 昵称 """
-
-    preferred_name: str
-    """ 首选名 """
-
-    chat_count: int = 0
+    chat_count: int
     """ 聊天次数 """
 
-    usage_count: int = 0
+    usage_count: int
     """ 使用次数 """
 
-    module_preferences: dict[str, ...] = field(default_factory=dict)
-    """ 模块偏好设置 """
+    permission: UserPerm
+    """ 权限等级 """
 
-    def register_module_preference(self, module: str, preference: dict[str, ...]):
-        """注册模块偏好设置"""
-        self.module_preferences[module] = preference
+    fg_permission: list[FineGrainedPermission]
+    """ 细粒度权限 """
 
-    def get_module_preference(self, module: str) -> dict[str, ...]:
-        """获取模块偏好设置"""
-        return self.module_preferences.get(module, {})
+    @validator("permission", pre=True)
+    def _permission_validator(cls, v):
+        return v if isinstance(v, UserPerm) else UserPerm.from_name(v)
+
+    @validator("fg_permission", pre=True)
+    def _fg_permission_validator(cls, v):
+        if not isinstance(v, str):
+            return v
+        raw = v.split(",")
+        permissions = set()
+        for i in raw:
+            if perm := it(PermissionRegistry).get(i, suppress=True):
+                permissions.add(perm)
+            else:
+                permissions.add(
+                    FineGrainedPermission(
+                        id=i,
+                        name=i,
+                        description="Unknown permission.",
+                    )
+                )
+        return list(permissions)
+
+    def to_insertable(self) -> dict[str, str | int]:
+        return {
+            "id": self.id,
+            "name": self.name,
+            "chat_count": self.chat_count,
+            "usage_count": self.usage_count,
+            "permission": self.permission.name,
+            "fg_permission": "".join(perm.id for perm in self.fg_permission),
+        }

@@ -1,0 +1,17 @@
+{
+    "name": "用户配置",
+    "version": "0.0.1",
+    "pack": "library.module.profile",
+    "authors": [
+        "nullqwertyuiop"
+    ],
+    "required": [],
+    "description": "更新、取得用户配置",
+    "category": [],
+    "advanced": {
+        "enable_by_default": true,
+        "allow_disable": true,
+        "allow_unload": true,
+        "hidden": false
+    }
+}
