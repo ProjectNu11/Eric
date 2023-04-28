@@ -61,21 +61,20 @@ def _remove_binary(chain: MessageChain, copy: bool = True) -> MessageChain:
 async def active_msg_recorder(app: Ariadne, event: ActiveMessage | SyncMessage):
     message_chain = _remove_binary(event.message_chain)
     if isinstance(event, (ActiveGroupMessage, GroupSyncMessage)):
-        target = event.subject.id
-        target_name = event.subject.name
+        target = int(event.subject)
     else:
-        target = -event.subject.id
-        target_name = "私聊"
+        target = -int(event.subject)
+    target_name = event.subject.name
     try:
         async with smith.get(channel.module):
             await orm.insert_or_ignore(
                 MessageRecord,
                 [
-                    MessageRecord.msg_id == event.source.id,
+                    MessageRecord.msg_id == int(event.source),
                     MessageRecord.target == target,
                 ],
                 time=event.source.time,
-                msg_id=event.source.id,
+                msg_id=int(event.source),
                 target=target,
                 target_name=target_name,
                 sender=app.account,
@@ -92,24 +91,24 @@ async def active_msg_recorder(app: Ariadne, event: ActiveMessage | SyncMessage):
 async def msg_recorder(event: MessageEvent):
     message_chain = _remove_binary(event.message_chain)
     if isinstance(event, GroupMessage):
-        target = event.sender.group.id
+        target = int(event.sender.group)
         target_name = event.sender.group.name
     else:
-        target = -event.sender.id
-        target_name = "私聊"
+        target = -int(event.sender)
+        target_name = event.sender.name
     try:
         async with smith.get(channel.module):
             await orm.insert_or_ignore(
                 MessageRecord,
                 [
-                    MessageRecord.msg_id == event.source.id,
+                    MessageRecord.msg_id == int(event.source),
                     MessageRecord.target == target,
                 ],
                 time=event.source.time,
-                msg_id=event.source.id,
+                msg_id=int(event.source),
                 target=target,
                 target_name=target_name,
-                sender=event.sender.id,
+                sender=int(event.sender),
                 sender_name=getattr(event.sender, "name", "")
                 or getattr(event.sender, "nickname", "未知"),
                 content=message_chain.display,

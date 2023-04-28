@@ -1,3 +1,6 @@
+from graia.ariadne.message import Source
+from graia.ariadne.model import Friend, Group, Member
+
 from library.util.misc import inflate
 
 
@@ -58,3 +61,14 @@ class InvalidConfig(Exception):
 
 class UserProfileNotFound(Exception):
     """用户资料未找到"""
+
+
+class RebuildMessageFailed(Exception):
+    """重构消息失败"""
+
+    def __init__(self, source: Source | int, target: Group | Friend | Member | int):
+        self.source = source
+        self.target = target
+
+    def __str__(self):
+        return f"重构消息失败：<source={self.source}, target={self.target}>"

@@ -1,9 +1,12 @@
+import json
 import re
 from typing import Generator, Iterable, TypeVar
 
+import graia
 from aiohttp import ClientResponseError
 from creart import it
 from graia.ariadne.event.message import GroupMessage, MessageEvent
+from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.message.element import MultimediaElement
 from loguru import logger
 
@@ -126,3 +129,17 @@ async def get_bytes(element: MultimediaElement) -> bytes:
                 f"[get_bytes] Element(id={element.id}): loaded from cache url"
             )
             return await resp.read()
+
+
+def rebuild_chain(data: list[dict] | str) -> MessageChain:
+    if isinstance(data, str):
+        data = json.loads(data)
+    elements = []
+    for i in data:
+        if not isinstance(i, dict):
+            continue
+        if not (typ := i.get("type", None)):
+            continue
+        if ele := graia.ariadne.message.element.__dict__.get(typ, None):
+            elements.append(ele(**i))
+    return MessageChain(elements)
