@@ -3,6 +3,7 @@ from typing import NoReturn
 
 from graia.ariadne.event import MiraiEvent
 from graia.broadcast import DecoratorInterface, ExecutionStop, RequirementCrashed
+from graia.saya import Channel
 from loguru import logger
 from typing_extensions import Self
 
@@ -21,12 +22,12 @@ class FunctionCall(EricDecorator):
 
     _pack: str
 
-    def __init__(self, pack: str):
+    def __init__(self, pack: str | None = None):
         """
         Args:
             pack: 包名
         """
-        self._pack = pack
+        self._pack = Channel.current().module if pack is None else pack
 
     async def target(self, interface: DecoratorInterface):
         try:

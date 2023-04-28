@@ -17,7 +17,7 @@ class EricDecorator(Decorator):
 
     @staticmethod
     async def lookup_param(
-        interface: DecoratorInterface, name: str, annotation: _T, default: _TD
+        interface: DecoratorInterface, name: str, annotation: type[_T], default: _TD
     ) -> _T | _TD:
         try:
             return await interface.dispatcher_interface.lookup_param(
@@ -25,3 +25,7 @@ class EricDecorator(Decorator):
             )
         except RequirementCrashed:
             return default
+
+    @abstractmethod
+    async def target(self, interface: DecoratorInterface):
+        pass
