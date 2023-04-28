@@ -25,8 +25,11 @@ class PathConfig:
     log: str = "log"
     """ 日志文件目录 """
 
-    module: str = "module"
-    """ 模块文件目录 """
+    @property
+    def module(self):
+        """模块文件目录"""
+        # Remove write access to module data directory
+        return "module"
 
     data: str = "data"
     """ 数据文件目录 """
