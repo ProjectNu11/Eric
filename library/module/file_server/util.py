@@ -13,11 +13,11 @@ from loguru import logger
 from sqlalchemy import select
 
 from library.model.config import FastAPIConfig
-from library.module.file_server.table import FileServer
 from library.module.file_server.vars import FILE_ENTRYPOINT
 from library.ui import Page
 from library.util.module import Modules
 from library.util.orm import orm
+from library.util.orm.table import FileServer
 
 channel = Channel.current()
 

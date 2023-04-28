@@ -30,9 +30,9 @@ from loguru import logger
 
 from library.model import EricConfig
 from library.model.config import PathConfig
-from library.module.recorder.table import MessageRecord
 from library.util.locksmith import LockSmith
 from library.util.orm import orm
+from library.util.orm.table import MessageRecord
 
 channel = Channel.current()
 smith = it(LockSmith)
