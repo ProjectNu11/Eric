@@ -44,10 +44,11 @@ def eric_lock():
         old = json.loads(lock.read_text())
     except (FileNotFoundError, JSONDecodeError):
         old = {"pdm_hash": "", "pyproject_hash": "", "eric_ver": ""}
+    old_eric = get_version(raw=True)
     new: EricLock = {
         "pdm_hash": pdm_lock(old["pdm_hash"]),
         "pyproject_hash": pyproject_lock(old["pyproject_hash"]),
-        "eric_ver": (ver := get_version(raw=True)),
+        "eric_ver": get_version(raw=True),
     }
-    run_migrators(Version(ver))
+    run_migrators(Version(old_eric))
     lock.write_text(json.dumps(new))
