@@ -1,6 +1,6 @@
 {
     "name": "记录器",
-    "version": "0.1.0",
+    "version": "0.0.1",
     "pack": "library.module.recorder",
     "authors": [
         "nullqwertyuiop"

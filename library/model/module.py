@@ -51,10 +51,21 @@ class ModuleMetadata(BaseModel):
     advanced: ModuleAdvancedSetting = ModuleAdvancedSetting()
     """ 模块高级设置 """
 
+    # # TODO: Implement module compatibility check
+    # minimum_version: str
+    # """ 最低 Eric 版本"""
+    #
+    # target_version: str
+    # """ 目标 Eric 版本"""
+
     def __hash__(self):
         return hash(f"_ModuleMetadata:{self.pack}")
 
-    @validator("version")
+    @validator(
+        "version",
+        # "minimum_version",
+        # "target_version",
+    )
     def _module_version_validator(cls, version: str):  # noqa
         """模块版本验证器"""
         Version(version)
