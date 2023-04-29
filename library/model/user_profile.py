@@ -14,12 +14,6 @@ class UserProfile(BaseModel):
     name: str
     """ 用户名 """
 
-    chat_count: int
-    """ 聊天次数 """
-
-    usage_count: int
-    """ 使用次数 """
-
     permission: UserPerm
     """ 权限等级 """
 
@@ -53,8 +47,6 @@ class UserProfile(BaseModel):
         return {
             "id": self.id,
             "name": self.name,
-            "chat_count": self.chat_count,
-            "usage_count": self.usage_count,
             "permission": self.permission.name,
             "fg_permission": "".join(perm.id for perm in self.fg_permission),
         }

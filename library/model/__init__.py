@@ -14,11 +14,7 @@ from library.model.config import (
     PlaywrightConfig,
 )
 from library.model.core import EricCore
-from library.model.event import (
-    AccountMessageBanned,
-    EricLaunched,
-    UserProfilePendingUpdate,
-)
+from library.model.event import AccountMessageBanned, EricLaunched
 from library.model.exception import (
     FrequencyLimitFieldHit,
     FrequencyLimitGlobalHit,

@@ -1,5 +1,6 @@
 from typing import Literal
 
+from graia.ariadne.event.message import FriendMessage, GroupMessage
 from graia.ariadne.model import Friend, Group, Member, Stranger
 
 Sender = Member | Friend | Stranger
@@ -13,3 +14,6 @@ Field = Group | Literal[0]
 
 FieldWide = Field | int
 """聊天区域宽泛类型"""
+
+Message = GroupMessage | FriendMessage
+"""监听的消息类型"""

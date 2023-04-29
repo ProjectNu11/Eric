@@ -90,12 +90,6 @@ class UserProfileTable(Base):
     name = Column(TEXT, nullable=False)
     """ 用户名 """
 
-    chat_count = Column(BIGINT, nullable=False)
-    """ 聊天次数 """
-
-    usage_count = Column(BIGINT, nullable=False)
-    """ 使用次数 """
-
     permission = Column(TEXT, nullable=False)
     """ 权限，只能为 `UserPerm` 中已定义的值 """
 

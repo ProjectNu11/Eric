@@ -62,9 +62,10 @@ async def active_msg_recorder(app: Ariadne, event: ActiveMessage | SyncMessage):
     message_chain = _remove_binary(event.message_chain)
     if isinstance(event, (ActiveGroupMessage, GroupSyncMessage)):
         target = int(event.subject)
+        target_name = event.subject.name
     else:
         target = -int(event.subject)
-    target_name = event.subject.name
+        target_name = event.subject.nickname
     try:
         async with smith.get(channel.module):
             await orm.insert_or_ignore(
@@ -95,7 +96,7 @@ async def msg_recorder(event: MessageEvent):
         target_name = event.sender.group.name
     else:
         target = -int(event.sender)
-        target_name = event.sender.name
+        target_name = event.sender.nickname
     try:
         async with smith.get(channel.module):
             await orm.insert_or_ignore(
