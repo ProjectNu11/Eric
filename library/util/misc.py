@@ -1,5 +1,7 @@
 import json
+import random
 import re
+from contextlib import contextmanager
 from typing import Generator, Iterable, TypeVar
 
 import graia
@@ -143,3 +145,61 @@ def rebuild_chain(data: list[dict] | str) -> MessageChain:
         if ele := graia.ariadne.message.element.__dict__.get(typ, None):
             elements.append(ele(**i))
     return MessageChain(elements)
+
+
+@contextmanager
+def seed_random(
+    seed: int | float | str | bytes | bytearray | None = None, version: int = 2
+):
+    """
+    随机种子上下文管理器
+
+    Args:
+        seed: 随机种子
+        version: 随机种子版本
+
+    Returns:
+        None
+    """
+    try:
+        random.seed(seed, version=version)
+        yield
+    finally:
+        random.seed()
+
+
+def weighed_random(
+    data: list[_T],
+    weights: list[int | float],
+    count: int = 1,
+    *,
+    seed: int | None = None,
+) -> list[_T]:
+    """
+    加权不重复随机
+
+    Args:
+        data: 数据列表
+        weights: 权重列表
+        count: 随机数量
+        seed: 随机种子
+
+    Returns:
+        随机结果
+    """
+    assert len(data) == len(weights), (
+        f"data and weights must be the same length, "
+        f"got {len(data)} and {len(weights)}"
+    )
+    assert count <= len(data), (
+        f"count must be less than or equal to the length of data, "
+        f"got {count} and {len(data)}"
+    )
+    with seed_random(seed):
+        result = []
+        while len(result) < count:
+            index = random.choices(range(len(data)), weights=weights)[0]
+            result.append(data[index])
+            data.pop(index)
+            weights.pop(index)
+    return result
