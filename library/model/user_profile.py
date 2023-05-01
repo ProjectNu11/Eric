@@ -17,7 +17,7 @@ class UserProfile(BaseModel):
     permission: UserPerm
     """ 权限等级 """
 
-    fg_permission: list[FineGrainedPermission]
+    fg_permission: set[FineGrainedPermission]
     """ 细粒度权限 """
 
     @validator("permission", pre=True)
@@ -28,9 +28,12 @@ class UserProfile(BaseModel):
     def _fg_permission_validator(cls, v):
         if not isinstance(v, str):
             return v
-        raw = v.split(",")
+        if not (raw := v.split(",")):
+            return set()
         permissions = set()
         for i in raw:
+            if not i:
+                continue
             if perm := it(PermissionRegistry).get(i, suppress=True):
                 permissions.add(perm)
             else:
@@ -41,12 +44,12 @@ class UserProfile(BaseModel):
                         description="Unknown permission.",
                     )
                 )
-        return list(permissions)
+        return set(permissions)
 
     def to_insertable(self) -> dict[str, str | int]:
         return {
             "id": self.id,
             "name": self.name,
             "permission": self.permission.name,
-            "fg_permission": "".join(perm.id for perm in self.fg_permission),
+            "fg_permission": ",".join(perm.id for perm in self.fg_permission),
         }

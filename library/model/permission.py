@@ -9,6 +9,7 @@ from typing_extensions import Self
 
 from library.model.bot_list import BotList
 from library.model.config import EricConfig
+from library.model.exception import InvalidPermission
 from library.util.orm import orm
 from library.util.orm.table import UserProfileTable
 
@@ -162,6 +163,16 @@ class FineGrainedPermission:
 
     description: str = ""
     """ 权限描述 """
+
+    def validate(self):
+        if "," in self.id:
+            raise InvalidPermission("Permission ID cannot contain comma")
+
+    def __post_init__(self):
+        from library.util.permission import PermissionRegistry
+
+        self.validate()
+        it(PermissionRegistry).register(self)
 
     def __repr__(self):
         return (

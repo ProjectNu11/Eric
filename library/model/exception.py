@@ -72,3 +72,7 @@ class RebuildMessageFailed(Exception):
 
     def __str__(self):
         return f"重构消息失败：<source={self.source}, target={self.target}>"
+
+
+class InvalidPermission(Exception):
+    """无效权限（细粒度）"""

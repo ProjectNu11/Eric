@@ -11,7 +11,7 @@ class PermissionRegistry:
 
     def register(self, *permissions: FineGrainedPermission):
         """
-        注册权限
+        注册权限，一般情况下无需手动调用
 
         Args:
             permissions: 细粒度权限

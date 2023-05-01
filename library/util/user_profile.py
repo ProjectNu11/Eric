@@ -51,3 +51,10 @@ class UserRegistry:
         if data is None:
             raise UserProfileNotFound(key)
         return UserProfile(**data)
+
+    @classmethod
+    async def get_or_create_profile(cls, user: Member | Friend) -> UserProfile:
+        try:
+            return await cls.get_profile(user)
+        except UserProfileNotFound:
+            return await cls.create_profile(user)
