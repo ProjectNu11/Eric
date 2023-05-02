@@ -80,7 +80,6 @@ def parse_per_module(data: list[RECORD_TYPE], scale: str) -> list[str]:
     parsed = itertools.groupby(data, key=lambda x: x[3].split(":")[0])
     parsed = {k: list(v) for k, v in parsed}
     max_module = max(parsed.items(), key=lambda x: len(list(x[1])))
-    f"{max_module[0] = }: {len(list(max_module[1]))}"
     result = [
         f"{scale}你一共使用过\n{len(data)} 次 {name}\n{len(parsed.keys())} 个模块",
         f"陪伴你最多的模块是 {parse_module_name(max_module[0])}\n"
@@ -98,7 +97,11 @@ def parse_per_module(data: list[RECORD_TYPE], scale: str) -> list[str]:
 
 
 def parse_all(data: list[RECORD_TYPE], scale: str) -> list[str]:
-    return parse_by_latest(data) + parse_per_day(data) + parse_per_module(data, scale)
+    return (
+        parse_by_latest(data.copy())
+        + parse_per_day(data.copy())
+        + parse_per_module(data.copy(), scale)
+    )
 
 
 async def get_report(app: Ariadne, supplicant: Sender) -> MessageChain:
