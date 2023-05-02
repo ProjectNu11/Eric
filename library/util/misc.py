@@ -138,12 +138,15 @@ def rebuild_chain(data: list[dict] | str) -> MessageChain:
         data = json.loads(data)
     elements = []
     for i in data:
-        if not isinstance(i, dict):
-            continue
-        if not (typ := i.get("type", None)):
-            continue
-        if ele := graia.ariadne.message.element.__dict__.get(typ, None):
-            elements.append(ele(**i))
+        try:
+            if not isinstance(i, dict):
+                continue
+            if not (typ := i.get("type", None)):
+                continue
+            if ele := graia.ariadne.message.element.__dict__.get(typ, None):
+                elements.append(ele(**i))
+        except NameError:
+            logger.warning(f"[rebuild_chain] Unsupported element: {i['type']}")
     return MessageChain(elements)
 
 
