@@ -48,21 +48,21 @@ def parse_module_name(pack: str) -> str:
 
 
 def parse_by_latest(data: list[RECORD_TYPE]) -> list[str]:
-    data = filter(
+    parsed = filter(
         lambda x: (datetime((d := x[0]).year, d.month, d.day, 5) - d).total_seconds()
         >= 0,
         data,
     )
-    data = sorted(
-        data,
+    parsed = sorted(
+        parsed,
         key=lambda x: (
             datetime((d := x[0]).year, d.month, d.day, 5) - d
         ).total_seconds(),
     )
     return [
-        f"{data[0][0].strftime('%m 月 %d 日')} 你睡得很晚\n"
-        f"{data[0][0].strftime('%H 点 %M 分')} 还在使用 "
-        f"{parse_module_name(data[0][3])}"
+        f"{parsed[0][0].strftime('%m 月 %d 日')} 你睡得很晚\n"
+        f"{parsed[0][0].strftime('%H 点 %M 分')} 还在使用 "
+        f"{parse_module_name(parsed[0][3])}"
     ]
 
 
