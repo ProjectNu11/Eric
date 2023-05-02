@@ -1,0 +1,17 @@
+{
+    "name": "使用汇报",
+    "version": "0.0.1",
+    "pack": "library.module.usage_report",
+    "authors": [
+        "nullqwertyuiop"
+    ],
+    "required": [],
+    "description": "获取你的专属使用汇报",
+    "category": [],
+    "advanced": {
+        "enable_by_default": false,
+        "allow_disable": true,
+        "allow_unload": true,
+        "hidden": false
+    }
+}
