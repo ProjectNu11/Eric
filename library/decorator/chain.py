@@ -13,10 +13,14 @@ from library.model.message import RebuiltMessage
 
 class QuotingOrAtMe(EricDecorator):
     pre = True
+    one_at: bool
 
     @property
     def supported_events(self) -> set[type[MiraiEvent]]:
         return set()
+
+    def __init__(self, one_at: bool = False):
+        self.one_at = one_at
 
     async def _check_quote(self, i: DecoratorInterface) -> bool:
         quote: Quote | None = await self.lookup_param(
@@ -40,7 +44,11 @@ class QuotingOrAtMe(EricDecorator):
         if not (ats := chain.get(At)):
             return False
         cfg: EricConfig = create(EricConfig)
-        return any(at.target in cfg.accounts for at in ats)
+        return (
+            len(set(cfg.accounts).intersection(at.target for at in ats)) == 1
+            if self.one_at
+            else any(at.target in cfg.accounts for at in ats)
+        )
 
     async def target(self, i: DecoratorInterface):
         try:

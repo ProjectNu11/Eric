@@ -44,7 +44,7 @@ class FunctionCall(EricDecorator):
     @classmethod
     def record(cls, pack: str) -> Self:
         """
-        DeprecationWarning: 请使用 `Frequency` 装饰器
+        DeprecationWarning: 请使用 `FunctionCall` 装饰器
         """
         return cls(pack)
 
