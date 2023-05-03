@@ -59,11 +59,15 @@ def parse_by_latest(data: list[RECORD_TYPE]) -> list[str]:
             datetime((d := x[0]).year, d.month, d.day, 5) - d
         ).total_seconds(),
     )
-    return [
-        f"{parsed[0][0].strftime('%m 月 %d 日')} 你睡得很晚\n"
-        f"{parsed[0][0].strftime('%H 点 %M 分')} 还在使用 "
-        f"{parse_module_name(parsed[0][3])}"
-    ]
+    return (
+        [
+            f"{parsed[0][0].strftime('%m月%d日')} 你睡得很晚\n"
+            f"{parsed[0][0].strftime('%H点%M分')} 还在使用 "
+            f"{parse_module_name(parsed[0][3])}"
+        ]
+        if parsed
+        else [f"你似乎没有在半夜使用过{name}\n早睡早起身体好"]
+    )
 
 
 def parse_per_day(data: list[RECORD_TYPE]) -> list[str]:
@@ -71,14 +75,17 @@ def parse_per_day(data: list[RECORD_TYPE]) -> list[str]:
     parsed = {k: list(v) for k, v in parsed}
     max_day = max(parsed.items(), key=lambda x: len(list(x[1])))
     return [
-        f"{max_day[0].strftime('%m 月 %d 日')}\n你使用 "
-        f"{name} 达到了 {len(list(max_day[1]))} 次"
+        f"{max_day[0].strftime('%m月%d日')}\n你使用 " f"{name} 达到了 {len(list(max_day[1]))} 次"
     ]
 
 
 def parse_per_module(data: list[RECORD_TYPE], scale: str) -> list[str]:
-    parsed = itertools.groupby(data, key=lambda x: x[3].split(":")[0])
-    parsed = {k: list(v) for k, v in parsed}
+    # 不知道为什么但是它就是没有预期效果
+    # parsed = itertools.groupby(data, key=lambda x: x[3].split(":")[0])
+    # parsed = {k: list(v) for k, v in parsed}
+    parsed: dict[str, list[RECORD_TYPE]] = {}
+    for d in data:
+        parsed.setdefault(d[3].split(":")[0], []).append(d)
     max_module = max(parsed.items(), key=lambda x: len(list(x[1])))
     result = [
         f"{scale}你一共使用过\n{len(data)} 次 {name}\n{len(parsed.keys())} 个模块",
