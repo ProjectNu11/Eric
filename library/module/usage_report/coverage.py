@@ -10,7 +10,7 @@ async def get_all_members() -> list[Member]:
     public_group: PublicGroup = it(PublicGroup)
     result: list[Member] = []
     for account in public_group.accounts:
-        for group in Ariadne.current(account).get_group_list():
+        for group in await Ariadne.current(account).get_group_list():
             group: Group
             result.extend(await Ariadne.current(account).get_member_list(group))
     return result
