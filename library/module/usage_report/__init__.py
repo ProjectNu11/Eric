@@ -6,7 +6,8 @@ from graia.ariadne.message.parser.twilight import FullMatch, Twilight
 from graia.saya import Channel
 from graiax.shortcut import decorate, dispatch, listen
 
-from library.decorator import Blacklist, Distribution, FunctionCall, Switch
+from library.decorator import Blacklist, Distribution, FunctionCall, Permission, Switch
+from library.model import UserPerm
 from library.module.usage_report.coverage import get_page
 from library.module.usage_report.stats import get_report
 from library.util.dispatcher import PrefixMatch
@@ -43,6 +44,7 @@ async def get_usage_report(app: Ariadne, event: Message):
 )
 @decorate(
     Switch.check(channel.module),
+    Permission.require(UserPerm.BOT_ADMIN),
     Distribution.distribute(),
     Blacklist.check(),
     FunctionCall.record(channel.module),
