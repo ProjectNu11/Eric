@@ -49,7 +49,7 @@ async def get_usage_report(app: Ariadne, event: Message):
     Blacklist.check(),
     FunctionCall.record(channel.module),
 )
-async def get_coverrge_report(app: Ariadne, event: Message):
+async def get_coverage_report(app: Ariadne, event: Message):
     await send_message(
         event,
         MessageChain(Image(data_bytes=await (await get_page()).render())),
