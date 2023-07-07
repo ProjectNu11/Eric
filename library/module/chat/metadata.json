@@ -1,0 +1,20 @@
+{
+    "name": "聊天",
+    "version": "0.0.1",
+    "pack": "library.module.chat",
+    "authors": [
+        "nullqwertyuiop"
+    ],
+    "required": [],
+    "description": "提供来自 OpenAI 的 ChatCompletion 服务",
+    "category": [
+        "utility:实用工具",
+        "entertainment:娱乐"
+    ],
+    "advanced": {
+        "enable_by_default": false,
+        "allow_disable": true,
+        "allow_unload": true,
+        "hidden": false
+    }
+}

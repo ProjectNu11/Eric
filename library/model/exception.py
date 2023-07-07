@@ -76,3 +76,31 @@ class RebuildMessageFailed(Exception):
 
 class InvalidPermission(Exception):
     """无效权限（细粒度）"""
+
+
+class OpenAIException(Exception):
+    """OpenAI 异常"""
+
+
+class OpenAIKeyNotConfigured(OpenAIException):
+    """OpenAI API Key 未配置"""
+
+
+class OpenAIInsufficientQuota(OpenAIException):
+    """OpenAI 余额不足"""
+
+
+class ChatCompletionException(OpenAIException):
+    """ChatCompletion 异常"""
+
+
+class ChatEntryNotFound(ChatCompletionException):
+    """ChatCompletion 聊天记录未找到"""
+
+
+class ChatEntryTooLong(ChatCompletionException):
+    """ChatCompletion 聊天记录过长"""
+
+
+class ChatSessionLocked(ChatCompletionException):
+    """ChatCompletion 会话已锁定"""

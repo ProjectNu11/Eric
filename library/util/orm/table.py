@@ -152,3 +152,51 @@ class MessageRecord(Base):
 
     message_chain = Column(Text, nullable=False)
     """ 消息链 """
+
+
+class ChatCompletionTable(Base):
+    """ChatCompletion 表"""
+
+    __tablename__ = "chat_completion"
+
+    field = Column(BIGINT, nullable=False, primary_key=True)
+    """ 聊天区域"""
+
+    usage = Column(Integer, default=0, nullable=False)
+    """ 使用次数 """
+
+    total_tokens = Column(Integer, default=0, nullable=False)
+    """ 总词数 """
+
+    system_prompt = Column(String(length=4000), default="", nullable=False)
+    """ 系统提示 """
+
+
+class ChatCompletionHistory(Base):
+    """ChatCompletion 历史记录"""
+
+    __tablename__ = "chat_completion_history"
+
+    id = Column(Integer, primary_key=True)
+    """ 记录ID """
+
+    time = Column(DateTime, nullable=False)
+    """ 写入时间 """
+
+    field = Column(BIGINT, nullable=False)
+    """ 聊天区域"""
+
+    role = Column(String(length=40), nullable=False)
+    """ 角色 """
+
+    uuid = Column(String(length=36), nullable=False)
+    """ 节点 UUID """
+
+    previous_node = Column(String(length=36), nullable=True)
+    """ 前一个节点 UUID """
+
+    msg_id = Column(BIGINT, nullable=False)
+    """ 消息ID """
+
+    content = Column(String(length=4000), nullable=False)
+    """ 内容 """
