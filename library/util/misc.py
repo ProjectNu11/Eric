@@ -206,3 +206,33 @@ def weighed_random(
             data.pop(index)
             weights.pop(index)
     return result
+
+
+def batch_replace(_text: str, *pairs: dict[str, str]) -> str:
+    """
+    批量替换字符串
+
+    Args:
+        _text: 原始字符串
+        *pairs: 替换对
+
+    Returns:
+        替换后的字符串
+    """
+    return _text.translate(
+        str.maketrans({k: v for pair in pairs for k, v in pair.items()})
+    )
+
+
+def backslash_escape(_text: str, *chars: str) -> str:
+    """
+    批量转义字符串
+
+    Args:
+        _text: 原始字符串
+        *chars: 转义字符
+
+    Returns:
+        转义后的字符串
+    """
+    return batch_replace(_text, {i: f"\\{i}" for i in chars})

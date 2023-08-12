@@ -20,7 +20,8 @@ from library.util.typ import Message
 
 
 class ChatSession:
-    __field: int
+    field: int
+    """聊天区域"""
 
     instance: ChatCompletion
     """ChatCompletion 实例"""
@@ -32,7 +33,7 @@ class ChatSession:
     __ctx_uuids: list[str]
 
     def __init__(self, field: int):
-        self.__field = field
+        self.field = field
         self.instance = ChatCompletion()
         self.mapping = {}
         self.__mapping_updated = False
@@ -107,13 +108,13 @@ class ChatSession:
         return data
 
     async def to_orm(self, node: ChatNode, msg_id: int, time: datetime):
-        lock = it(LockSmith).get(f"library.util/chat:{self.__field}")
+        lock = it(LockSmith).get(f"library.util/chat:{self.field}")
         async with lock:
             await orm.insert_or_update(
                 ChatCompletionHistory,
                 [ChatCompletionHistory.uuid == node["id"]],
                 time=time,
-                field=self.__field,
+                field=self.field,
                 role=node["entry"]["role"],
                 uuid=node["id"],
                 previous_node=node["previous"],
@@ -122,7 +123,7 @@ class ChatSession:
             )
 
     async def update_usage(self, usage: ChatResponseUsage):
-        lock = it(LockSmith).get(f"library.util/chat:{self.__field}")
+        lock = it(LockSmith).get(f"library.util/chat:{self.field}")
         async with lock:
             old = await orm.first(
                 select(
@@ -130,14 +131,14 @@ class ChatSession:
                     ChatCompletionTable.total_tokens,
                     ChatCompletionTable.system_prompt,
                 ).where(
-                    ChatCompletionTable.field == self.__field  # noqa
+                    ChatCompletionTable.field == self.field  # noqa
                 )
             )
             old = old or (0, 0, "")
             await orm.insert_or_update(
                 ChatCompletionTable,
-                [ChatCompletionTable.field == self.__field],
-                field=self.__field,
+                [ChatCompletionTable.field == self.field],
+                field=self.field,
                 usage=old[0] + 1,
                 total_tokens=old[1] + usage["total_tokens"],
                 system_prompt=old[2],
@@ -147,7 +148,7 @@ class ChatSession:
         system = ""
         if data := await orm.first(
             select(ChatCompletionTable.system_prompt).where(
-                ChatCompletionTable.field == self.__field  # noqa
+                ChatCompletionTable.field == self.field  # noqa
             )
         ):
             system = data[0]
@@ -159,7 +160,7 @@ class ChatSession:
                 ChatCompletionHistory.msg_id,
                 ChatCompletionHistory.content,
             )
-            .where(ChatCompletionHistory.field == self.__field)  # noqa
+            .where(ChatCompletionHistory.field == self.field)  # noqa
             .order_by(ChatCompletionHistory.time.desc())  # noqa
             .limit(max_length)
         )
@@ -255,8 +256,8 @@ class ChatSession:
             return
         await orm.insert_or_update(
             ChatCompletionTable,
-            [ChatCompletionTable.field == self.__field],
-            field=self.__field,
+            [ChatCompletionTable.field == self.field],
+            field=self.field,
             system_prompt=system,
         )
 
