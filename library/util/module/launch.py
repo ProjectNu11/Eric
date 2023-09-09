@@ -16,7 +16,9 @@ def launch_require():
 
     create(ModuleState).initialize()
     lib_modules = list_module(Path("library/module"))
-    user_modules = list_module(Path(create(PathConfig).module))
+    user_module_path = Path(create(PathConfig).module)
+    user_module_path.mkdir(parents=True, exist_ok=True)
+    user_modules = list_module(user_module_path)
 
     cleaned = [
         module
