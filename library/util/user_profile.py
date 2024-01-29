@@ -37,9 +37,11 @@ class UserRegistry:
         profile = UserProfile(
             id=int(user),
             name=user.name,
-            permission=await UserPerm.get(user, check_member_perm=False, no_query=True)
-            if isinstance(user, Member)
-            else UserPerm.MEMBER,
+            permission=(
+                await UserPerm.get(user, check_member_perm=False, no_query=True)
+                if isinstance(user, Member)
+                else UserPerm.MEMBER
+            ),
             fg_permission=[],
         )
         await cls.update_profile(profile)

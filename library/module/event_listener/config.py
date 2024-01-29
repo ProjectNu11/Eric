@@ -150,7 +150,9 @@ class _EventListenerConfig:
 class _EventListenerGroupConfig:
     """事件监听器群组配置"""
 
-    bot_group_permission_change_event: str = "Bot 的权限由 {origin_repr} 变更为 {current_repr}"
+    bot_group_permission_change_event: str = (
+        "Bot 的权限由 {origin_repr} 变更为 {current_repr}"
+    )
     """ 群权限变更事件 """
     bot_group_permission_change_event_switch: bool = True
     """ 群权限变更事件开关 """

@@ -34,18 +34,20 @@ def get_github_repo(repo: Repo) -> str:
 async def get_remote_commit_sha(repo: str, branch: str) -> str:
     link = f"https://api.github.com/repos/{repo}/commits/{branch}"
     config: EricConfig = create(EricConfig)
-    async with ClientSession() as session, session.get(
-        link, proxy=config.proxy
-    ) as resp:
+    async with (
+        ClientSession() as session,
+        session.get(link, proxy=config.proxy) as resp,
+    ):
         return (await resp.json()).get("sha", "")
 
 
 async def compare_commits(repo: str, base: str, head: str) -> list[dict]:
     link = f"https://api.github.com/repos/{repo}/compare/{base}...{head}"
     config: EricConfig = create(EricConfig)
-    async with ClientSession() as session, session.get(
-        link, proxy=config.proxy
-    ) as resp:
+    async with (
+        ClientSession() as session,
+        session.get(link, proxy=config.proxy) as resp,
+    ):
         return (await resp.json()).get("commits", [])
 
 

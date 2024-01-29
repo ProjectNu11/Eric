@@ -75,7 +75,8 @@ def parse_per_day(data: list[RECORD_TYPE]) -> list[str]:
     parsed = {k: list(v) for k, v in parsed}
     max_day = max(parsed.items(), key=lambda x: len(list(x[1])))
     return [
-        f"{max_day[0].strftime('%m月%d日')}\n你使用 " f"{name} 达到了 {len(list(max_day[1]))} 次"
+        f"{max_day[0].strftime('%m月%d日')}\n你使用 "
+        f"{name} 达到了 {len(list(max_day[1]))} 次"
     ]
 
 

@@ -259,8 +259,9 @@ a:hover {{ opacity: 0.8; }}
         device_scale_factor: float = 1.0,
         local: bool = True,
         timeout: float | None = None,
-        wait_until: Literal["commit", "domcontentloaded", "load", "networkidle"]
-        | None = None,
+        wait_until: (
+            Literal["commit", "domcontentloaded", "load", "networkidle"] | None
+        ) = None,
     ) -> bytes:
         if self.fetch_on_render:
             await self.fetch_all()

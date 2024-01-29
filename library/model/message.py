@@ -44,7 +44,9 @@ class RebuiltMessage:
         cls, source: Source | int, target: Group | Friend | Member | int
     ) -> Self:
         if isinstance(source, int) and target is None:
-            raise ValueError("source 为 int 时，target 必须为 Group | Friend | Member | int")
+            raise ValueError(
+                "source 为 int 时，target 必须为 Group | Friend | Member | int"
+            )
         source: int = int(source)
         if isinstance(target, (Friend, Member)):
             target: int = -int(target)

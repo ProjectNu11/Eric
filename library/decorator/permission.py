@@ -25,9 +25,11 @@ class Permission:
             if await UserPerm.get(event.sender) < level:
                 if on_failure:
                     await send_message(
-                        event.sender.group
-                        if isinstance(event, GroupMessage)
-                        else event.sender,
+                        (
+                            event.sender.group
+                            if isinstance(event, GroupMessage)
+                            else event.sender
+                        ),
                         MessageChain(on_failure.format(permission=level.value[-1])),
                         app.account,
                     )
@@ -35,9 +37,11 @@ class Permission:
             if fg_perms and not await cls.check_fine_grained(event.sender, *fg_perms):
                 if on_failure:
                     await send_message(
-                        event.sender.group
-                        if isinstance(event, GroupMessage)
-                        else event.sender,
+                        (
+                            event.sender.group
+                            if isinstance(event, GroupMessage)
+                            else event.sender
+                        ),
                         MessageChain(
                             on_failure.format(
                                 permission=", ".join(fg.id for fg in fg_perms)
