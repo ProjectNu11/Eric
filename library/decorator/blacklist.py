@@ -71,7 +71,9 @@ class Blacklist(EricDecorator):
             )
             if sender is None:
                 if self._show_log:
-                    logger.debug(f"[{self.__class__.__name__}] 无法获取发信人，跳过黑名单检查")
+                    logger.debug(
+                        f"[{self.__class__.__name__}] 无法获取发信人，跳过黑名单检查"
+                    )
                 raise RequirementCrashed
         except RequirementCrashed as e:
             logger.warning(f"[{self.__class__.__name__}] RequirementCrashed")
@@ -79,7 +81,9 @@ class Blacklist(EricDecorator):
         field = field or 0
         if await self._run_check(event, sender, field):
             if self._show_log:
-                logger.warning(f"[{self.__class__.__name__}] {field}: {sender} 在黑名单中")
+                logger.warning(
+                    f"[{self.__class__.__name__}] {field}: {sender} 在黑名单中"
+                )
             raise ExecutionStop
 
     async def _run_check(
@@ -96,16 +100,20 @@ class Blacklist(EricDecorator):
             return any(results.values())
         results = {
             "field": await self.check_field(field) if self._check_field else None,
-            "supplicant": await self.check_supplicant(sender, field)
-            if self._check_supplicant
-            else None,
-            "temporary": await self.check_temporary(sender, field)
-            if self._check_temporary
-            else None,
+            "supplicant": (
+                await self.check_supplicant(sender, field)
+                if self._check_supplicant
+                else None
+            ),
+            "temporary": (
+                await self.check_temporary(sender, field)
+                if self._check_temporary
+                else None
+            ),
             "bot": await self.check_bot(sender) if self._check_bot else None,
-            "anonymous": await self.check_anonymous(sender)
-            if self._check_anonymous
-            else None,
+            "anonymous": (
+                await self.check_anonymous(sender) if self._check_anonymous else None
+            ),
         }
         if self._cache:
             if self._show_log:

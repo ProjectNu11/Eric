@@ -53,7 +53,8 @@ async def system_status(app: Ariadne, event: MessageEvent):
         Banner("系统状态"),
         GenericBox(
             GenericBoxItem(
-                "登录账号", f"{len(public_group.accounts)} 个 / {len(config.accounts)} 个"
+                "登录账号",
+                f"{len(public_group.accounts)} 个 / {len(config.accounts)} 个",
             ),
             GenericBoxItem("启动时间", core.launch_time.strftime("%Y-%m-%d, %H:%M:%S")),
             GenericBoxItem(

@@ -57,7 +57,9 @@ async def bot_group_permission_change_event(
 # bot_join_group_event
 async def bot_join_group_event(app: Ariadne, event: BotJoinGroupEvent):
     group = event.group
-    logger.info(f"[EventListener] Bot {app.account} 加入群组 {group.name} ({int(group)})")
+    logger.info(
+        f"[EventListener] Bot {app.account} 加入群组 {group.name} ({int(group)})"
+    )
     msg, owner_msg = _get_cfg(int(group), event, app=app, group=group)
     await _send_message(group, msg, app.account, event)
     await broadcast_to_owners(owner_msg, app.account)
@@ -67,7 +69,9 @@ async def bot_join_group_event(app: Ariadne, event: BotJoinGroupEvent):
 # bot_leave_event_active
 async def bot_leave_event_active(app: Ariadne, event: BotLeaveEventActive):
     group = event.group
-    logger.info(f"[EventListener] Bot {app.account} 离开群组 {group.name} ({int(group)})")
+    logger.info(
+        f"[EventListener] Bot {app.account} 离开群组 {group.name} ({int(group)})"
+    )
     msg, owner_msg = _get_cfg(int(group), event, app=app, group=group)
     await _send_message(group, msg, app.account, event)
     await broadcast_to_owners(owner_msg, app.account)
@@ -89,7 +93,9 @@ async def bot_leave_event_disband(app: Ariadne, event: BotLeaveEventDisband):
 # bot_leave_event_kick
 async def bot_leave_event_kick(app: Ariadne, event: BotLeaveEventKick):
     group = event.group
-    logger.info(f"[EventListener] Bot {app.account} 被踢出群组 {group.name} ({int(group)})")
+    logger.info(
+        f"[EventListener] Bot {app.account} 被踢出群组 {group.name} ({int(group)})"
+    )
     msg, owner_msg = _get_cfg(int(group), event, app=app, group=group)
     await _send_message(group, msg, app.account, event)
     await broadcast_to_owners(owner_msg, app.account)

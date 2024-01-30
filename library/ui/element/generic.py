@@ -87,9 +87,11 @@ class GenericBoxItem(Element):
     def _get_parts(self, *, schema: ColorSchema, dark: bool) -> list[str]:
         return [
             self.text.to_e(schema=schema, dark=dark) if self.text else None,
-            self.description.to_e(schema=schema, dark=dark)
-            if self.description
-            else None,
+            (
+                self.description.to_e(schema=schema, dark=dark)
+                if self.description
+                else None
+            ),
         ]
 
     def _to_e_no_img(self, *, schema: ColorSchema, dark: bool, **_kwargs) -> str:
@@ -148,9 +150,11 @@ class GenericBox(Element):
     def to_e(self, *args, schema: ColorSchema, dark: bool, **_kwargs):
         return builder.DIV(
             *[
-                item.to_e(schema=schema, dark=dark)
-                if isinstance(item, GenericBoxItem)
-                else item
+                (
+                    item.to_e(schema=schema, dark=dark)
+                    if isinstance(item, GenericBoxItem)
+                    else item
+                )
                 for item in self.items
             ],
             CLASS("color-foreground-bg round-corner lr-padding"),

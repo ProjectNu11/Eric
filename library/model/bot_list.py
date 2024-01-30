@@ -105,7 +105,9 @@ class BotList(BaseModel):
             try:
                 for bot in (bots := await source.fetch()):
                     self.register_bot(bot, no_assert=True)
-                logger.success(f"[BotList] 已从 {source.name} 获取 {len(bots)} 个 Bot 实例")
+                logger.success(
+                    f"[BotList] 已从 {source.name} 获取 {len(bots)} 个 Bot 实例"
+                )
             except Exception as e:
                 logger.error(f"[BotList] 从 {source.name} 获取 Bot 实例时出现错误: {e}")
         logger.success(f"[BotList] 当前列表共有 {len(self.bots)} 个 Bot 实例")

@@ -28,7 +28,9 @@ class EricCoreUpdater(Launchable):
     @staticmethod
     async def check_update():
         if not (update := await check_update()):
-            logger.opt(colors=True).success("<green>[EricService] 当前版本已是最新</green>")
+            logger.opt(colors=True).success(
+                "<green>[EricService] 当前版本已是最新</green>"
+            )
             return
         output = []
         for commit in update:

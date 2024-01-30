@@ -33,7 +33,9 @@ def _propose_change_state(
 
 
 def _get_msg_empty() -> MessageChain:
-    return MessageChain('用法：\n - 打开模块 "模块名" "模块名"...\n - 关闭模块 "模块名" "模块名"...')
+    return MessageChain(
+        '用法：\n - 打开模块 "模块名" "模块名"...\n - 关闭模块 "模块名" "模块名"...'
+    )
 
 
 def _get_msg_success(*result: Module, value: bool) -> MessageChain | None:

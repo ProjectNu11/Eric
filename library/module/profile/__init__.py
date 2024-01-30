@@ -66,7 +66,9 @@ async def get_profile(app: Ariadne, event: Message, sender: Sender):
     except UserProfileNotFound:
         return await send_message(
             event,
-            MessageChain(f'无法找到您的个人配置，请先发送 "{PrefixMatch.get_prefix()[0]}创建配置"。'),
+            MessageChain(
+                f'无法找到您的个人配置，请先发送 "{PrefixMatch.get_prefix()[0]}创建配置"。'
+            ),
             app.account,
         )
 
@@ -84,9 +86,15 @@ async def create_profile(app: Ariadne, event: Message, sender: Sender):
     except UserProfileNotFound:
         pass
     else:
-        return await send_message(event, MessageChain("您已创建过个人配置"), app.account)
+        return await send_message(
+            event, MessageChain("您已创建过个人配置"), app.account
+        )
     profile = await UserRegistry.create_profile(sender)
-    await send_message(event, MessageChain("请在 30 秒内发送您的昵称，否则将使用当前用户名"), app.account)
+    await send_message(
+        event,
+        MessageChain("请在 30 秒内发送您的昵称，否则将使用当前用户名"),
+        app.account,
+    )
     with suppress(asyncio.exceptions.TimeoutError):
         profile.name = (
             await it(InterruptControl).wait(message_waiter(event))

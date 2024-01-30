@@ -61,7 +61,9 @@ async def change_color_schema(
             event.sender.group if isinstance(event, GroupMessage) else event.sender,
         )
     except UnknownTarget:
-        return await send_message(event, MessageChain("暂未缓存该消息，可尝试重新发送"), app.account)
+        return await send_message(
+            event, MessageChain("暂未缓存该消息，可尝试重新发送"), app.account
+        )
     if not (images := msg.message_chain.get(Image)):
         return await send_message(event, MessageChain("仅支持图片"), app.account)
     size: int = size.result
@@ -73,7 +75,9 @@ async def change_color_schema(
         schema = ColorPalette.generate_schema(image_bytes, sample_size=size)
     except ValueError:
         return await send_message(
-            event, MessageChain("无法生成配色方案，可能是图片颜色过暗或过亮，或采样数过小"), app.account
+            event,
+            MessageChain("无法生成配色方案，可能是图片颜色过暗或过亮，或采样数过小"),
+            app.account,
         )
     page = Page(
         Banner("配色方案预览"),
@@ -88,7 +92,8 @@ async def change_color_schema(
     await send_message(
         event,
         MessageChain(
-            Image(data_bytes=await page.render(local=True)), "是否确认更换配色方案？[y/n]"
+            Image(data_bytes=await page.render(local=True)),
+            "是否确认更换配色方案？[y/n]",
         ),
         app.account,
     )

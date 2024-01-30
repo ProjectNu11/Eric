@@ -190,7 +190,9 @@ async def manager_update(app: Ariadne, event: MessageEvent):
     try:
         assert not lock.locked(), "未能取得管理器锁，请检查是否正在其他操作"
         async with lock:
-            await send_message(event, MessageChain("正在拉取仓库更新中..."), app.account)
+            await send_message(
+                event, MessageChain("正在拉取仓库更新中..."), app.account
+            )
             await send_message(
                 event,
                 MessageChain(Image(data_bytes=await update_gen_img())),
@@ -223,9 +225,11 @@ async def manager_upgrade(app: Ariadne, event: MessageEvent, yes: ArgResult):
         await send_message(event, MessageChain(msg), app.account)
         try:
             if not await inc.wait(
-                GroupConfirmWaiter(event.sender.group, event.sender, "y")
-                if isinstance(event, GroupMessage)
-                else FriendConfirmWaiter(event.sender, "y"),
+                (
+                    GroupConfirmWaiter(event.sender.group, event.sender, "y")
+                    if isinstance(event, GroupMessage)
+                    else FriendConfirmWaiter(event.sender, "y")
+                ),
                 timeout=60,
             ):
                 await send_message(event, MessageChain("已取消更新"), app.account)
@@ -243,7 +247,9 @@ async def manager_upgrade(app: Ariadne, event: MessageEvent, yes: ArgResult):
             msg = f"已更新 {len(success)} 个模块"
             for _suc in success:
                 msg += f"\n - {_suc.name} ({_suc.clean_name}) {_suc.version}"
-            msg += f"更新 {remote.name} ({remote.clean_name}) 时出现错误，已中止更新\n{e}"
+            msg += (
+                f"更新 {remote.name} ({remote.clean_name}) 时出现错误，已中止更新\n{e}"
+            )
             await send_message(
                 event,
                 MessageChain(msg),
@@ -418,7 +424,9 @@ async def manager_fuzzy_fallback(
     word: str = content.result.display
     if matches := get_close_matches(word, SUBCOMMANDS.keys()):
         await send_message(
-            event, MessageChain(f"未找到指令 {word}，您是不是想输入 {matches[0]}?"), app.account
+            event,
+            MessageChain(f"未找到指令 {word}，您是不是想输入 {matches[0]}?"),
+            app.account,
         )
     raise PropagationCancelled()
 

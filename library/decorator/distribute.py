@@ -41,7 +41,9 @@ class Distribution:
         source = source or event.source
         if cls.is_self(member):
             if show_log:
-                logger.warning(f"[Distribution] 由已登录账号 {member.id} 触发，停止分发")
+                logger.warning(
+                    f"[Distribution] 由已登录账号 {member.id} 触发，停止分发"
+                )
             raise ExecutionStop
         p_group = it(PublicGroup)
         if p_group.need_distribute(group, app.account) and p_group.execution_stop(

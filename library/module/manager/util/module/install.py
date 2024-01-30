@@ -113,9 +113,11 @@ def _get_msg_wait(*modules: RemoteModule) -> MessageChain:
 
 async def _wait_for_confirm(event: MessageEvent) -> bool:
     return await inc.wait(
-        GroupConfirmWaiter(event.sender.group, event.sender, "y")
-        if isinstance(event, GroupMessage)
-        else FriendConfirmWaiter(event.sender, "y"),
+        (
+            GroupConfirmWaiter(event.sender.group, event.sender, "y")
+            if isinstance(event, GroupMessage)
+            else FriendConfirmWaiter(event.sender, "y")
+        ),
         timeout=60,
     )
 

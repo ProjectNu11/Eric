@@ -44,9 +44,11 @@ async def _send_message(
     if not (
         msg := await send_message(
             target,
-            message_chain
-            if isinstance(message_chain, MessageChain)
-            else MessageChain(message_chain),
+            (
+                message_chain
+                if isinstance(message_chain, MessageChain)
+                else MessageChain(message_chain)
+            ),
             account,
             is_group=is_group,
             suppress=suppress,

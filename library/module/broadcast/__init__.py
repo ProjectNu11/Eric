@@ -53,7 +53,9 @@ async def broadcast(
     g_copy = groups.copy()
     module = module.result
     if module and not (module := search_module(module)):
-        return await send_message(event, MessageChain(f"无法找到模块 {module}"), app.account)
+        return await send_message(
+            event, MessageChain(f"无法找到模块 {module}"), app.account
+        )
     await send_message(event, MessageChain("请在 5 分钟内发送公告内容"), app.account)
     try:
         result: MessageEvent = await inc.wait(message_waiter(event), timeout=300)
@@ -63,9 +65,11 @@ async def broadcast(
         Title("公告"),
         GenericBox(
             GenericBoxItem(
-                event.sender.name
-                if isinstance(event, GroupMessage)
-                else event.sender.nickname,
+                (
+                    event.sender.name
+                    if isinstance(event, GroupMessage)
+                    else event.sender.nickname
+                ),
                 "发送人",
                 image=await event.sender.get_avatar(),
             )
@@ -100,7 +104,9 @@ async def broadcast(
                 continue
             if module and not Switch.get(module, group):
                 skipped.add(group)
-                logger.warning(f"[Broadcast] 跳过 {group}：已被过滤器过滤 ({module.pack})")
+                logger.warning(
+                    f"[Broadcast] 跳过 {group}：已被过滤器过滤 ({module.pack})"
+                )
                 continue
             await asyncio.sleep(0.5 * random.randint(1, 3))
             accounts = list(p_group.get_accounts(group))
