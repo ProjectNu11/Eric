@@ -91,8 +91,7 @@ class QRCodeBox(Element):
                 CLASS("color-foreground-bg round-corner"),
                 style=f"padding: {padding}; ",
             ),
-            ScriptBox(
-                script=f"""
+            ScriptBox(script=f"""
 new QRCode("{self.__hash__()}", {{
     text: "{self.content}",
     width: {self.size},
@@ -101,6 +100,5 @@ new QRCode("{self.__hash__()}", {{
     colorLight : "{schema.FOREGROUND.hex(dark=False)}",
     correctLevel : QRCode.CorrectLevel.H
 }});
-                    """
-            ).to_e(),
+                    """).to_e(),
         )
