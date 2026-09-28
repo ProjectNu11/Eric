@@ -1,7 +1,7 @@
 import asyncio
+from _heapq import heappop
 from time import time
 
-from _heapq import heappop
 from launart import Launart, Service
 
 from library.util.frequency_limit import FrequencyLimitCache
